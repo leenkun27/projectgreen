@@ -6,6 +6,6 @@
     <title>Do</title>
 </head>
 <body>
-h1 relic
+<h1>Relic</h1>
 </body>
 </html>
