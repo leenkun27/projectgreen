@@ -13,54 +13,81 @@
 <body>
 
     <div class="container">
-    <?php include './header.php';?>
-    <div class="row">
-        <div class="col-2">
-        <?php include './menu.php';?>
-        </div>
-        <div class="col-10">
-        <h1>Relic</h1>
+        <?php include './header.php'; ?>
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio repellendus accusamus atque, doloremque optio sequi dolorum necessitatibus quidem veritatis sed!</div>
-            <div class="col-lg-3 col-md-4 col-sm-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae sit optio placeat iusto, eius fuga! Optio omnis quas voluptate repellat.</div>
-            <div class="col-lg-3 col-md-4 col-sm-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi delectus cupiditate sed quas soluta magnam nam beatae quidem totam atque.</div>
-        </div>
-
-        <div class="row mt-5">
-            <div class="col-6">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fuga, magni?</div>
-            <div class="col-6">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo, fugit.</div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-6">
-                <div class="card" style="width: 18rem;">
-                    <img src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain" alt="">
-                    <div class="card-body">
-                        <h3 class="card-title">กระดาษ</h3>
-                        <p class="class-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, eum?</p>
-                    </div>
-                </div>
+            <div class="col-2">
+                <?php include './menu.php'; ?>
             </div>
-            <div class="col-6">
-                <div class="card" style="width: 18rem;">
-                    <img src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain" alt="">
-                    <div class="card-body">
-                        <h3 class="card-title">กระดาษ</h3>
-                        <p class="class-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, eum?</p>
-                        <div class="row">
-                            <div class="col-6"><button class="btn btn-sm btn-warning cart"><i class="bi bi-cart"></i></button></div>
-                            <div class="col-6"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    ดูรายละเอียด
-                                </button></div>
+            <div class="col-10">
+                <h1>รับซื้อของเก่า</h1>
+                <div class="row mt-5">
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        ชื่อของเก่า
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                        </div>
+                        <br>
+                        ประเภทของเก่า
+                        <div class="input-group">
+                            <select class="form-control" id="" placeholder="">
+                                <option>เศษเหล็ก</option>
+                                <option>กระดาษ</option>
+                                <option>ขวดแก้ว</option>
+                                <option>พลาสติก</option>
+                                <option>โลหะที่มีค่าสูง</option>
+                                <option>เครี่องใช้ไฟฟ้า</option>
+                                <option>อื่นๆ</option>
+                            </select>
+                        </div>
+                        <br>
+                        ปริมาณการรับซื้อ
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
                         </div>
                     </div>
                 </div>
+
+                <div class="row mt-5">
+                    <div class="col-6">ชื่อของเก่า
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                        </div></div>
+                    <div class="col-6">ชื่อของเก่า
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                        </div></div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-6">
+                        <div class="card" style="width: 18rem;">
+                            <img src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain" alt="">
+                            <div class="card-body">
+                                <h3 class="card-title">กระดาษ</h3>
+                                <p class="class-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, eum?</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card" style="width: 18rem;">
+                            <img src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain" alt="">
+                            <div class="card-body">
+                                <h3 class="card-title">กระดาษ</h3>
+                                <p class="class-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, eum?</p>
+                                <div class="row">
+                                    <div class="col-6"><button class="btn btn-sm btn-warning cart"><i class="bi bi-cart"></i></button></div>
+                                    <div class="col-6"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            ดูรายละเอียด
+                                        </button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
 
-
-        </div>
-    </div>
-       
 
 
 
