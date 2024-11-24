@@ -1,3 +1,4 @@
+<?php include '../condb.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,102 +14,71 @@
 <body>
 
     <div class="container">
-    <?php include './header.php';?>
-    <div class="row">
-        <div class="col-2">
-        <?php include './menu.php';?>
-        </div>
-        <div class="col-10">
-        <h1>Relic</h1>
+        <?php include './header.php'; ?>
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio repellendus accusamus atque, doloremque optio sequi dolorum necessitatibus quidem veritatis sed!</div>
-            <div class="col-lg-3 col-md-4 col-sm-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae sit optio placeat iusto, eius fuga! Optio omnis quas voluptate repellat.</div>
-            <div class="col-lg-3 col-md-4 col-sm-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi delectus cupiditate sed quas soluta magnam nam beatae quidem totam atque.</div>
-        </div>
+            <div class="col-2">
+                <?php include './menu.php'; ?>
+            </div>
+            <div class="col-10">
+                <h1>ข้อมูลของเก่า</h1>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ลำดับ</th>
+                                    <th scope="col">ชื่อสินค้า</th>
+                                    <th scope="col">ภาพ</th>
+                                    <th scope="col">จำนวนคงเหลือ</th>
+                                    <th scope="col">หมายเหตุ</th>
+                                    <th scope="col">ลบ</th>
+                                    <th scope="col">แก้ไข</th>
 
-        <div class="row mt-5">
-            <div class="col-6">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fuga, magni?</div>
-            <div class="col-6">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo, fugit.</div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-6">
-                <div class="card" style="width: 18rem;">
-                    <img src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain" alt="">
-                    <div class="card-body">
-                        <h3 class="card-title">กระดาษ</h3>
-                        <p class="class-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, eum?</p>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                // ดึงข้อมูลจากฐานข้อมูล
+                                $sql = "SELECT * FROM tbl_product"; // ระบุชื่อตาราง
+                                $result = $conn->query($sql);
+
+                                if ($result->num_rows > 0) {
+                                    $index = 1; // ตัวนับลำดับ
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        echo "<th scope='row'>" . $index++ . "</th>";
+                                        echo "<td>" . $row['p_name'] . "</td>";
+                                        echo "<td><img src='" . $row['p_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                        echo "<td>" . $row['p_qty'] . "</td>";
+                                        echo "<td>" . $row['p_type'] . "</td>";
+                                        echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
+                                        echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
+                                }
+
+                                $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+                                ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
-            <div class="col-6">
-                <div class="card" style="width: 18rem;">
-                    <img src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain" alt="">
-                    <div class="card-body">
-                        <h3 class="card-title">กระดาษ</h3>
-                        <p class="class-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam, eum?</p>
-                        <div class="row">
-                            <div class="col-6"><button class="btn btn-sm btn-warning cart"><i class="bi bi-cart"></i></button></div>
-                            <div class="col-6"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    ดูรายละเอียด
-                                </button></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-
-        </div>
-    </div>
-       
-
-
-
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">กระดาษ</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="d-flex justify-content-center">
-                            <img
-                                class="w-50"
-                                src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain"
-                                alt="">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">จำนวน</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                        <button type="button" class="btn btn-success">บันทึก</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            $(document).ready(function() {
-                $(".cart").click(function() {
-                    Swal.fire({
-                        title: "สำเร็จ",
-                        text: "You clicked the button!",
-                        icon: "success"
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    $(document).ready(function() {
+                        $(".cart").click(function() {
+                            Swal.fire({
+                                title: "สำเร็จ",
+                                text: "You clicked the button!",
+                                icon: "success"
+                            });
+                        });
                     });
-                });
-            });
-        </script>
+                </script>
 </body>
 
 </html>
