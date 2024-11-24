@@ -18,6 +18,7 @@
             <div class="col-2">
                 <?php include './menu.php'; ?>
             </div>
+            <div class="card mt-3 pb-5 px-2 col-10">
             <div class="col-10">
                 <h1>รับซื้อของเก่า</h1>
                 <div class="row mt-5">
