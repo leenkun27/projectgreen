@@ -1,3 +1,4 @@
+<?php include '../condb.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,89 +27,45 @@
                             <thead>
                                 <tr>
                                     <th scope="col">ลำดับ</th>
-                                    <th scope="col">รหัสสินค้า</th>
                                     <th scope="col">ชื่อสินค้า</th>
                                     <th scope="col">ภาพ</th>
                                     <th scope="col">จำนวนคงเหลือ</th>
                                     <th scope="col">หมายเหตุ</th>
                                     <th scope="col">ลบ</th>
                                     <th scope="col">แก้ไข</th>
-                                    
+
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                    <td>@mdo</td>
-                                    <td>@mdo</td>
-                                    <td><button type="button" class="ms-2 btn btn-danger">ลบ</td>
-                                    <td><button type="button" class="ms-2 btn btn-warning">แก้ไข</td>
-                                   
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                    <td>@mdo</td>
-                                    <td>@mdo</td>
-                                    <td><button type="button" class="ms-2 btn btn-danger">ลบ</td>
-                                    <td><button type="button" class="ms-2 btn btn-warning">แก้ไข</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td colspan="2">Larry the Bird</td>
-                                    <td>@twitter</td>
-                                    <td>@mdo</td>
-                                    <td>@mdo</td>
-                                    <td><button type="button" class="ms-2 btn btn-danger">ลบ</td>
-                                    <td><button type="button" class="ms-2 btn btn-warning">แก้ไข</td>
-                                </tr>
+                                <?php
+                                // ดึงข้อมูลจากฐานข้อมูล
+                                $sql = "SELECT * FROM tbl_product"; // ระบุชื่อตาราง
+                                $result = $conn->query($sql);
+
+                                if ($result->num_rows > 0) {
+                                    $index = 1; // ตัวนับลำดับ
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        echo "<th scope='row'>" . $index++ . "</th>";
+                                        echo "<td>" . $row['p_name'] . "</td>";
+                                        echo "<td><img src='" . $row['p_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                        echo "<td>" . $row['p_qty'] . "</td>";
+                                        echo "<td>" . $row['p_type'] . "</td>";
+                                        echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
+                                        echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
+                                }
+
+                                $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+                                ?>
                             </tbody>
                         </table>
-
-
                     </div>
                 </div>
 
-
-
-
-
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">กระดาษ</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="d-flex justify-content-center">
-                                    <img
-                                        class="w-50"
-                                        src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain"
-                                        alt="">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">จำนวน</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                                <button type="button" class="btn btn-success">บันทึก</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
