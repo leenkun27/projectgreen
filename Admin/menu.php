@@ -6,7 +6,6 @@
     <div> <a href="./stock_admin.php">สต๊อก</a></div>
     <div> <a href="./report_admin.php">รายงาน</a></div>
     <div> <a href="./staff_admin.php">ข้อมูลพนักงาน</a></div>
-    <div> <a href="./expense_staff.php">ค่าแรงพนักงาน</a></div>
     <div> <a href="./checktimes_staff.php">เช็คการเข้า-ออกของพนักงาน</a></div>
     <div> <a href="">logout</a></div>
 </div>
