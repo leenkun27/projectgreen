@@ -1,3 +1,4 @@
+<?php include '../condb.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,49 +20,68 @@
                 <?php include './menu.php'; ?>
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
-            <div class="col-10">
-                <h1>รับซื้อของเก่า</h1>
-                <div class="row mt-5">
-                    <div class="col-lg-6 col-md-4 col-sm-6">
-                        ชื่อของเก่า
-                        <div class="input-group">
-                            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                <div class="col-10">
+                    <h1>รับซื้อของเก่า</h1>
+                    <div class="row mt-5">
+                        <div class="col-lg-6 col-md-4 col-sm-6">
+                            ชื่อของเก่า
+                            <div class="input-group">
+                                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div>ประเภทของเก่า</div>
-                        <div class="input-group">
-                            <select class="form-control" id="" placeholder="">
-                                <option>เศษเหล็ก</option>
-                                <option>กระดาษ</option>
-                                <option>ขวดแก้ว</option>
-                                <option>พลาสติก</option>
-                                <option>โลหะที่มีค่าสูง</option>
-                                <option>เครี่องใช้ไฟฟ้า</option>
-                                <option>อื่นๆ</option>
-                            </select>
+                        <div class="col-6">
+                            <div>ประเภทของเก่า</div>
+                            <div class="input-group">
+                                <select class="form-control" id="" placeholder="">
+                                    <option>เศษเหล็ก</option>
+                                    <option>กระดาษ</option>
+                                    <option>ขวดแก้ว</option>
+                                    <option>พลาสติก</option>
+                                    <option>โลหะที่มีค่าสูง</option>
+                                    <option>เครี่องใช้ไฟฟ้า</option>
+                                    <option>อื่นๆ</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-6 mt-2">
-                        <div>ปริมาณการรับซื้อ</div>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
+                        <div class="col-6 mt-2">
+                            <div>ปริมาณการรับซื้อ</div>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
+                            </div>
                         </div>
-                    </div>
-               
 
-                <div class="col-6 mt-2">
-                    <div>ชื่อของเก่า</div>
-                    <div class="input-group">
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+
+                        <div class="col-6 mt-2">
+                            <div>ราคารับซื้อ</div>
+                            <div class="input-group">
+                                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <div>ชื่อของเก่า</div>
+                            <div class="input-group">
+                                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="table-responsive mt-3">
+                            <table id="productTable" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">วันที่</th>
+                                        <th scope="col">ชื่อสินค้า</th>
+                                        <th scope="col">จำนวน</th>
+                                        <th scope="col">ราคาต่อหน่วย</th>
+                                        <th scope="col">จำนวนเงิน</th>
+                                        <th scope="col">ยอดรวม</th>
+
+
+                                    </tr>
+                                </thead>
+
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="col-6 mt-2">
-                    <div>ชื่อของเก่า</div>
-                    <div class="input-group">
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
-                    </div>
-                </div>
 
                 </div>
             </div>
