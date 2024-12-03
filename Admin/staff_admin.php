@@ -19,68 +19,79 @@
             <div class="col-2">
                 <?php include './menu.php'; ?>
             </div>
-            <div class="col-10">
-                <h1>ข้อมูลสมาชิก</h1>
-                <div class="row">
-                    <div class="col-12">
-                        <table class="table">
-                            <thead>
-                                <tr class="table-info">
-                                    <th scope="col">ลำดับ</th>
-                                    <th scope="col">รหัสสมาชิก</th>
-                                    <th scope="col">ตำแหน่ง</th>
-                                    <th scope="col">ชื่อ</th>
-                                    <th scope="col">ชื่อผู้ใช้งาน</th>
-                                    <th scope="col">รูปภาพ</th>
-                                    <th scope="col">ลบ</th>
-                                    <th scope="col">แก้ไข</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                // ดึงข้อมูลจากฐานข้อมูล
-                                $sql = "SELECT * FROM tbl_member"; // ระบุชื่อตาราง
-                                $result = $conn->query($sql);
-
-                                if ($result->num_rows > 0) {
-                                    $index = 1; // ตัวนับลำดับ
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo "<tr>";
-                                        echo "<th scope='row'>" . $index++ . "</th>";
-                                        echo "<td>" . $row['mem_id'] . "</td>";
-                                        echo "<td>" . $row['role'] . "</td>";
-                                        echo "<td>" . $row['mem_name'] . "</td>";
-                                        echo "<td>" . $row['mem_username'] . "</td>";
-                                        echo "<td><img src='" . $row['mem_img'] . "' alt='product' class='img-fluid' width='50'></td>";
-                                        echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
-                                        echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
-                                        echo "</tr>";
-                                    }
-                                } else {
-                                    echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
-                                }
-
-                                $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
-                                ?>
-                            </tbody>
-                        </table>
+            <div class="card mt-3 pb-5 px-2 col-10">
+                <div class="col-10">
+                    <h1>ข้อมูลสมาชิก</h1>
+                    <!-- Search and Table Section -->
+                    <div class="mt-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <input type="text" class="form-control w-50" placeholder="ค้นหาชื่อ | เบอร์โทร | ชื่อพนักงาน">
+                            <div>
+                                <button class="btn btn-success"><i class="bi bi-plus"></i></button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive mt-3">
+                                <table id="productTable" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ลำดับ</th>
+                                            <th scope="col">รหัสสมาชิก</th>
+                                            <th scope="col">ตำแหน่ง</th>
+                                            <th scope="col">ชื่อ</th>
+                                            <th scope="col">ชื่อผู้ใช้งาน</th>
+                                            <th scope="col">รูปภาพ</th>
+                                            <th scope="col">ลบ</th>
+                                            <th scope="col">แก้ไข</th>
 
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>
-                    $(document).ready(function() {
-                        $(".cart").click(function() {
-                            Swal.fire({
-                                title: "สำเร็จ",
-                                text: "You clicked the button!",
-                                icon: "success"
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        // ดึงข้อมูลจากฐานข้อมูล
+                                        $sql = "SELECT * FROM tbl_member"; // ระบุชื่อตาราง
+                                        $result = $conn->query($sql);
+
+                                        if ($result->num_rows > 0) {
+                                            $index = 1; // ตัวนับลำดับ
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<th scope='row'>" . $index++ . "</th>";
+                                                echo "<td>" . $row['mem_id'] . "</td>";
+                                                echo "<td>" . $row['role'] . "</td>";
+                                                echo "<td>" . $row['mem_name'] . "</td>";
+                                                echo "<td>" . $row['mem_username'] . "</td>";
+                                                echo "<td><img src='" . $row['mem_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                                echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
+                                                echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
+                                                echo "</tr>";
+                                            }
+                                        } else {
+                                            echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
+                                        }
+
+                                        $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                        <script>
+                            $(document).ready(function() {
+                                $(".cart").click(function() {
+                                    Swal.fire({
+                                        title: "สำเร็จ",
+                                        text: "You clicked the button!",
+                                        icon: "success"
+                                    });
+                                });
                             });
-                        });
-                    });
-                </script>
+                        </script>
 </body>
 
 </html>
