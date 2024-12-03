@@ -6,7 +6,7 @@
     </li>
     <li class="nav-item mb-2">
         <a href="./sale_admin.php" class="nav-link text-white d-flex align-items-center">
-            <i class="bi-cart fs-5 me-2"></i> <span>หน้าขาย</span>
+            <i class="bi bi-shop fs-5 me-2"></i> <span>หน้าขาย</span>
         </a>
     </li>
     <li class="nav-item mb-2">
@@ -21,7 +21,7 @@
     </li>
     <li class="nav-item mb-2">
         <a href="./stock_admin.php" class="nav-link text-white d-flex align-items-center">
-            <i class="bi-cart fs-5 me-2"></i> <span>สต๊อก</span>
+            <i class="bi bi-box-seam fs-5 me-2"></i> <span>สต๊อก</span>
         </a>
     </li>
     <li class="nav-item mb-2">
@@ -47,6 +47,5 @@
 </ul>
 
 <div class="content ms-5" style="margin-left: 200px; padding: 20px;">
-    <h1>เนื้อหาหลัก</h1>
-    <p>นี่คือพื้นที่สำหรับเนื้อหาของคุณ</p>
+    
 </div>
