@@ -12,6 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <style>
         .status-icon {
             font-size: 1.2em;
@@ -83,121 +84,137 @@
                             </div>
                         </div>
                     </div>
-                    
-                        <div class="col-10">
-                            <h1>ข้อมูลของเก่า</h1>
-                            <div class="row">
-                                <!-- Filter Section -->
-                                <di class="mt-3">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <select class="form-select">
-                                                <option>สถานะ</option>
-                                                <option>พร้อมขาย</option>
-                                                <option>หมดแล้ว</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select">
-                                                <option>หมวดหมู่</option>
-                                                <option>เครื่องใช้ไฟฟ้า</option>
-                                                <option>เฟอร์นิเจอร์</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select">
-                                                <option>ที่อยู่สินค้า</option>
-                                                <option>คลัง 1</option>
-                                                <option>คลัง 2</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <select class="form-select">
-                                                <option>หน่วย</option>
-                                                <option>ชิ้น</option>
-                                                <option>แพ็ค</option>
-                                            </select>
-                                        </div>
+
+                    <div class="col-10">
+                        <h1>ข้อมูลของเก่า</h1>
+                        <div class="row">
+                            <!-- Filter Section -->
+                            <div class="mt-3">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <select id="statusSelect" class="form-select">
+                                            <option value="">สถานะ</option>
+                                            <option value="พร้อมขาย">พร้อมขาย</option>
+                                            <option value="หมดแล้ว">หมดแล้ว</option>
+                                        </select>
                                     </div>
-                                </di
-                                    <!-- Search and Table Section -->
-                                <div class="mt-4">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <input type="text" class="form-control w-50" placeholder="ชื่อ, รหัสสินค้า และบาร์โค้ด">
-                                        <div>
-                                            <button class="btn btn-success"><i class="bi bi-plus"></i></button>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <select id="categorySelect" class="form-select">
+                                            <option value="">ประเภทสินค้า</option>
+                                            <option value="เศษเหล็ก">เศษเหล็ก</option>
+                                            <option value="กระดาษ">กระดาษ</option>
+                                            <option value="พลาสติก">พลาสติก</option>
+                                            <option value="โลหะที่มีค่าสูง">โลหะที่มีค่าสูง</option>
+                                            <option value="เครื่องใช้ไฟฟ้า">เครื่องใช้ไฟฟ้า</option>
+                                            <option value="อื่นๆ">อื่นๆ</option>
+                                        </select>
                                     </div>
-                                </div>
-
-                                <div class="table-responsive mt-3">
-                                    <table id="productTable" class="table table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">ลำดับ</th>
-                                                <th scope="col">ชื่อสินค้า</th>
-                                                <th scope="col">ภาพ</th>
-                                                <th scope="col">จำนวนคงเหลือ</th>
-                                                <th scope="col">หมายเหตุ</th>
-                                                <th scope="col">ลบ</th>
-                                                <th scope="col">แก้ไข</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            // ดึงข้อมูลจากฐานข้อมูล
-                                            $sql = "SELECT * FROM tbl_product"; // ระบุชื่อตาราง
-                                            $result = $conn->query($sql);
-
-                                            if ($result->num_rows > 0) {
-                                                $index = 1; // ตัวนับลำดับ
-                                                while ($row = $result->fetch_assoc()) {
-                                                    echo "<tr>";
-                                                    echo "<th scope='row'>" . $index++ . "</th>";
-                                                    echo "<td>" . $row['p_name'] . "</td>";
-                                                    echo "<td><img src='" . $row['p_img'] . "' alt='product' class='img-fluid' width='50'></td>";
-                                                    echo "<td>" . $row['p_qty'] . "</td>";
-                                                    echo "<td>" . $row['p_type'] . "</td>";
-                                                    echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
-                                                    echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
-                                                    echo "</tr>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
-                                            }
-
-                                            $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
-                                            ?>
-                                        </tbody>
-                                    </table>
+                                    <div class="col-md-3">
+                                        <select id="locationSelect" class="form-select">
+                                            <option value="">หน่วย</option>
+                                            <option value="กิโลกรัม">กิโลกรัม</option>
+                                            <option value="ชิ้น">ชิ้น</option>
+                                            <option value="ลัง">ลัง</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button id="searchButton" class="btn btn-primary">ค้นหา</button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Import Bootstrap JS -->
-                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-                            <!-- DataTables JS -->
-                            <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-                            <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#productTable').DataTable();
-                                });
-                            </script>
+                            <!-- DataTable Section -->
+                            <div class="table-responsive mt-3">
+                                <table id="productTable" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ลำดับ</th>
+                                            <th scope="col">ชื่อสินค้า</th>
+                                            <th scope="col">ภาพ</th>
+                                            <th scope="col">จำนวนคงเหลือ</th>
+                                            <th scope="col">หมายเหตุ</th>
+                                            <th scope="col">สถานะ</th>
+                                            <th scope="col">ลบ</th>
+                                            <th scope="col">แก้ไข</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        // ดึงข้อมูลจากฐานข้อมูล
+                                        $sql = "SELECT * FROM tbl_product"; // ระบุชื่อตาราง
+                                        $result = $conn->query($sql);
 
-                            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                            <script>
-                                $(document).ready(function() {
-                                    $(".cart").click(function() {
-                                        Swal.fire({
-                                            title: "สำเร็จ",
-                                            text: "You clicked the button!",
-                                            icon: "success"
-                                        });
-                                    });
+                                        if ($result->num_rows > 0) {
+                                            $index = 1; // ตัวนับลำดับ
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<th scope='row'>" . $index++ . "</th>";
+                                                echo "<td>" . $row['p_name'] . "</td>";
+                                                echo "<td><img src='" . $row['p_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                                echo "<td>" . $row['p_qty'] . "</td>";
+                                                echo "<td>" . $row['p_type'] . "</td>";
+                                                echo "<td>" . $row['p_type'] . "</td>";
+                                                echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
+                                                echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
+                                                echo "</tr>";
+                                            }
+                                        } else {
+                                            echo "<tr><td colspan='7'>ไม่มีข้อมูล</td></tr>";
+                                        }
+
+                                        $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+                                        ?>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- DataTable JS -->
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+                    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+                    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+                    <script>
+                        $(document).ready(function() {
+                            var table = $('#productTable').DataTable({
+                                language: {
+                                    search: "ค้นหา:",
+                                    searchPlaceholder: "ชื่อ, รหัสสินค้า และบาร์โค้ด"
+                                }
+                            });
+
+                            // ค้นหาตามฟิลด์ที่เลือก
+                            $('#searchButton').click(function() {
+                                var status = $('#statusSelect').val();
+                                var category = $('#categorySelect').val();
+                                var location = $('#locationSelect').val();
+                                var unit = $('#unitSelect').val();
+
+                                table
+                                    .column(5).search(status) // ค้นหาตามสถานะ
+                                    .column(1).search(category) // ค้นหาตามประเภทสินค้า
+                                    .column(2).search(unit) // ค้นหาตามหน่วย
+                                    .draw();
+                            });
+                        });
+                    </script>
+
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script>
+                        $(document).ready(function() {
+                            $(".cart").click(function() {
+                                Swal.fire({
+                                    title: "สำเร็จ",
+                                    text: "You clicked the button!",
+                                    icon: "success"
                                 });
-                            </script>
+                            });
+                        });
+                    </script>
 </body>
 
 </html>
