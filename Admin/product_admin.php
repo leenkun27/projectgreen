@@ -35,10 +35,10 @@
 
 <body>
     <div class="container">
-        <?php include './header.php'; ?>
+        <?php include '../header_admin.php'; ?>
         <div class="row">
             <div class="col-2">
-                <?php include './menu.php'; ?>
+                <?php include '../menu_admin.php'; ?>
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <h1>ข้อมูลของเก่า</h1>

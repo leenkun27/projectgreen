@@ -13,10 +13,10 @@
 <body>
 
     <div class="container">
-    <?php include './header.php';?>
+    <?php include '../header_admin.php';?>
     <div class="row">
         <div class="col-2">
-        <?php include './menu.php';?>
+        <?php include '../menu_admin.php';?>
         </div>
         <div class="col-10">
         <h1>Relic</h1>

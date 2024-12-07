@@ -14,11 +14,12 @@
 <body>
 
     <div class="container">
-        <?php include './header.php'; ?>
+        <?php include '../header_admin.php'; ?>
         <div class="row">
             <div class="col-2">
-                <?php include './menu.php'; ?>
+                <?php include '../menu_admin.php'; ?>
             </div>
+
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-10">
                     <h1>รับซื้อของเก่า</h1>
@@ -26,13 +27,13 @@
                         <div class="col-lg-6 col-md-4 col-sm-6">
                             ชื่อของเก่า
                             <div class="input-group">
-                                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                                <input type="text" class="form-control" id="p_name" placeholder="กรอกชื่อของเก่า" placeholder="กรอกชื่อของเก่า" onkeydown="checkEnter(event)">
                             </div>
                         </div>
                         <div class="col-6">
                             <div>ประเภทของเก่า</div>
                             <div class="input-group">
-                                <select class="form-control" id="" placeholder="">
+                                <select class="form-control" id="p_type" placeholder="">
                                     <option>เศษเหล็ก</option>
                                     <option>กระดาษ</option>
                                     <option>ขวดแก้ว</option>
@@ -46,7 +47,7 @@
                         <div class="col-6 mt-2">
                             <div>ปริมาณการรับซื้อ</div>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
+                                <input type="number" class="form-control" id="p_qty" placeholder="">
                             </div>
                         </div>
 
@@ -54,15 +55,10 @@
                         <div class="col-6 mt-2">
                             <div>ราคารับซื้อ</div>
                             <div class="input-group">
-                                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                                <input type="email" class="form-control" id="p_price" placeholder="">
                             </div>
                         </div>
-                        <div class="col-6 mt-2">
-                            <div>ชื่อของเก่า</div>
-                            <div class="input-group">
-                                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
-                            </div>
-                        </div>
+
 
                         <div class="table-responsive mt-3">
                             <table id="productTable" class="table table-striped table-bordered">
@@ -127,6 +123,44 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function checkEnter(event) {
+            if (event.key === "Enter") { // ถ้ากด Enter
+                fetchItemData(); // เรียกฟังก์ชัน fetchItemData
+            }
+        }
+        // เมื่อกด Enter ในช่องกรอกชื่อของเก่า
+        function fetchItemData() {
+            var p_name = $('#p_name').val(); // ใช้ #p_name เพื่อดึงค่า
+
+            // ถ้าชื่อของเก่าไม่ว่าง
+            if (p_name.trim() !== "") {
+                $.ajax({
+                    url: 'fetch_item_data.php', // ไฟล์ PHP ที่จะดึงข้อมูล
+                    type: 'POST',
+                    data: {
+                        p_name: p_name
+                    },
+                    success: function(response) {
+                        // แปลงข้อมูลที่ได้รับจาก PHP เป็น JSON
+                        var data = JSON.parse(response);
+
+                        // ตรวจสอบว่าได้รับข้อมูล
+                        if (data.success) {
+                            // แสดงข้อมูลที่ได้รับในฟอร์ม
+                            $('#p_type').val(data.type); // แสดงประเภทของเก่า
+                            $('#p_qty').val(data.quantity); // แสดงปริมาณการรับซื้อ
+                            $('#p_price').val(data.price); // แสดงราคารับซื้อ
+                        } else {
+                            alert('ไม่พบข้อมูลของเก่า');
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+
     <script>
         $(document).ready(function() {
             $(".cart").click(function() {
