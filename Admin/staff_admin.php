@@ -27,10 +27,37 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <input type="text" class="form-control w-50" placeholder="ค้นหาชื่อ | เบอร์โทร | ชื่อพนักงาน">
                             <div>
-                                <button class="btn btn-success"><i class="bi bi-plus"></i></button>
+                                <button class="btn btn-success"><i class="bi bi-plus" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></button>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">ข้อมูลส่วนตัว</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">ชื่อ</label>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">นามสกุล</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                    <button type="button" class="btn btn-success">บันทึก</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive mt-3">
@@ -39,10 +66,9 @@
                                         <tr>
                                             <th scope="col">ลำดับ</th>
                                             <th scope="col">รหัสสมาชิก</th>
-                                            <th scope="col">ตำแหน่ง</th>
-                                            <th scope="col">ชื่อ</th>
-                                            <th scope="col">ชื่อผู้ใช้งาน</th>
                                             <th scope="col">รูปภาพ</th>
+                                            <th scope="col">ชื่อ</th>
+                                            <th scope="col">ตำแหน่ง</th>
                                             <th scope="col">ลบ</th>
                                             <th scope="col">แก้ไข</th>
 
@@ -60,10 +86,9 @@
                                                 echo "<tr>";
                                                 echo "<th scope='row'>" . $index++ . "</th>";
                                                 echo "<td>" . $row['mem_id'] . "</td>";
-                                                echo "<td>" . $row['role'] . "</td>";
-                                                echo "<td>" . $row['mem_name'] . "</td>";
-                                                echo "<td>" . $row['mem_username'] . "</td>";
                                                 echo "<td><img src='" . $row['mem_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                                echo "<td>" . $row['mem_name'] . "</td>";
+                                                echo "<td>" . $row['role'] . "</td>";
                                                 echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
                                                 echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
                                                 echo "</tr>";
@@ -81,6 +106,7 @@
 
                         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
                         <script>
                             $(document).ready(function() {
                                 $(".cart").click(function() {
