@@ -1,3 +1,15 @@
+<?php
+session_start();
+if (isset($_SESSION['role'])) {
+    // หากมีการล็อกอินแล้ว ให้เปลี่ยนเส้นทางไปยังหน้าที่เหมาะสม
+    if ($_SESSION['role'] == 'admin') {
+        header('Location: admin_dashboard.php');
+    } else {
+        header('Location: employee_dashboard.php');
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
