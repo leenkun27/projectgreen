@@ -1,9 +1,31 @@
 <style>
+    /* กำหนดให้ navbar อยู่เหนือสุด */
     .custom-navbar {
-        background-color: #0056b3; /* สี*/
+        background-color: #0056b3; /* สี navbar */
+        z-index: 1030; /* ให้ navbar อยู่บนสุด */
+    }
+
+    /* เพิ่ม margin-top ให้กับเนื้อหาหลัก เพื่อไม่ให้ถูก navbar บัง */
+    .content {
+        margin-top: 120px; /* ปรับให้พอดีกับความสูงของ navbar */
+        padding-left: 220px; /* ระยะห่างจาก Sidebar */
+        padding-top: 20px;
+    }
+
+    /* ปรับตำแหน่งของ sidebar */
+    .sidebar {
+        position: fixed;
+        top: 80px; /* ขยับ sidebar ลงมาจากด้านบน (navbar) */
+        left: 0;
+        width: 200px;
+        height: 100%;
+        background-color: #0056b3;
+        z-index: 1020; /* ให้ sidebar อยู่ล่างกว่า navbar */
+        padding-top: 20px; /* เพิ่มระยะห่างด้านบนของ sidebar */
     }
 </style>
 
+<!-- Navbar -->
 <div class="row mx-5 mb-5">
     <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
         <div class="container">

@@ -1,4 +1,5 @@
-<ul class="nav flex-column bg-primary p-3 vh-100 position-fixed" style="width: 200px;">
+<!-- Sidebar -->
+<ul class="nav flex-column sidebar p-3 vh-100 position-fixed">
     <li class="nav-item mb-2">
         <a href="../Admin/admin_dashboard.php" class="nav-link text-white d-flex align-items-center">
             <i class="bi-house fs-5 me-2"></i> <span>หน้าหลัก</span>
@@ -30,7 +31,7 @@
         </a>
     </li>
     <li class="nav-item mb-2">
-        <a href="./staff_admin.php"" class="nav-link text-white d-flex align-items-center">
+        <a href="./staff_admin.php" class="nav-link text-white d-flex align-items-center">
             <i class="bi bi-person fs-5 me-2"></i> <span>ข้อมูลพนักงาน</span>
         </a>
     </li>
@@ -46,6 +47,7 @@
     </li>
 </ul>
 
-<div class="content ms-5" style="margin-left: 200px; padding: 20px;">
-    
+<!-- เนื้อหาหลัก -->
+<div class="content">
+    <!-- Content Here -->
 </div>

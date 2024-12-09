@@ -25,12 +25,20 @@
                     <h1>รับซื้อของเก่า</h1>
                     <div class="row mt-5">
                         <div class="col-lg-6 col-md-4 col-sm-6">
+                            <label for="p_date">วันที่รับซื้อ</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" id="p_date">
+                            </div>
+                        </div>
+
+                        <div class="col-6 ">
                             ชื่อของเก่า
                             <div class="input-group">
                                 <input type="text" class="form-control" id="p_name" placeholder="กรอกชื่อของเก่า" placeholder="กรอกชื่อของเก่า" onkeydown="checkEnter(event)">
                             </div>
                         </div>
-                        <div class="col-6">
+
+                        <div class="col-6 mt-2">
                             <div>ประเภทของเก่า</div>
                             <div class="input-group">
                                 <select class="form-control" id="p_type" placeholder="">
@@ -53,10 +61,14 @@
 
 
                         <div class="col-6 mt-2">
-                            <div>ราคารับซื้อ</div>
+                            <div>ราคารับซื้อวันนี้</div>
                             <div class="input-group">
                                 <input type="email" class="form-control" id="p_price" placeholder="">
                             </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-3">
+                            <button type="button" class="ms-2 btn btn-success" id="addButton1">เพิ่ม</button>
                         </div>
 
 
@@ -70,11 +82,11 @@
                                         <th scope="col">ราคาต่อหน่วย</th>
                                         <th scope="col">จำนวนเงิน</th>
                                         <th scope="col">ยอดรวม</th>
-
-
                                     </tr>
                                 </thead>
-
+                                <tbody id="productTableBody">
+                                    <!-- ข้อมูลจะถูกเพิ่มที่นี่ -->
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -85,80 +97,65 @@
 
         </div>
     </div>
-
-
-
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">กระดาษ</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex justify-content-center">
-                        <img
-                            class="w-50"
-                            src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain"
-                            alt="">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">จำนวน</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                    <button type="button" class="btn btn-success">บันทึก</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        function checkEnter(event) {
-            if (event.key === "Enter") { // ถ้ากด Enter
-                fetchItemData(); // เรียกฟังก์ชัน fetchItemData
-            }
-        }
-        // เมื่อกด Enter ในช่องกรอกชื่อของเก่า
-        function fetchItemData() {
-            var p_name = $('#p_name').val(); // ใช้ #p_name เพื่อดึงค่า
+        $(document).ready(function() {
+            // เมื่อคลิกปุ่ม "เพิ่ม"
+            $('#addButton1').click(function() {
+                var p_name = $('#p_name').val();
+                var p_type = $('#p_type').val();
+                var p_qty = $('#p_qty').val();
+                var p_price = $('#p_price').val();
 
-            // ถ้าชื่อของเก่าไม่ว่าง
-            if (p_name.trim() !== "") {
+                // ตรวจสอบว่าข้อมูลครบหรือไม่
+                if (p_name.trim() === "" || p_qty.trim() === "" || p_price.trim() === "") {
+                    alert("กรุณากรอกข้อมูลให้ครบ");
+                    return;
+                }
+
+                // ส่งข้อมูลไปยัง PHP ด้วย AJAX
                 $.ajax({
-                    url: 'fetch_item_data.php', // ไฟล์ PHP ที่จะดึงข้อมูล
+                    url: 'add_product.php', // ไฟล์ PHP ที่จะบันทึกข้อมูล
                     type: 'POST',
                     data: {
-                        p_name: p_name
+                        p_name: p_name,
+                        p_type: p_type,
+                        p_qty: p_qty,
+                        p_price: p_price
                     },
                     success: function(response) {
-                        // แปลงข้อมูลที่ได้รับจาก PHP เป็น JSON
-                        var data = JSON.parse(response);
-
-                        // ตรวจสอบว่าได้รับข้อมูล
+                        // เมื่อข้อมูลถูกบันทึกสำเร็จ
+                        var data = JSON.parse(response); // สมมติว่า PHP ส่งข้อมูลกลับในรูปแบบ JSON
                         if (data.success) {
-                            // แสดงข้อมูลที่ได้รับในฟอร์ม
-                            $('#p_type').val(data.type); // แสดงประเภทของเก่า
-                            $('#p_qty').val(data.quantity); // แสดงปริมาณการรับซื้อ
-                            $('#p_price').val(data.price); // แสดงราคารับซื้อ
+                            // คำนวณจำนวนเงิน
+                            var total_price = data.qty * data.price;
+
+                            // เพิ่มแถวใหม่ในตาราง
+                            var newRow = `
+                        <tr>
+                            <td>${data.date}</td>
+                            <td>${data.name}</td>
+                            <td>${data.type}</td>
+                            <td>${data.qty}</td>
+                            <td>${data.price}</td>
+                            <td>${total_price}</td>
+                        </tr>
+                    `;
+                            $('#productTableBody').append(newRow);
+
+                            // ล้างข้อมูลในฟอร์ม
+                            $('#p_name').val('');
+                            $('#p_qty').val('');
+                            $('#p_price').val('');
                         } else {
-                            alert('ไม่พบข้อมูลของเก่า');
+                            alert('บันทึกข้อมูลไม่สำเร็จ');
                         }
                     }
                 });
-            }
-        }
+            });
+        });
     </script>
 
     <script>
