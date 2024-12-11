@@ -1,3 +1,12 @@
+<style>
+    /* เพิ่มสีพื้นหลังและการเปลี่ยนแปลงสีของตัวอักษรเมื่อ hover */
+.sidebar .nav-link:hover {
+    background-color: #007bff; /* เปลี่ยนสีพื้นหลังเมื่อ hover */
+    color: white; /* เปลี่ยนสีตัวอักษรเมื่อ hover */
+    transition: background-color 0.3s ease, color 0.3s ease; /* ทำให้การเปลี่ยนแปลงมีความนุ่มนวล */
+}
+</style>
+
 <!-- Sidebar -->
 <ul class="nav flex-column sidebar p-3 vh-100 position-fixed">
     <li class="nav-item mb-2">
