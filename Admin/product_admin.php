@@ -20,14 +20,14 @@
                 <?php include '../menu_admin.php'; ?>
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
-                <div class="col-10">
-                    <h1>ข้อมูลสินค้า</h1>
+                <div class="col-12">
+                    <h2>ข้อมูลสินค้า</h2>
                     <!-- Search and Table Section -->
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
-                            <input type="text" class="form-control w-50" placeholder="ค้นหาชื่อ | เบอร์โทร | ชื่อสินค้า">
+                            <input type="text" class="form-control w-50" placeholder="ชื่อสินค้า">
                             <div>
-                                <button class="btn btn-success"><i class="bi bi-plus" data-bs-toggle="modal" data-bs-target="#exampleModal"></i></button>
+                                <button class="btn btn-success"><i class="bi bi-plus" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>เพิ่มข้อมูล</button>
                             </div>
                         </div>
                     </div>
@@ -57,9 +57,9 @@
                                         <label for="exampleInputEmail1" class="form-label">หมายเหตุ</label>
                                         <input type="text" class="form-control">
                                     </div>
-                                    <div class="mb-2">
-                                        <label for="formFileDisabled" class="form-label">เลือกไฟล์รูปภาพ</label>
-                                        <input class="form-control" type="file" id="formFileDisabled" disabled>
+                                    <div class="col-md mt-2" text-align="left">
+                                        <label for="">รูปภาพ</label>
+                                        <input type="file" name="h_image" id="" class="form-control mb-3" accept=".png,.jpg,.jpeg">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -70,11 +70,11 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row ">
                         <div class="col-12">
                             <div class="table-responsive mt-3">
-                                <table id="productTable" class="table table-striped table-bordered">
-                                    <thead>
+                                <table class="table table-bordered table-striped table-summary">
+                                    <thead class="table-light">
                                         <tr>
                                             <th scope="col">ลำดับ</th>
                                             <th scope="col">รูปภาพ</th>
