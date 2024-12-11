@@ -132,6 +132,7 @@
                                             <th scope="col">ชื่อสินค้า</th>
                                             <th scope="col">ภาพ</th>
                                             <th scope="col">จำนวนคงเหลือ</th>
+                                            <th scope="col">ราคา</th>
                                             <th scope="col">หมายเหตุ</th>
                                             <th scope="col">สถานะ</th>
                                             <th scope="col">ลบ</th>
@@ -152,6 +153,7 @@
                                                 echo "<td>" . $row['p_name'] . "</td>";
                                                 echo "<td><img src='" . $row['p_img'] . "' alt='product' class='img-fluid' width='50'></td>";
                                                 echo "<td>" . $row['p_qty'] . "</td>";
+                                                echo "<td>" . $row['p_price'] . "</td>";
                                                 echo "<td>" . $row['p_type'] . "</td>";
                                                 echo "<td>" . $row['p_type'] . "</td>";
                                                 echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
