@@ -22,7 +22,9 @@
 
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-10">
-                    <h1>รับซื้อของเก่า</h1>
+                    <div>
+                        <h2><i class="bi-basket fs-5 me-2"></i> รับซื้อสินค้า</h2>
+                    </div>
                     <div class="row mt-5">
                         <div class="col-lg-6 col-md-4 col-sm-6">
                             <label for="p_date">วันที่รับซื้อ</label>

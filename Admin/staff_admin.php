@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <style>
-.card {
+    .card {
         max-height: 85vh;
         /* กำหนดความสูงสูงสุด */
         overflow-y: auto;
@@ -55,14 +55,13 @@
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-12">
-                    <h1 class="mb-3">ข้อมูลสมาชิก</h1>
+                    <h2 class="mb-3">ข้อมูลสมาชิก</h2>
                     <!-- Search Section -->
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
-                            <input type="text" class="form-control w-50" placeholder="ค้นหาชื่อ | เบอร์โทร | ชื่อพนักงาน">
+                            <input type="text" class="form-control w-50" placeholder="ค้นหาชื่อพนักงาน">
                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="bi bi-plus"></i> เพิ่ม
-                            </button>
+                                <i class="bi bi-plus"></i> เพิ่มข้อมูล </button>
                         </div>
                     </div>
 
@@ -125,6 +124,10 @@
                                         <label for="exampleInputEmail1" class="form-label">เบอร์โทรศัพท์</label>
                                         <input type="text" class="form-control">
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="">เพิ่มรูปภาพ</label>
+                                        <input type="file" name="h_image" id="" class="form-control mb-3" accept=".png,.jpg,.jpeg">
+                                    </div>
 
                                 </div>
                             </div>
@@ -134,8 +137,8 @@
                     <div class="row ">
                         <div class="col-12">
                             <div class="table-responsive mt-3">
-                                <table id="productTable" class="table table-striped table-bordered">
-                                    <thead>
+                                <table class="table table-bordered table-striped table-summary">
+                                    <thead class="table-light">
                                         <tr>
                                             <th scope="col">ลำดับ</th>
                                             <th scope="col">รหัสสมาชิก</th>

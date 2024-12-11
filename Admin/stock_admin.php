@@ -65,19 +65,19 @@
                 <div class="container my-4">
                     <!-- Statistics Section -->
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="card-stat green">
                                 <div>พร้อมขาย</div>
-                                <div>41</div>
+                                <div>0</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="card-stat orange">
                                 <div>ใกล้หมด</div>
                                 <div>0</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="card-stat red">
                                 <div>หมดแล้ว</div>
                                 <div>0</div>
@@ -85,20 +85,20 @@
                         </div>
                     </div>
 
-                    <div class="col-10">
-                        <h1>ข้อมูลของเก่า</h1>
+                    <div class="col-12">
+                        <h2>ข้อมูลของเก่า</h2>
                         <div class="row">
                             <!-- Filter Section -->
-                            <div class="mt-3">
+                            <div class="mt-4">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <select id="statusSelect" class="form-select">
                                             <option value="">สถานะ</option>
                                             <option value="พร้อมขาย">พร้อมขาย</option>
                                             <option value="หมดแล้ว">หมดแล้ว</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <select id="categorySelect" class="form-select">
                                             <option value="">ประเภทสินค้า</option>
                                             <option value="เศษเหล็ก">เศษเหล็ก</option>
@@ -109,7 +109,7 @@
                                             <option value="อื่นๆ">อื่นๆ</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <select id="locationSelect" class="form-select">
                                             <option value="">หน่วย</option>
                                             <option value="กิโลกรัม">กิโลกรัม</option>
@@ -117,16 +117,14 @@
                                             <option value="ลัง">ลัง</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <button id="searchButton" class="btn btn-primary">ค้นหา</button>
-                                    </div>
+
                                 </div>
                             </div>
 
                             <!-- DataTable Section -->
                             <div class="table-responsive mt-3">
-                                <table id="productTable" class="table table-striped table-bordered">
-                                    <thead>
+                                <table class="table table-bordered table-striped table-summary">
+                                    <thead class="table-light">
                                         <tr>
                                             <th scope="col">ลำดับ</th>
                                             <th scope="col">ชื่อสินค้า</th>
@@ -139,6 +137,7 @@
                                             <th scope="col">แก้ไข</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
                                         <?php
                                         // ดึงข้อมูลจากฐานข้อมูล

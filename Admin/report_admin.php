@@ -90,8 +90,10 @@
                 <?php include '../menu_admin.php'; ?>
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
-
-                <div class="container mt-5">
+                <div> 
+                <h2><i class="bi bi-graph-up-arrow"></i> รายงานยอดขาย</h2>
+                </div>
+                <div class="container mt-3">
                     <div class="row">
                         <!-- กำไรสุทธิ -->
                         <div class="col-md-3">
