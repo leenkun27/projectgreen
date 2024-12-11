@@ -57,7 +57,7 @@
                                         <label for="exampleInputEmail1" class="form-label">หมายเหตุ</label>
                                         <input type="text" class="form-control">
                                     </div>
-                      เ              <div class="mb-2">
+                                    <div class="mb-2">
                                         <label for="formFileDisabled" class="form-label">เลือกไฟล์รูปภาพ</label>
                                         <input class="form-control" type="file" id="formFileDisabled" disabled>
                                     </div>
