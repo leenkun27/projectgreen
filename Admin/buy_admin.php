@@ -11,6 +11,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+
+    select {
+        padding: 10px;
+        margin: 10px 0;
+        width: 200px;
+    }
+</style>
+
 <body>
 
     <div class="container">
@@ -41,19 +54,29 @@
                         </div>
 
                         <div class="col-6 mt-2">
-                            <div>ประเภทของเก่า</div>
-                            <div class="input-group">
-                                <select class="form-control" id="p_type" placeholder="">
-                                    <option>เศษเหล็ก</option>
-                                    <option>กระดาษ</option>
-                                    <option>ขวดแก้ว</option>
-                                    <option>พลาสติก</option>
-                                    <option>โลหะที่มีค่าสูง</option>
-                                    <option>เครี่องใช้ไฟฟ้า</option>
-                                    <option>อื่นๆ</option>
-                                </select>
+                            <!-- Dropdown ประเภทของเก่า -->
+                            <label for="province">เลือกประเภทของเก่า:</label>
+                            <select id="province">
+                                <option value="">-- เลือกประเภทของเก่า --</option>
+                                <option value="1">เศษเหล็ก</option>
+                                <option value="2">กระดาษ</option>
+                                <option value="3">ขวดแก้ว</option>
+                                <option value="4">พลาสติก</option>
+                                <option value="5">โลหะที่มีค่าสูง</option>
+                                <option value="6">เครี่องใช้ไฟฟ้า</option>
+                                <option value="7">อื่นๆ</option>
+                            </select>
                             </div>
+
+                        <div class="col-6 mt-2">
+                            <!-- Dropdown ของเก่า -->
+                            <label for="district">เลือกชื่อของเก่า:</label>
+                            <select id="district" disabled>
+                                <option value="">-- เลือกของเก่า --</option>
+                            </select>
                         </div>
+
+
                         <div class="col-6 mt-2">
                             <div>ปริมาณการรับซื้อ</div>
                             <div class="input-group">
@@ -73,7 +96,7 @@
                             <button type="button" class="ms-2 btn btn-success" id="addButton1">เพิ่ม</button>
                         </div>
 
-
+                        
                         <div class="table-responsive mt-3">
                             <table id="productTable" class="table table-striped table-bordered">
                                 <thead>
@@ -157,6 +180,44 @@
                     }
                 });
             });
+        });
+
+        const districtsByProvince = {
+            1: ["ลวดสลิงยุ่งๆ", "เหล็กหล่อชิ้นเล็ก", "เหล็กย่อยซอยสั้น", ""],
+            2: ["เมืองเชียงใหม่", "ดอยสะเก็ด", "แม่ริม", "สันกำแพง"],
+            3: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
+            4: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
+            5: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
+            6: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
+            7: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
+        };
+
+        // อ้างอิง Dropdown
+        const provinceSelect = document.getElementById("province");
+        const districtSelect = document.getElementById("district");
+
+        // เมื่อเลือกประเภท
+        provinceSelect.addEventListener("change", () => {
+            const selectedProvince = provinceSelect.value;
+
+            // ล้างรายการ
+            districtSelect.innerHTML = '<option value="">-- เลือกของเก่า --</option>';
+
+            if (selectedProvince) {
+                // เพิ่มรายการใหม่
+                districtsByProvince[selectedProvince].forEach(district => {
+                    const option = document.createElement("option");
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+
+                // เปิดใช้งาน Dropdown ของเก่า
+                districtSelect.disabled = false;
+            } else {
+                // ปิดใช้งาน Dropdown ของเก่า
+                districtSelect.disabled = true;
+            }
         });
     </script>
 
