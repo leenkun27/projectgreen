@@ -81,12 +81,13 @@
         </div>
         <ul>
             <li><a href="#" class="active"><i class="bi bi-house-door-fill"></i> หน้าหลัก</a></li>
-            <li><a href="../Employee/sale_admin.php"><i class="bi bi-basket-fill"></i> หน้าขาย</a></li>
-            <li><a href="../Employee/buy_admin.php"><i class="bi bi-bag-fill"></i> รับซื้อ</a></li>
-            <li><a href="../Employee/product_admin.php"><i class="bi bi-cart-fill"></i> ข้อมูลของเก่า</a></li>
-            <li><a href="../Employee/stock_admin.php"><i class="bi bi-box-fill"></i> สต๊อก</a></li>
-            <li><a href="../Employee/history_sale_admin.php"><i class="bi bi-file-text-fill"></i> ประวัติขาย</a></li>
-            <li><a href="../Employee/staff_admin.php"><i class="bi bi-person-circle"></i> ข้อมูลพนักงาน</a></li>
+            <li><a href="../Employee/sale_employee.php"><i class="bi bi-basket-fill"></i> หน้าขาย</a></li>
+            <li><a href="../Employee/buy_employee.php"><i class="bi bi-bag-fill"></i> รับซื้อ</a></li>
+             <li><a href="../Employee/price_today_employee.php"><i class="bi bi-bag-fill"></i> ราคาวันนี้</a></li>
+            <li><a href="../Employee/product_employee.php"><i class="bi bi-cart-fill"></i> ข้อมูลของเก่า</a></li>
+            <li><a href="../Employee/stock_employee.php"><i class="bi bi-box-fill"></i> สต๊อก</a></li>
+            <li><a href="../Employee/history_sale_employee.php"><i class="bi bi-file-text-fill"></i> ประวัติขาย</a></li>
+            <li><a href="../Employee/staff_employee.php"><i class="bi bi-person-circle"></i> ข้อมูลพนักงาน</a></li>
             <li><a href="#"><i class="bi bi-door-open-fill"></i> ออกจากระบบ</a></li>
         </ul>
     </div>

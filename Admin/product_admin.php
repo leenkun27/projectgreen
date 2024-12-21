@@ -98,8 +98,8 @@
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<th scope='row'>" . $index++ . "</th>";
-                                                echo "<td>" . $row['p_name'] . "</td>";
                                                 echo "<td><img src='" . $row['p_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                                echo "<td>" . $row['p_name'] . "</td>";
                                                 echo "<td>" . $row['p_qty'] . "</td>";
                                                 echo "<td>" . $row['p_type'] . "</td>";
                                                 echo "<td>" . $row['p_type'] . "</td>";
