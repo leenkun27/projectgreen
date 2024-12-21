@@ -1,58 +1,258 @@
+<?php include '../condb.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าหลัก</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <title>ร้านขายของเก่า</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://via.placeholder.com/1500x1000') no-repeat center center/cover;
+            color: #333;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav {
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            margin: 20px;
+            border-radius: 10px;
+        }
+
+        .hero h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+        }
+
+        .price-section {
+            padding: 30px;
+            background-color: #f9f9f9;
+        }
+
+        .price-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #004aad;
+        }
+
+        .price-section .time {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1em;
+            color: #666;
+        }
+
+        .price-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .price-table {
+            flex: 1 1 45%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            overflow: hidden;
+        }
+
+        .price-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .price-table th,
+        .price-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .price-table th {
+            background-color: #004aad;
+            color: white;
+        }
+
+        .price-table td {
+            background-color: #f9f9f9;
+        }
+
+        .price-table .down {
+            color: red;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #004aad;
+            color: white;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'
+            };
+            document.getElementById('current-time').textContent = now.toLocaleDateString('th-TH', options);
+        }
+        setInterval(updateTime, 1000);
+    </script>
 </head>
 
-<style>
-    .custom-bg,
-    .custom-bg1 {
-        background-color: #E0FFFF;
-        /* ใช้สีเดียวกัน */
-    }
+<body
+    onload="updateTime()">
+    <section class="">
+        <img src="index.png" class="img-fluid">
+    </section>
 
-    .text-white {
-        color: white;
-    }
-
-    .row.custom-bg {
-        height: auto;
-        /* ปรับให้ความสูงปรับตามเนื้อหาจริง */
-    }
-</style>
-
-
-<body>
-    <div class="container-fluid p-0">
-        <?php include './header_admin.php'; ?>
-        <!-- ส่วนเนื้อหา -->
-        <div class="row align-items-center custom-bg" style="min-height: 80vh;">
-            <!-- คอนเทนต์ทางซ้าย -->
-            <div class="col-md-6 text-center p-4">
-                <h4>ข้อมูลร้านรับซื้อของเก่า</h4>
-                <p>ร้านรับซื้อของเก่าที่เปิดให้บริการมาอย่างยาวนาน เรารับซื้อสินค้าหลากหลายประเภท เช่น เหล็ก, พลาสติก, กระดาษ และอื่นๆ</p>
-                <p>ที่อยู่: อำเภอแก่งกระจาน จังหวัดเพชรบุรี</p>
-                <p>ติดต่อ: 089-225-6557</p>
-                <p>เวลาทำการ: จันทร์-ศุกร์ เวลา 08:00-17:00,เสาร์ เวลา 08:00-17:00</p>
+    <div class="container">
+        <?php include '../header_admin.php'; ?>
+        <div class="row">
+            <div class="col-2">
+                <?php include '../menu_admin.php'; ?>
             </div>
 
-            <!-- รูปภาพทางขวา -->
-            <div class="col-md-6 text-center">
-                <img src="./img/wichain.jpg" alt="ร้านรับซื้อของเก่าวิเชียรรุ่งเรื่อง" class="img-fluid rounded" style="max-height: 400px; object-fit: contain;">
+            <div class="card mt-3 pb-5 px-2 col-10">
+                <h2>อัพเดทราคาประจำวัน</h2>
+                <p id="current-time" class="time"></p>
+                <div class="price-container">
+                    <div class="price-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ทองแดง</th>
+                                    <th>ราคา / PRICE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ทองแดงปอกสวย</td>
+                                    <td class="down">292</td>
+                                </tr>
+                                <tr>
+                                    <td>ทองแดงช็อตดำ</td>
+                                    <td class="down">281</td>
+                                </tr>
+                                <tr>
+                                    <td>ทองแดงใหญ่/ท่อเก่า</td>
+                                    <td class="down">270</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="price-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ทองเหลือง</th>
+                                    <th>ราคา / PRICE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ทองเหลืองหนา</td>
+                                    <td class="down">190</td>
+                                </tr>
+                                <tr>
+                                    <td>หม้อน้ำทองเหลือง</td>
+                                    <td class="down">173</td>
+                                </tr>
+                                <tr>
+                                    <td>ขี้กลึงทองเหลืองสะอาด</td>
+                                    <td class="down">140</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+
+
+
+
+
+            <footer>
+                <h3>ติดต่อเรา</h3>
+                <p>วิเชียรรุ่งเรือง</p>
+                <p>ที่อยู่ :</p>
+                <p>ต.แก่งกระจาน อ.แก่งกระจาน จ.เพชรบุรี 76170</p>
+                <p>📞 089 -2256557</p>
+                <p>LINE: <a href="https://line.me">@wichiann</a></p>
+                <p>Facebook: <a href="https://facebook.com">ร้านวิเชียรรุ่งเรืองร้านรับซื้อของเก่า</a></p>
         </div>
-    </div>
+        <div>
+            <h3>บริการของเรา</h3>
+            <ul>
+                <li>รับซื้อของเก่าทุกชนิด</li>
+                <li>เฟอร์นิเจอร์ เครื่องใช้ไฟฟ้า ตู้เย็น ทีวี แอร์</li>
+                <li>บริการรับซื้ออะลูมิเนียม</li>
+            </ul>
+        </div>
+        <div class="map">
+            <h3>แผนที่</h3>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.044073042384!2d100.61688231513888!3d13.845379190283422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e28333c3b8e1d5%3A0x5515b9a5a0f4e93b!2z4LiK4Li04LiZ4LiEIOC4muC4seC4h-C4qOC5jOC4peC4sSDguK3guKPguLDguKfguJnguLLguKPguYzguKHguJnguKrguLTguKPguLHguKLguKEg4LiX4LmJ4LiZ4Liy4Lil4LmJ4LiZ4Li04LiZ4LmIIOC4nOC4reC4iuC4n-C4peC4tOC4meC4oSDguIHguLHguKHguKLguLLguIfguKnguLXguKLguIcgMTIxMzA!5e0!3m2!1sth!2sth!4v1671528665555"
+                width="100%"
+                height="300"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy">
+            </iframe>
+            </footer>
+
+
 </body>
-<footer class="bg-dark text-white py-4">
-    <div class="container text-center">
-        <p>© 2024 Wichian รับซื้อของเก่า | สงวนลิขสิทธิ์</p>
-        <p>ติดต่อ: 089-225-6557</p>
-    </div>
-</footer>
 
 </html>

@@ -80,7 +80,7 @@
             <i class="bi bi-grid-3x3-gap-fill"></i> 
         </div>
         <ul>
-            <li><a href="index.php" class="active"><i class="bi bi-house-door-fill"></i> หน้าหลัก</a></li>
+            <li><a href="../Admin/index_admin.php" class="active"><i class="bi bi-house-door-fill"></i> หน้าหลัก</a></li>
             <li><a href="../Admin/sale_admin.php"><i class="bi bi-basket-fill"></i> หน้าขาย</a></li>
             <li><a href="../Admin/buy_admin.php"><i class="bi bi-bag-fill"></i> รับซื้อ</a></li>
             <li><a href="../Admin/product_admin.php"><i class="bi bi-cart-fill"></i> ข้อมูลของเก่า</a></li>
