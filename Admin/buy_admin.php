@@ -56,7 +56,7 @@
                         <div class="col-6 mt-2">
                             <!-- Dropdown ประเภทของเก่า -->
                             <label for="province">เลือกประเภทของเก่า:</label>
-                            <select id="province">
+                            <select class="form-control" id="province" placeholder="">
                                 <option value="">-- เลือกประเภทของเก่า --</option>
                                 <option value="1">เศษเหล็ก</option>
                                 <option value="2">กระดาษ</option>
@@ -66,12 +66,12 @@
                                 <option value="6">เครี่องใช้ไฟฟ้า</option>
                                 <option value="7">อื่นๆ</option>
                             </select>
-                            </div>
+                        </div>
 
                         <div class="col-6 mt-2">
                             <!-- Dropdown ของเก่า -->
                             <label for="district">เลือกชื่อของเก่า:</label>
-                            <select id="district" disabled>
+                            <select class="form-control" id="district" disabled placeholder="">
                                 <option value="">-- เลือกของเก่า --</option>
                             </select>
                         </div>
