@@ -42,9 +42,18 @@
                         <div class="col-lg-6 col-md-4 col-sm-6">
                             <label for="p_date">วันที่รับซื้อ</label>
                             <div class="input-group">
-                                <input type="date" class="form-control" id="p_date">
+                                <input type="date" class="form-control" id="p_date" readonly>
                             </div>
                         </div>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const dateField = document.getElementById("p_date");
+                                const now = new Date();
+                                const formattedDate = now.toISOString().split("T")[0]; // รูปแบบ YYYY-MM-DD
+                                dateField.value = formattedDate;
+                            });
+                        </script>
 
                         <div class="col-6 ">
                             ชื่อของเก่า
@@ -96,7 +105,7 @@
                             <button type="button" class="ms-2 btn btn-success" id="addButton1">เพิ่ม</button>
                         </div>
 
-                        
+
                         <div class="table-responsive mt-3">
                             <table id="productTable" class="table table-striped table-bordered">
                                 <thead>
