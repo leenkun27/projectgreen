@@ -1,4 +1,33 @@
-<?php include '../condb.php'; ?>
+<?php
+session_start();
+include '../condb.php';
+
+$type_query = "SELECT type_id, type_name FROM product_type";
+$type_result = $conn->query($type_query);
+
+// ดึงข้อมูล product_name
+$product_query = "SELECT product_id, product_name FROM product";
+$product_result = $conn->query($product_query);
+
+// เพิ่มข้อมูลใน session
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $product_name = $_POST['product_name'];
+    $price = $_POST['price'];
+    $quantity = $_POST['quantity'];
+    $total = $price * $quantity;
+
+    // เก็บข้อมูลลง session
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+    $_SESSION['cart'][] = [
+        'product_name' => $product_name,
+        'price' => $price,
+        'quantity' => $quantity,
+        'total' => $total,
+    ];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,40 +85,45 @@
                         </script>
 
                         <div class="col-6 ">
-                            ชื่อของเก่า
+                            ชื่อพนักงานที่รับซื้อ
                             <div class="input-group">
-                                <input type="text" class="form-control" id="p_name" placeholder="กรอกชื่อของเก่า" placeholder="กรอกชื่อของเก่า" onkeydown="checkEnter(event)">
+                                <input type="text" class="form-control" id="p_name" placeholder="กรอกชื่อพนักงาน" placeholder="กรอกชื่อของเก่า" onkeydown="checkEnter(event)">
                             </div>
                         </div>
 
                         <div class="col-6 mt-2">
                             <!-- Dropdown ประเภทของเก่า -->
-                            <label for="province">เลือกประเภทของเก่า:</label>
-                            <select class="form-control" id="province" placeholder="">
-                                <option value="">-- เลือกประเภทของเก่า --</option>
-                                <option value="1">เศษเหล็ก</option>
-                                <option value="2">กระดาษ</option>
-                                <option value="3">ขวดแก้ว</option>
-                                <option value="4">พลาสติก</option>
-                                <option value="5">โลหะที่มีค่าสูง</option>
-                                <option value="6">เครี่องใช้ไฟฟ้า</option>
-                                <option value="7">อื่นๆ</option>
-                            </select>
+                            <form action="process.php" method="POST">
+                                <label for="type">เลือกประเภท:</label>
+
+                                <select class="form-control" name="type" id="type" placeholder="">
+                                    <option value="">-- เลือกประเภท --</option>
+                                    <?php
+                                    if ($type_result->num_rows > 0) {
+                                        while ($row = $type_result->fetch_assoc()) {
+                                            echo "<option value='" . $row['type_id'] . "'>" . $row['type_name'] . "</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+
                         </div>
+
 
                         <div class="col-6 mt-2">
                             <!-- Dropdown ของเก่า -->
-                            <label for="district">เลือกชื่อของเก่า:</label>
-                            <select class="form-control" id="district" disabled placeholder="">
-                                <option value="">-- เลือกของเก่า --</option>
+                            <label for="product">เลือกชื่อของเก่า:</label>
+                            <select class="form-control" name="product" id="product" placeholder="">
+                                <option value="">-- เลือกชื่อของเก่า --</option>
                             </select>
+
                         </div>
 
 
                         <div class="col-6 mt-2">
                             <div>ปริมาณการรับซื้อ</div>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="p_qty" placeholder="">
+                                <input type="text" class="form-control" name="quantity" id="quantity" required min="1">
                             </div>
                         </div>
 
@@ -97,39 +131,79 @@
                         <div class="col-6 mt-2">
                             <div>ราคารับซื้อวันนี้</div>
                             <div class="input-group">
-                                <input type="email" class="form-control" id="p_price" placeholder="">
+                                <input type="text" class="form-control" name="price" id="price" readonly>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-end mt-3">
-                            <button type="button" class="ms-2 btn btn-success" id="addButton1">เพิ่ม</button>
+                            <button type="submit" class="ms-2 btn btn-success">เพิ่ม</button>
                         </div>
 
 
                         <div class="table-responsive mt-3">
-                            <table id="productTable" class="table table-striped table-bordered">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th scope="col">วันที่</th>
-                                        <th scope="col">ชื่อสินค้า</th>
-                                        <th scope="col">จำนวน</th>
-                                        <th scope="col">ราคาต่อหน่วย</th>
-                                        <th scope="col">จำนวนเงิน</th>
-                                        <th scope="col">ยอดรวม</th>
+                                        <th>ลำดับ</th>
+                                        <th>ชื่อสินค้า</th>
+                                        <th>จำนวน</th>
+                                        <th>ราคาต่อหน่วย</th>
+                                        <th>จำนวนเงิน</th>
+                                        <th>ภาษี</th>
+                                        <th>หมายเหตุ</th>
                                     </tr>
                                 </thead>
-                                <tbody id="productTableBody">
-                                    <!-- ข้อมูลจะถูกเพิ่มที่นี่ -->
+                                <tbody>
+                                    <?php
+                                    $grand_total = 0;
+                                    $total_tax = 0;
+                                    $row_number = 1;
+
+                                    if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
+                                        foreach ($_SESSION['cart'] as $item) {
+                                            $tax = $item['total'] * 0.07; // สมมติคิดภาษี 7%
+                                            $grand_total += $item['total'];
+                                            $total_tax += $tax;
+
+                                            echo "<tr>
+                        <td>{$row_number}</td>
+                        <td>{$item['product_name']}</td>
+                        <td>{$item['quantity']}</td>
+                        <td>" . number_format($item['price'], 2) . "</td>
+                        <td>" . number_format($item['total'], 2) . "</td>
+                        <td>" . number_format($tax, 2) . "</td>
+                        <td> - </td> <!-- ตัวอย่างหมายเหตุ -->
+                    </tr>";
+
+                                            $row_number++;
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='9'>ไม่มีข้อมูลสินค้า</td></tr>";
+                                    }
+                                    ?>
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" class="text-end"><strong>รวมทั้งหมด</strong></td>
+                                        <td><strong><?php echo $row_number - 1; ?></strong></td>
+                                        <td></td>
+                                        <td><strong><?php echo number_format($grand_total, 2); ?></strong></td>
+                                        <td><strong><?php echo number_format($total_tax, 2); ?></strong></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
-                    </div>
 
+                        <h3>ยอดรวมทั้งหมด: <?php echo $grand_total; ?> บาท</h3>
+                    </div>
                 </div>
             </div>
-
-
         </div>
+    </div>
+
+
+    </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -191,42 +265,46 @@
             });
         });
 
-        const districtsByProvince = {
-            1: ["ลวดสลิงยุ่งๆ", "เหล็กหล่อชิ้นเล็ก", "เหล็กย่อยซอยสั้น", ""],
-            2: ["เมืองเชียงใหม่", "ดอยสะเก็ด", "แม่ริม", "สันกำแพง"],
-            3: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
-            4: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
-            5: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
-            6: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
-            7: ["เมืองชลบุรี", "บางละมุง", "ศรีราชา", "สัตหีบ"],
-        };
+        $(document).ready(function() {
+            // เมื่อเลือกประเภท
+            $("#type").change(function() {
+                const typeId = $(this).val();
+                $("#product").html('<option value="">-- กำลังโหลดข้อมูล --</option>');
 
-        // อ้างอิง Dropdown
-        const provinceSelect = document.getElementById("province");
-        const districtSelect = document.getElementById("district");
+                if (typeId) {
+                    $.ajax({
+                        url: "fetch_products.php",
+                        type: "POST",
+                        data: {
+                            type_id: typeId
+                        },
+                        success: function(data) {
+                            $("#product").html(data);
+                        }
+                    });
+                } else {
+                    $("#product").html('<option value="">-- เลือกชื่อของเก่า --</option>');
+                }
+            });
 
-        // เมื่อเลือกประเภท
-        provinceSelect.addEventListener("change", () => {
-            const selectedProvince = provinceSelect.value;
+            // เมื่อเลือกชื่อของเก่า
+            $("#product").change(function() {
+                const productId = $(this).val();
+                $("#price").val(""); // ล้างค่าเดิมในช่องราคา
 
-            // ล้างรายการ
-            districtSelect.innerHTML = '<option value="">-- เลือกของเก่า --</option>';
-
-            if (selectedProvince) {
-                // เพิ่มรายการใหม่
-                districtsByProvince[selectedProvince].forEach(district => {
-                    const option = document.createElement("option");
-                    option.value = district;
-                    option.textContent = district;
-                    districtSelect.appendChild(option);
-                });
-
-                // เปิดใช้งาน Dropdown ของเก่า
-                districtSelect.disabled = false;
-            } else {
-                // ปิดใช้งาน Dropdown ของเก่า
-                districtSelect.disabled = true;
-            }
+                if (productId) {
+                    $.ajax({
+                        url: "fetch_price.php",
+                        type: "POST",
+                        data: {
+                            product_id: productId
+                        },
+                        success: function(data) {
+                            $("#price").val(data);
+                        }
+                    });
+                }
+            });
         });
     </script>
 
@@ -244,3 +322,7 @@
 </body>
 
 </html>
+
+<?php
+$conn->close();
+?>

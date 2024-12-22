@@ -27,7 +27,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <input type="text" class="form-control w-50" placeholder="ชื่อสินค้า">
                             <div>
-                                <button class="btn btn-success"><i class="bi bi-plus" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>เพิ่มข้อมูล</button>
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-plus"></i>เพิ่มข้อมูล</button>
                             </div>
                         </div>
                     </div>
@@ -42,9 +42,25 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">ชื่อสินค้า</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                        <label for="province">เลือกประเภทของเก่า:</label>
+                                        <select class="form-control" id="province" placeholder="">
+                                            <option value="">-- เลือกประเภทของเก่า --</option>
+                                            <option value="1">เศษเหล็ก</option>
+                                            <option value="2">กระดาษ</option>
+                                            <option value="3">ขวดแก้ว</option>
+                                            <option value="4">พลาสติก</option>
+                                            <option value="5">โลหะที่มีค่าสูง</option>
+                                            <option value="6">เครี่องใช้ไฟฟ้า</option>
+                                            <option value="7">อื่นๆ</option>
+                                        </select>
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="district">เลือกชื่อของเก่า:</label>
+                                        <select class="form-control" id="district" disabled placeholder="">
+                                            <option value="">-- เลือกของเก่า --</option>
+                                        </select>
+                                    </div>
+
                                     <div class="mb-2">
                                         <label for="exampleInputEmail1" class="form-label">ราคาต้นทุน</label>
                                         <input type="number" class="form-control">
@@ -78,10 +94,11 @@
                                         <tr>
                                             <th scope="col">ลำดับ</th>
                                             <th scope="col">รูปภาพ</th>
-                                            <th scope="col">ชื่อสินค้า</th>
+                                            <th scope="col">ชื่อของเก่า</th>
+                                            <th scope="col">ประเภทของเก่า</th>
                                             <th scope="col">ราคาต้นทุน</th>
                                             <th scope="col">จำนวนคงเหลือ</th>
-                                            <th scope="col">หมายเหตุ</th>
+                                            <th scope="col">หน่วย</th>
                                             <th scope="col">ลบ</th>
                                             <th scope="col">แก้ไข</th>
 
@@ -90,7 +107,7 @@
                                     <tbody>
                                         <?php
                                         // ดึงข้อมูลจากฐานข้อมูล
-                                        $sql = "SELECT * FROM tbl_product"; // ระบุชื่อตาราง
+                                        $sql = "SELECT * FROM product"; // ระบุชื่อตาราง
                                         $result = $conn->query($sql);
 
                                         if ($result->num_rows > 0) {
@@ -98,11 +115,12 @@
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<th scope='row'>" . $index++ . "</th>";
-                                                echo "<td><img src='" . $row['p_img'] . "' alt='product' class='img-fluid' width='50'></td>";
-                                                echo "<td>" . $row['p_name'] . "</td>";
-                                                echo "<td>" . $row['p_qty'] . "</td>";
-                                                echo "<td>" . $row['p_type'] . "</td>";
-                                                echo "<td>" . $row['p_type'] . "</td>";
+                                                echo "<td><img src='" . $row['product_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                                echo "<td>" . $row['product_name'] . "</td>";
+                                                echo "<td>" . $row['type_id'] . "</td>";
+                                                echo "<td>" . $row['cost_price'] . "</td>";
+                                                echo "<td>" . $row['quantity'] . "</td>";
+                                                echo "<td>" . $row['unit'] . "</td>";
                                                 echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
                                                 echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
                                                 echo "</tr>";

@@ -6,48 +6,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ร้านขายของเก่า</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
+        body,
+        section {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: url('https://via.placeholder.com/1500x1000') no-repeat center center/cover;
-            color: #333;
-        }
-
-        header {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            text-align: center;
-            color: white;
-        }
-
-        header h1 {
+        .img {
             margin: 0;
+            padding: 0;
+            display: block;
+            /* แก้ไขปัญหา white space */
         }
 
-        nav {
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            padding: 10px 0;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            margin: 0 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        nav a:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
 
         .hero {
             text-align: center;
@@ -162,27 +139,13 @@
         }
     </style>
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const options = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric'
-            };
-            document.getElementById('current-time').textContent = now.toLocaleDateString('th-TH', options);
-        }
-        setInterval(updateTime, 1000);
-    </script>
+
 </head>
 
-<body
-    onload="updateTime()">
+<body onload="updateTime()">
+    <?php include '../header_admin.php'; ?>
     <section class="img">
-        <img src="index.png" class="" width="1700" height="600">
+        <img src="./index.png" alt="ร้านขายของเก่า" style="display: block; width: 100%; height: auto;">
     </section>
 
 
@@ -242,42 +205,52 @@
         </div>
     </section>
 
-
-
-
-
-    <footer>
-        <div class="container">
-            <div class="column">
-                <h3>ติดต่อเรา</h3>
-                <p>วิเชียรรุ่งเรือง</p>
-                <p>ที่อยู่ :</p>
-                <p>ต.แก่งกระจาน อ.แก่งกระจาน จ.เพชรบุรี 76170</p>
-                <p>📞 089 -2256557</p>
-                <p>LINE: <a href="https://line.me">@wichiann</a></p>
-                <p>Facebook: <a href="https://facebook.com">ร้านวิเชียรรุ่งเรืองร้านรับซื้อของเก่า</a></p>
-            </div>
-            <div class="column">
-                <h3>บริการของเรา</h3>
-                <ul>
-                    <li>รับซื้อของเก่าทุกชนิด</li>
-                    <li>เฟอร์นิเจอร์ เครื่องใช้ไฟฟ้า ตู้เย็น ทีวี แอร์</li>
-                    <li>บริการรับซื้ออะลูมิเนียม</li>
-                </ul>
-            </div>
-            <div class="column">
-                <h3>แผนที่</h3>
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.044073042384!2d100.61688231513888!3d13.845379190283422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e28333c3b8e1d5%3A0x5515b9a5a0f4e93b!2z4LiK4Li04LiZ4LiEIOC4muC4seC4h-C4qOC5jOC4peC4sSDguK3guKPguLDguKfguJnguLLguKPguYzguKHguJnguKrguLTguKPguLHguKLguKEg4LiX4LmJ4LiZ4Liy4Lil4LmJ4LiZ4Li04LiZ4LmIIOC4nOC4reC4iuC4n-C4peC4tOC4meC4oSDguIHguLHguKHguKLguLLguIfguKnguLXguKLguIcgMTIxMzA!5e0!3m2!1sth!2sth!4v1671528665555"
-                    width="100%"
-                    height="300"
-                    style="border:0;"
-                    allowfullscreen=""
-                    loading="lazy">
-                </iframe>
-    </footer>
-
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'
+            };
+            document.getElementById('current-time').textContent = now.toLocaleDateString('th-TH', options);
+        }
+        setInterval(updateTime, 1000);
+    </script>
 
 </body>
+<footer>
+    <div class="container">
+        <div class="column">
+            <h3>ติดต่อเรา</h3>
+            <p>วิเชียรรุ่งเรือง</p>
+            <p>ที่อยู่ :</p>
+            <p>ต.แก่งกระจาน อ.แก่งกระจาน จ.เพชรบุรี 76170</p>
+            <p>📞 089 -2256557</p>
+            <p>LINE: <a href="https://line.me">@wichiann</a></p>
+            <p>Facebook: <a href="https://facebook.com">ร้านวิเชียรรุ่งเรืองร้านรับซื้อของเก่า</a></p>
+        </div>
+        <div class="column">
+            <h3>บริการของเรา</h3>
+            <ul>
+                <li>รับซื้อของเก่าทุกชนิด</li>
+                <li>เฟอร์นิเจอร์ เครื่องใช้ไฟฟ้า ตู้เย็น ทีวี แอร์</li>
+                <li>บริการรับซื้ออะลูมิเนียม</li>
+            </ul>
+        </div>
+        <div class="column">
+            <h3>แผนที่</h3>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.044073042384!2d100.61688231513888!3d13.845379190283422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e28333c3b8e1d5%3A0x5515b9a5a0f4e93b!2z4LiK4Li04LiZ4LiEIOC4muC4seC4h-C4qOC5jOC4peC4sSDguK3guKPguLDguKfguJnguLLguKPguYzguKHguJnguKrguLTguKPguLHguKLguKEg4LiX4LmJ4LiZ4Liy4Lil4LmJ4LiZ4Li04LiZ4LmIIOC4nOC4reC4iuC4n-C4peC4tOC4meC4oSDguIHguLHguKHguKLguLLguIfguKnguLXguKLguIcgMTIxMzA!5e0!3m2!1sth!2sth!4v1671528665555"
+                width="100%"
+                height="300"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy">
+            </iframe>
+</footer>
 
 </html>
