@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do</title>
+    <title>ข้อมูลพนักงาน</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -55,11 +55,11 @@
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-12">
-                    <h2 class="mb-3">ข้อมูลสมาชิก</h2>
+                    <h2 <i class="bi bi-person-gear"></i> ตั้งค่าสมาชิก</h2>
                     <!-- Search Section -->
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
-                            <input type="text" class="form-control w-50" placeholder="ค้นหาชื่อพนักงาน">
+                            <input id="searchInput" type="text" class="form-control w-50" placeholder="ค้นหาชื่อหรือข้อมูล">
                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 <i class="bi bi-plus"></i> เพิ่มข้อมูล </button>
                         </div>
@@ -113,12 +113,8 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">ชื่อ</label>
+                                        <label for="exampleInputEmail1" class="form-label">ชื่อ-นามสกุล</label>
                                         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">นามสกุล</label>
-                                        <input type="text" class="form-control">
                                     </div>
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">เบอร์โทรศัพท์</label>
@@ -137,7 +133,7 @@
                     <div class="row ">
                         <div class="col-12">
                             <div class="table-responsive mt-3">
-                                <table class="table table-bordered table-striped table-summary">
+                                <table id="memberTable" class="table table-bordered table-striped table-summary">
                                     <thead class="table-light">
                                         <tr>
                                             <th scope="col">ลำดับ</th>
@@ -149,35 +145,64 @@
                                             <th scope="col">แก้ไข</th>
                                         </tr>
                                     </thead>
+                                    <tbody>
+                                        <?php
+                                        // ดึงข้อมูลจากฐานข้อมูล
+                                        $sql = "SELECT * FROM tbl_member"; // ระบุชื่อตาราง
+                                        $result = $conn->query($sql);
 
-                                    <?php
-                                    // ดึงข้อมูลจากฐานข้อมูล
-                                    $sql = "SELECT * FROM tbl_member"; // ระบุชื่อตาราง
-                                    $result = $conn->query($sql);
-
-                                    if ($result->num_rows > 0) {
-                                        $index = 1; // ตัวนับลำดับ
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<tr>";
-                                            echo "<th scope='row'>" . $index++ . "</th>";
-                                            echo "<td>" . $row['mem_id'] . "</td>";
-                                            echo "<td><img src='" . $row['mem_img'] . "' alt='product' class='img-fluid' width='50'></td>";
-                                            echo "<td>" . $row['mem_name'] . "</td>";
-                                            echo "<td>" . $row['role'] . "</td>";
-                                            echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
-                                            echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
-                                            echo "</tr>";
+                                        if ($result->num_rows > 0) {
+                                            $index = 1; // ตัวนับลำดับ
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<th scope='row'>" . $index++ . "</th>";
+                                                echo "<td>" . $row['mem_code'] . "</td>";
+                                                echo "<td><img src='" . $row['mem_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                                echo "<td>" . $row['mem_name'] . "</td>";
+                                                echo "<td>" . $row['mem_position'] . "</td>";
+                                                echo "<td><button type='button' class='btn btn-danger'><i class='bi bi-trash3'></i></button></td>";
+                                                echo "<td><button type='button' class='btn btn-warning'><i class='bi bi-pencil-square'></i></button></td>";
+                                                echo "</tr>";
+                                            }
+                                        } else {
+                                            echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
                                         }
-                                    } else {
-                                        echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
-                                    }
-
-                                    $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
-                                    ?>
+                                        $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+                                        ?>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+
+                    <script>
+                        // รอให้หน้าเว็บโหลดเสร็จ
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const searchInput = document.getElementById("searchInput");
+                            const table = document.getElementById("memberTable");
+                            const rows = table.getElementsByTagName("tr");
+
+                            // เมื่อมีการพิมพ์ในช่องค้นหา
+                            searchInput.addEventListener("keyup", function() {
+                                const filter = searchInput.value.toLowerCase();
+
+                                // วนลูปข้อมูลในตาราง
+                                for (let i = 1; i < rows.length; i++) { // เริ่มที่ 1 เพราะแถวที่ 0 คือหัวตาราง
+                                    const cells = rows[i].getElementsByTagName("td");
+                                    let match = false;
+
+                                    // เช็กแต่ละคอลัมน์ในแถว
+                                    for (let j = 0; j < cells.length; j++) {
+                                        if (cells[j].textContent.toLowerCase().includes(filter)) {
+                                            match = true; // ถ้าตรงกับคำค้นหา
+                                            break;
+                                        }
+                                    }
+                                    rows[i].style.display = match ? "" : "none"; // แสดงหรือซ่อนแถว
+                                }
+                            });
+                        });
+                    </script>
 
                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
