@@ -1,14 +1,43 @@
-้
+<?php
+include '../condb.php';
+
+// รับค่า product_id จาก URL
+if (isset($_GET['product_id'])) {
+    $product_id = $_GET['product_id'];
+
+    // Query ข้อมูลสินค้าเดิมจากฐานข้อมูล
+    $sql = "SELECT product_name, cost_price, unit FROM product WHERE product_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $product_name = $row['product_name'];
+        $cost_price = $row['cost_price'];
+        $unit = $row['unit'];
+    } else {
+        echo "<script>alert('ไม่พบข้อมูลสินค้า'); window.location.href='product_list.php';</script>";
+        exit();
+    }
+
+    $stmt->close();
+    $conn->close();
+} else {
+    echo "<script>alert('ไม่มีการระบุ ID สินค้า'); window.location.href='product_list.php';</script>";
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do</title>
+    <title>แก้ไขสินค้า</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
@@ -19,71 +48,30 @@
                 <?php include '../menu_admin.php'; ?>
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
-                <h2>แก้ไขข้อมูลของเก่า</h2>
-                <div class="text-center">
-                    <img src="..." class="rounded" alt="...">
-                </div>
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">แก้ไขรูปภาพ</label>
-                    <input class="form-control" type="file" id="formFile">
-                </div>
+                <h2>แก้ไขข้อมูลสินค้า</h2>
+                <form action="update_product.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
 
-                <div class="col-12">
-                    <div>ชื่อของเก่า</div>
-                    <div class="input-group">
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+                    <div class="mb-3">
+                        <label for="product_name">ชื่อสินค้า</label>
+                        <input type="text" class="form-control" id="product_name" name="product_name" value="<?php echo htmlspecialchars($product_name); ?>" required>
                     </div>
-                </div>
-                <div class="col-12">
-                    <div>จำนวน</div>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
-                    </div>
-                </div>
 
-                <div class="col-12">
-                    <div>ประเภทของเก่า</div>
-                    <div class="input-group">
-                        <select class="form-control" id="" placeholder="">
-                            <option>เศษเหล็ก</option>
-                            <option>กระดาษ</option>
-                            <option>ขวดแก้ว</option>
-                            <option>พลาสติก</option>
-                            <option>โลหะที่มีค่าสูง</option>
-                            <option>เครี่องใช้ไฟฟ้า</option>
-                            <option>อื่นๆ</option>
-                        </select>
+                    <div class="mb-3">
+                        <label for="cost_price">ราคาต้นทุน</label>
+                        <input type="number" class="form-control" id="cost_price" name="cost_price" value="<?php echo htmlspecialchars($cost_price); ?>" required>
                     </div>
-                </div>
-                <div class="col-12">
-                    <div>ราคา</div>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success">บันทึก</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                </div>
 
+                    <div class="mb-3">
+                        <label for="unit">หน่วย</label>
+                        <input type="text" class="form-control" id="unit" name="unit" value="<?php echo htmlspecialchars($unit); ?>" required>
+                    </div>
+
+                    <!-- ฟิลด์อื่นๆ -->
+                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                    <a href="product_list.php" class="btn btn-secondary">ยกเลิก</a>
+                </form>
             </div>
-        </div>
-    </div>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            $(document).ready(function() {
-                $(".cart").click(function() {
-                    Swal.fire({
-                        title: "สำเร็จ",
-                        text: "You clicked the button!",
-                        icon: "success"
-                    });
-                });
-            });
-        </script>
-
 </body>
 
 </html>

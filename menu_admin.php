@@ -83,7 +83,7 @@
             <li><a href="../Admin/index_admin.php" class="active"><i class="bi bi-house-door-fill"></i> หน้าหลัก</a></li>
             <li><a href="../Admin/sale_admin.php"><i class="bi bi-basket-fill"></i> หน้าขาย</a></li>
             <li><a href="../Admin/buy_admin.php"><i class="bi bi-bag-fill"></i> รับซื้อ</a></li>
-            <li><a href="../Admin/price_today_admin.php"><i class="bi bi-bag-fill"></i> ราคาวันนี้</a></li>
+            <li><a href="../Admin/price_today_admin.php"><i class="bi bi-tags-fill"></i> ราคาวันนี้</a></li>
             <li><a href="../Admin/product_admin.php"><i class="bi bi-cart-fill"></i> ข้อมูลของเก่า</a></li>
             <li><a href="../Admin/stock_admin.php"><i class="bi bi-box-fill"></i> สต๊อก</a></li>
             <li><a href="../Admin/dashboard_sale_admin.php"><i class="bi bi-speedometer"></i> แดชบอร์ด</a></li>
@@ -93,10 +93,7 @@
             <li><a href="#"><i class="bi bi-door-open-fill"></i> ออกจากระบบ</a></li>
         </ul>
     </div>
-    <div class="content">
-        <h1>Dashboard</h1>
-        <p>นี่คือพื้นที่เนื้อหา</p>
-    </div>
+    
 </body>
 
 </html>

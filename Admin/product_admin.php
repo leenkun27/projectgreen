@@ -25,10 +25,11 @@
                     <!-- Search and Table Section -->
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
-                            <input type="text" class="form-control w-50" placeholder="ชื่อสินค้า">
+                            <input id="searchInput" type="text" class="form-control w-50" placeholder="ค้นหาชื่อของเก่า">
                             <div>
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-plus"></i>เพิ่มข้อมูล</button>
+                                <a href="add_product_admin.php" class="btn btn-success"><i class="bi bi-plus"></i> เพิ่มข้อมูล</a>
                             </div>
+
                         </div>
                     </div>
 
@@ -80,7 +81,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                                    <button type="button" class="btn btn-success">บันทึก</button>
+                                    <input type="submit" name="submit" id="sb" value="บันทึก" class="btn btn-success">
                                 </div>
                             </div>
                         </div>
@@ -104,14 +105,13 @@
 
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="productBody">
                                         <?php
-                                        // ดึงข้อมูลจากฐานข้อมูล
-                                        $sql = "SELECT * FROM product"; // ระบุชื่อตาราง
+                                        $sql = "SELECT * FROM product";
                                         $result = $conn->query($sql);
 
                                         if ($result->num_rows > 0) {
-                                            $index = 1; // ตัวนับลำดับ
+                                            $index = 1;
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<th scope='row'>" . $index++ . "</th>";
@@ -121,35 +121,141 @@
                                                 echo "<td>" . $row['cost_price'] . "</td>";
                                                 echo "<td>" . $row['quantity'] . "</td>";
                                                 echo "<td>" . $row['unit'] . "</td>";
-                                                echo "<td><button type='button' class='btn btn-danger'>ลบ</button></td>";
-                                                echo "<td><button type='button' class='btn btn-warning'>แก้ไข</button></td>";
+                                                echo "<td><button class='btn btn-danger btn-sm removeRow' data-id='{$row['product_id']}'>ลบ</button></td>";
+                                                echo "<td><a href='edit_product_admin.php?product_id=" . $row['product_id'] . "' class='btn btn-warning'><i class='bi bi-pencil-square'></i></a></td>";
                                                 echo "</tr>";
                                             }
                                         } else {
-                                            echo "<tr><td colspan='7'>ไม่มีข้อมูล</td></tr>";
+                                            echo "<tr><td colspan='9'>ไม่มีข้อมูล</td></tr>";
                                         }
 
-                                        $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+                                        $conn->close();
                                         ?>
                                     </tbody>
                                 </table>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button class="btn btn-outline-primary" id="prevPage">ก่อนหน้า</button>
+                                    <span id="pageInfo"></span>
+                                    <button class="btn btn-outline-primary" id="nextPage">ถัดไป</button>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    // รอให้หน้าเว็บโหลดเสร็จ
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const searchInput = document.getElementById("searchInput");
+                        const table = document.getElementById("productBody");
+                        const rows = table.getElementsByTagName("tr");
 
-                        <script>
-                            $(document).ready(function() {
-                                $(".cart").click(function() {
-                                    Swal.fire({
-                                        title: "สำเร็จ",
-                                        text: "You clicked the button!",
-                                        icon: "success"
-                                    });
-                                });
+                        // เมื่อมีการพิมพ์ในช่องค้นหา
+                        searchInput.addEventListener("keyup", function() {
+                            const filter = searchInput.value.toLowerCase();
+
+                            // วนลูปข้อมูลในตาราง
+                            for (let i = 0; i < rows.length; i++) {
+                                const cells = rows[i].getElementsByTagName("td");
+
+                                if (cells.length > 0) { // ตรวจสอบว่ามีข้อมูลในแถว
+                                    const productName = cells[1].textContent.toLowerCase(); // คอลัมน์ "ชื่อของเก่า" อยู่ที่ index 1
+
+                                    // แสดงหรือซ่อนแถวตามคำค้นหา
+                                    rows[i].style.display = productName.includes(filter) ? "" : "none";
+                                }
+                            }
+                        });
+                    });
+                </script>
+
+                <script>
+                    const rowsPerPage = 10; // จำนวนแถวต่อหน้า
+                    let currentPage = 1;
+                    const table = document.getElementById("productTable");
+                    const tbody = document.getElementById("productBody");
+                    const totalRows = tbody.rows.length;
+                    const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+                    function displayRows() {
+                        for (let i = 0; i < totalRows; i++) {
+                            tbody.rows[i].style.display =
+                                i >= (currentPage - 1) * rowsPerPage && i < currentPage * rowsPerPage ?
+                                "" :
+                                "none";
+                        }
+                        document.getElementById("pageInfo").innerText = `หน้า ${currentPage} จาก ${totalPages}`;
+                    }
+
+                    document.getElementById("prevPage").addEventListener("click", () => {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            displayRows();
+                        }
+                    });
+
+                    document.getElementById("nextPage").addEventListener("click", () => {
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            displayRows();
+                        }
+                    });
+
+                    displayRows(); // แสดงข้อมูลหน้าแรกเมื่อโหลดหน้า
+                </script>
+
+
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                <script>
+                    $(document).ready(function() {
+                        $(".cart").click(function() {
+                            Swal.fire({
+                                title: "สำเร็จ",
+                                text: "You clicked the button!",
+                                icon: "success"
                             });
-                        </script>
+                        });
+                    });
+                </script>
+
+                <script>
+                    document.addEventListener("click", function(e) {
+                        if (e.target.classList.contains("removeRow")) {
+                            e.preventDefault();
+                            const agree = confirm("คุณต้องการลบข้อมูลนี้หรือไม่?");
+                            if (agree) {
+                                const rowId = e.target.getAttribute("data-id");
+                                deleteRow(rowId);
+                            }
+                        }
+                    });
+
+                    function deleteRow(rowId) {
+                        fetch("/delete_product_admin.php", { // ตรวจสอบว่าเส้นทางถูกต้อง
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    id: rowId
+                                }),
+                            })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                if (data.success) {
+                                    alert("ลบข้อมูลสำเร็จ");
+                                    location.reload();
+                                } else {
+                                    alert("ไม่สามารถลบข้อมูลได้: " + data.message);
+                                }
+                            })
+                            .catch((error) => console.error("Error:", error));
+                    }
+                </script>
+
+
 </body>
 
 </html>

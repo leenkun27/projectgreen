@@ -1,5 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+session_start();
+include '../condb.php';
+
+// Query for joining product and product_type tables
+$query = "
+    SELECT 
+        product.product_id, 
+        product.product_name, 
+        product.price_today, 
+        product.type_id, 
+        product_type.type_name,
+        product.unit
+    FROM 
+        product
+    LEFT JOIN 
+        product_type 
+    ON 
+        product.type_id = product_type.type_id
+";
+
+$result = $conn->query($query);
+
+if (!$result) {
+    die("Query failed: " . $conn->error);
+}
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -25,71 +50,70 @@
                 <?php include '../menu_admin.php'; ?>
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
-                <div>
-                    <h2> ราคากลางรับซื้อของเก่าวันนี้</h2>
-                </div>
+                <div class="container mt-5">
+                    <h2 class="mb-4">ราคากลางของเก่าวันนี้</h2>
 
-                <!-- Summary Table -->
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-summary">
-                        <p id="current-time" class="time"></p>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-summary">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>ประเภท</th>
-                                        <th>ราคารับซื้อ</th>
-                                    </tr>
-                                </thead>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>ชื่อสินค้า</th>
+                                <th>ประเภทสินค้า</th>
+                                <th>ราคาวันนี้</th>
+                                <th>หน่วย</th>
 
-                                <tbody>
-                                    <tr>
-                                        <td>เหล็ก</td>
-                                        <td>20.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = $result->fetch_assoc()) { ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($row['product_id']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['product_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['type_name']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['price_today']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['unit']); ?></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            </section>
+        </div>
 
-            <script>
-                function updateTime() {
-                    const now = new Date();
-                    const options = {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric'
-                    };
-                    document.getElementById('current-time').textContent = now.toLocaleDateString('th-TH', options);
-                }
-                setInterval(updateTime, 1000);
-            </script>
+        <script>
+            function updateTime() {
+                const now = new Date();
+                const options = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric'
+                };
+                document.getElementById('current-time').textContent = now.toLocaleDateString('th-TH', options);
+            }
+            setInterval(updateTime, 1000);
+        </script>
 
-            <!-- Import Bootstrap JS -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-            <!-- Import Bootstrap Icons -->
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script>
-                $(document).ready(function() {
-                    $(".cart").click(function() {
-                        Swal.fire({
-                            title: "สำเร็จ",
-                            text: "You clicked the button!",
-                            icon: "success"
-                        });
+        <!-- Import Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Import Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            $(document).ready(function() {
+                $(".cart").click(function() {
+                    Swal.fire({
+                        title: "สำเร็จ",
+                        text: "You clicked the button!",
+                        icon: "success"
                     });
                 });
-            </script>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+            });
+        </script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </body>
 
 </html>
