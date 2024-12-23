@@ -10,22 +10,42 @@ $product_query = "SELECT product_id, product_name FROM product";
 $product_result = $conn->query($product_query);
 
 // เพิ่มข้อมูลใน session
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $product_name = $_POST['product_name'];
-    $price = $_POST['price'];
-    $quantity = $_POST['quantity'];
-    $total = $price * $quantity;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $product_name = htmlspecialchars($_POST['product_name']);
+    $price = filter_var($_POST['price'], FILTER_VALIDATE_FLOAT);
+    $quantity = filter_var($_POST['quantity'], FILTER_VALIDATE_INT);
 
-    // เก็บข้อมูลลง session
-    if (!isset($_SESSION['cart'])) {
-        $_SESSION['cart'] = [];
+    if ($product_name && $price && $quantity) {
+        $total = $price * $quantity;
+
+        // เก็บข้อมูลลง session
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+
+        // ตรวจสอบสินค้าซ้ำ
+        $is_duplicate = false;
+        foreach ($_SESSION['cart'] as &$item) {
+            if ($item['product_name'] === $product_name) {
+                $item['quantity'] += $quantity;
+                $item['total'] = $item['price'] * $item['quantity'];
+                $is_duplicate = true;
+                break;
+            }
+        }
+
+        if (!$is_duplicate) {
+            $_SESSION['cart'][] = [
+                'product_name' => $product_name,
+                'price' => $price,
+                'quantity' => $quantity,
+                'total' => $total,
+            ];
+        }
+        // Return JSON response for AJAX
+        echo json_encode(['product_name' => $product_name, 'price' => $price, 'quantity' => $quantity, 'total' => $total]);
+        exit;
     }
-    $_SESSION['cart'][] = [
-        'product_name' => $product_name,
-        'price' => $price,
-        'quantity' => $quantity,
-        'total' => $total,
-    ];
 }
 ?>
 <!DOCTYPE html>
@@ -84,10 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             });
                         </script>
 
+
                         <div class="col-6 ">
                             ชื่อพนักงานที่รับซื้อ
                             <div class="input-group">
-                                <input type="text" class="form-control" id="p_name" placeholder="กรอกชื่อพนักงาน" placeholder="กรอกชื่อของเก่า" onkeydown="checkEnter(event)">
+                                <input type="text" class="form-control" id="p_name" placeholder="กรอกชื่อพนักงาน">
                             </div>
                         </div>
 
@@ -135,8 +156,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-end mt-3">
-                            <button type="submit" class="ms-2 btn btn-success">เพิ่ม</button>
+                        <div class="col-12 mt-3 text-end">
+                            <button type="button" id="addButton" class="btn btn-success">เพิ่ม</button>
                         </div>
 
 
@@ -145,57 +166,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <thead>
                                     <tr>
                                         <th>ลำดับ</th>
-                                        <th>ชื่อสินค้า</th>
+                                        <th>ชื่อของเก่า</th>
+                                        <th>ประเภท</th>
                                         <th>จำนวน</th>
                                         <th>ราคาต่อหน่วย</th>
                                         <th>จำนวนเงิน</th>
-                                        <th>ภาษี</th>
                                         <th>หมายเหตุ</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php
-                                    $grand_total = 0;
-                                    $total_tax = 0;
-                                    $row_number = 1;
 
-                                    if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
-                                        foreach ($_SESSION['cart'] as $item) {
-                                            $tax = $item['total'] * 0.07; // สมมติคิดภาษี 7%
-                                            $grand_total += $item['total'];
-                                            $total_tax += $tax;
+                                <tbody id="cartTable">
 
-                                            echo "<tr>
-                        <td>{$row_number}</td>
-                        <td>{$item['product_name']}</td>
-                        <td>{$item['quantity']}</td>
-                        <td>" . number_format($item['price'], 2) . "</td>
-                        <td>" . number_format($item['total'], 2) . "</td>
-                        <td>" . number_format($tax, 2) . "</td>
-                        <td> - </td> <!-- ตัวอย่างหมายเหตุ -->
-                    </tr>";
-
-                                            $row_number++;
-                                        }
-                                    } else {
-                                        echo "<tr><td colspan='9'>ไม่มีข้อมูลสินค้า</td></tr>";
-                                    }
-                                    ?>
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="4" class="text-end"><strong>รวมทั้งหมด</strong></td>
-                                        <td><strong><?php echo $row_number - 1; ?></strong></td>
-                                        <td></td>
-                                        <td><strong><?php echo number_format($grand_total, 2); ?></strong></td>
-                                        <td><strong><?php echo number_format($total_tax, 2); ?></strong></td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
+
                             </table>
                         </div>
 
-                        <h3>ยอดรวมทั้งหมด: <?php echo $grand_total; ?> บาท</h3>
+                        <div class="summary">
+                            <p>ยอดรวมทั้งหมด: <span id="grand-total">0.00</span> บาท</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -206,123 +195,103 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
-        $(document).ready(function() {
-            // เมื่อคลิกปุ่ม "เพิ่ม"
-            $('#addButton1').click(function() {
-                var p_name = $('#p_name').val();
-                var p_type = $('#p_type').val();
-                var p_qty = $('#p_qty').val();
-                var p_price = $('#p_price').val();
+            $(document).ready(function() {
+                let totalAmount = 0; // ตัวแปรเก็บยอดรวมทั้งหมด
 
-                // ตรวจสอบว่าข้อมูลครบหรือไม่
-                if (p_name.trim() === "" || p_qty.trim() === "" || p_price.trim() === "") {
-                    alert("กรุณากรอกข้อมูลให้ครบ");
-                    return;
+                function updateGrandTotal() {
+                    let grandTotal = 0;
+                    $("#cartTable tr").each(function() {
+                        const rowTotal = parseFloat($(this).find("td:nth-child(6)").text()) || 0;
+                        grandTotal += rowTotal;
+                    });
+                    $("#grand-total").text(grandTotal.toFixed(2));
                 }
 
-                // ส่งข้อมูลไปยัง PHP ด้วย AJAX
-                $.ajax({
-                    url: 'add_product.php', // ไฟล์ PHP ที่จะบันทึกข้อมูล
-                    type: 'POST',
-                    data: {
-                        p_name: p_name,
-                        p_type: p_type,
-                        p_qty: p_qty,
-                        p_price: p_price
-                    },
-                    success: function(response) {
-                        // เมื่อข้อมูลถูกบันทึกสำเร็จ
-                        var data = JSON.parse(response); // สมมติว่า PHP ส่งข้อมูลกลับในรูปแบบ JSON
-                        if (data.success) {
-                            // คำนวณจำนวนเงิน
-                            var total_price = data.qty * data.price;
-
-                            // เพิ่มแถวใหม่ในตาราง
-                            var newRow = `
-                        <tr>
-                            <td>${data.date}</td>
-                            <td>${data.name}</td>
-                            <td>${data.type}</td>
-                            <td>${data.qty}</td>
-                            <td>${data.price}</td>
-                            <td>${total_price}</td>
-                        </tr>
-                    `;
-                            $('#productTableBody').append(newRow);
-
-                            // ล้างข้อมูลในฟอร์ม
-                            $('#p_name').val('');
-                            $('#p_qty').val('');
-                            $('#p_price').val('');
-                        } else {
-                            alert('บันทึกข้อมูลไม่สำเร็จ');
-                        }
+                // เมื่อเลือกประเภท
+                $("#type").change(function() {
+                    const typeId = $(this).val();
+                    if (typeId) {
+                        $.post("fetch_products.php", {
+                            type_id: typeId
+                        }, function(data) {
+                            $("#product").html(data);
+                        });
+                    } else {
+                        $("#product").html('<option value="">-- เลือกชื่อของเก่า --</option>');
                     }
                 });
-            });
-        });
 
-        $(document).ready(function() {
-            // เมื่อเลือกประเภท
-            $("#type").change(function() {
-                const typeId = $(this).val();
-                $("#product").html('<option value="">-- กำลังโหลดข้อมูล --</option>');
-
-                if (typeId) {
-                    $.ajax({
-                        url: "fetch_products.php",
-                        type: "POST",
-                        data: {
-                            type_id: typeId
-                        },
-                        success: function(data) {
-                            $("#product").html(data);
-                        }
-                    });
-                } else {
-                    $("#product").html('<option value="">-- เลือกชื่อของเก่า --</option>');
-                }
-            });
-
-            // เมื่อเลือกชื่อของเก่า
-            $("#product").change(function() {
-                const productId = $(this).val();
-                $("#price").val(""); // ล้างค่าเดิมในช่องราคา
-
-                if (productId) {
-                    $.ajax({
-                        url: "fetch_price.php",
-                        type: "POST",
-                        data: {
+                // เมื่อเลือกชื่อของเก่า
+                $("#product").change(function() {
+                    const productId = $(this).val();
+                    if (productId) {
+                        $.post("fetch_price.php", {
                             product_id: productId
-                        },
-                        success: function(data) {
+                        }, function(data) {
                             $("#price").val(data);
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+                        });
+                    } else {
+                        $("#price").val('');
+                    }
+                });
 
-    <script>
-        $(document).ready(function() {
-            $(".cart").click(function() {
-                Swal.fire({
-                    title: "สำเร็จ",
-                    text: "You clicked the button!",
-                    icon: "success"
+                // เมื่อกดปุ่มเพิ่ม
+                $("#addButton").click(function() {
+                    const product_name = $("#product option:selected").text();
+                    const type_name = $("#type option:selected").text();
+                    const price = parseFloat($("#price").val());
+                    const quantity = parseInt($("#quantity").val());
+
+                    if (!product_name || !price || !quantity || isNaN(price) || isNaN(quantity)) {
+                        alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                        return;
+                    }
+
+                    const total = price * quantity;
+
+                    // สร้างแถวใหม่ในตาราง
+                    const newRow = `
+            <tr>
+                <td>${$("#cartTable tr").length + 1}</td>
+                <td>${product_name}</td>
+                <td>${type_name}</td>
+                <td>${quantity}</td>
+                <td>${price.toFixed(2)} บาท</td>
+                <td>${total.toFixed(2)} บาท</td>
+                <td><button class="btn btn-danger btn-sm removeRow">ลบ</button></td>
+            </tr>
+        `;
+
+                    $("#cartTable").append(newRow);
+
+                    // อัปเดตยอดรวมในหน้าเว็บ
+                    updateGrandTotal();
+
+                    // ล้างข้อมูลในฟอร์ม
+                    $("#quantity").val('');
+                    $("#price").val('');
+                    $("#product").val('');
+                });
+
+                // ฟังก์ชันลบแถวในตาราง
+                $(document).on("click", ".removeRow", function() {
+                    $(this).closest("tr").remove();
+
+                    // อัปเดตลำดับในตารางใหม่
+                    $("#cartTable tr").each(function(index) {
+                        $(this).find("td:first-child").text(index + 1);
+                    });
+
+                    // อัปเดตยอดรวม
+                    updateGrandTotal();
                 });
             });
-        });
     </script>
+
 </body>
 
 </html>
-
 <?php
 $conn->close();
 ?>
