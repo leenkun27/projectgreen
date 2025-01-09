@@ -90,6 +90,7 @@
         </table>
 
         <div class="row">
+            
             <div class="col-6">
                 <p><strong>หมายเหตุ:</strong> (รวมสินค้าโปรโมชั่นแล้ว)</p>
             </div>

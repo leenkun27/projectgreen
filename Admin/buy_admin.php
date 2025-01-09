@@ -2,52 +2,31 @@
 session_start();
 include '../condb.php';
 
-$type_query = "SELECT type_id, type_name FROM product_type";
-$type_result = $conn->query($type_query);
+// ดึงข้อมูลประเภทสินค้า
+$type_result = $conn->query("SELECT type_id, type_name FROM product_type");
+// ดึงข้อมูลสินค้า
+$product_result = $conn->query("SELECT product_id, product_name FROM product");
 
-// ดึงข้อมูล product_name
-$product_query = "SELECT product_id, product_name FROM product";
-$product_result = $conn->query($product_query);
-
-// เพิ่มข้อมูลใน session
+// ถ้ามีการกดเพิ่มสินค้า
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $product_name = htmlspecialchars($_POST['product_name']);
-    $price = filter_var($_POST['price'], FILTER_VALIDATE_FLOAT);
-    $quantity = filter_var($_POST['quantity'], FILTER_VALIDATE_INT);
+    $product_name = $_POST['product_name'];
+    $price = $_POST['price'];
+    $quantity = $_POST['quantity'];
 
-    if ($product_name && $price && $quantity) {
-        $total = $price * $quantity;
+    $total = $price * $quantity;
 
-        // เก็บข้อมูลลง session
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
+    $_SESSION['cart'][] = [
+        'product_name' => $product_name,
+        'price' => $price,
+        'quantity' => $quantity,
+        'total' => $total
+    ];
 
-        // ตรวจสอบสินค้าซ้ำ
-        $is_duplicate = false;
-        foreach ($_SESSION['cart'] as &$item) {
-            if ($item['product_name'] === $product_name) {
-                $item['quantity'] += $quantity;
-                $item['total'] = $item['price'] * $item['quantity'];
-                $is_duplicate = true;
-                break;
-            }
-        }
-
-        if (!$is_duplicate) {
-            $_SESSION['cart'][] = [
-                'product_name' => $product_name,
-                'price' => $price,
-                'quantity' => $quantity,
-                'total' => $total,
-            ];
-        }
-        // Return JSON response for AJAX
-        echo json_encode(['product_name' => $product_name, 'price' => $price, 'quantity' => $quantity, 'total' => $total]);
-        exit;
-    }
+    echo json_encode(['success' => true]);
+    exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -58,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 </head>
 
 <style>
@@ -161,34 +142,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
 
-                        <div class="table-responsive mt-3">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>ลำดับ</th>
-                                        <th>ชื่อของเก่า</th>
-                                        <th>ประเภท</th>
-                                        <th>จำนวน</th>
-                                        <th>ราคาต่อหน่วย</th>
-                                        <th>จำนวนเงิน</th>
-                                        <th>หมายเหตุ</th>
-                                    </tr>
-                                </thead>
+                        <h2>ตะกร้าสินค้า</h2>
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>ชื่อสินค้า</th>
+                                    <th>จำนวน</th>
+                                    <th>ราคา</th>
+                                    <th>รวม</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart"></tbody>
+                        </table>
+                    </div>
 
-                                <tbody id="cartTable">
+                    <div class="summary">
+                        <p>ยอดรวมทั้งหมด: <span id="grand-total">0.00</span> บาท</p>
+                    </div>
 
-                                </tbody>
-
-                            </table>
-                        </div>
-
-                        <div class="summary">
-                            <p>ยอดรวมทั้งหมด: <span id="grand-total">0.00</span> บาท</p>
-                        </div>
+                    <div class="text-end mt-3">
+                        <button type="button" id="saveButton" class="btn btn-primary">บันทึก</button>
+                        <a href="product_list.php" class="btn btn-secondary">ยกเลิก</a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 
 
@@ -196,97 +176,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-            $(document).ready(function() {
-                let totalAmount = 0; // ตัวแปรเก็บยอดรวมทั้งหมด
+        $(document).ready(function() {
+        $("#addButton").click(function() {
+            let productName = $("#product option:selected").text();
+            let quantity = parseInt($("#quantity").val());
+            let price = parseFloat($("#price").val());
+            let total = price * quantity;
 
-                function updateGrandTotal() {
-                    let grandTotal = 0;
-                    $("#cartTable tr").each(function() {
-                        const rowTotal = parseFloat($(this).find("td:nth-child(6)").text()) || 0;
-                        grandTotal += rowTotal;
-                    });
-                    $("#grand-total").text(grandTotal.toFixed(2));
-                }
+            if (!productName || isNaN(price) || isNaN(quantity)) {
+                alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                return;
+            }
 
-                // เมื่อเลือกประเภท
-                $("#type").change(function() {
-                    const typeId = $(this).val();
-                    if (typeId) {
-                        $.post("fetch_products.php", {
-                            type_id: typeId
-                        }, function(data) {
-                            $("#product").html(data);
-                        });
-                    } else {
-                        $("#product").html('<option value="">-- เลือกชื่อของเก่า --</option>');
-                    }
-                });
-
-                // เมื่อเลือกชื่อของเก่า
-                $("#product").change(function() {
-                    const productId = $(this).val();
-                    if (productId) {
-                        $.post("fetch_price.php", {
-                            product_id: productId
-                        }, function(data) {
-                            $("#price").val(data);
-                        });
-                    } else {
-                        $("#price").val('');
-                    }
-                });
-
-                // เมื่อกดปุ่มเพิ่ม
-                $("#addButton").click(function() {
-                    const product_name = $("#product option:selected").text();
-                    const type_name = $("#type option:selected").text();
-                    const price = parseFloat($("#price").val());
-                    const quantity = parseInt($("#quantity").val());
-
-                    if (!product_name || !price || !quantity || isNaN(price) || isNaN(quantity)) {
-                        alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-                        return;
-                    }
-
-                    const total = price * quantity;
-
-                    // สร้างแถวใหม่ในตาราง
-                    const newRow = `
-            <tr>
-                <td>${$("#cartTable tr").length + 1}</td>
-                <td>${product_name}</td>
-                <td>${type_name}</td>
+            let row = `<tr>
+                <td>${productName}</td>
                 <td>${quantity}</td>
-                <td>${price.toFixed(2)} บาท</td>
-                <td>${total.toFixed(2)} บาท</td>
-                <td><button class="btn btn-danger btn-sm removeRow">ลบ</button></td>
-            </tr>
-        `;
+                <td>${price.toFixed(2)}</td>
+                <td>${total.toFixed(2)}</td>
+            </tr>`;
 
-                    $("#cartTable").append(newRow);
+            $("#cart").append(row);
 
-                    // อัปเดตยอดรวมในหน้าเว็บ
-                    updateGrandTotal();
+            // ล้างค่าหลังจากเพิ่มลงตะกร้า
+            $("#quantity").val('');
+            $("#price").val('');
+        });
 
-                    // ล้างข้อมูลในฟอร์ม
-                    $("#quantity").val('');
-                    $("#price").val('');
-                    $("#product").val('');
+        // ตรวจสอบว่า jQuery โหลดสำเร็จหรือไม่
+        if (!window.jQuery) {
+            alert("jQuery ไม่โหลด กรุณาตรวจสอบการเชื่อมต่อ");
+        }
+    });
+    
+        // เมื่อเลือกประเภท
+        $("#type").change(function() {
+            const typeId = $(this).val();
+            if (typeId) {
+                $.post("fetch_products.php", {
+                    type_id: typeId
+                }, function(data) {
+                    $("#product").html(data);
                 });
+            } else {
+                $("#product").html('<option value="">-- เลือกชื่อของเก่า --</option>');
+            }
+        });
 
-                // ฟังก์ชันลบแถวในตาราง
-                $(document).on("click", ".removeRow", function() {
-                    $(this).closest("tr").remove();
-
-                    // อัปเดตลำดับในตารางใหม่
-                    $("#cartTable tr").each(function(index) {
-                        $(this).find("td:first-child").text(index + 1);
-                    });
-
-                    // อัปเดตยอดรวม
-                    updateGrandTotal();
+        // เมื่อเลือกชื่อของเก่า
+        $("#product").change(function() {
+            const productId = $(this).val();
+            if (productId) {
+                $.post("fetch_price.php", {
+                    product_id: productId
+                }, function(data) {
+                    $("#price").val(data);
+                    $("#unit").val(data);
                 });
-            });
+            } else {
+                $("#price").val('');
+            }
+        });
     </script>
 
 </body>
