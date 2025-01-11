@@ -1,28 +1,15 @@
 <?php
-include '../condb.php';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // รับ JSON จาก Frontend
-    $input = json_decode(file_get_contents('php://input'), true);
-    $id = $input['id'] ?? null;
-
-    if ($id) {
-        // ใช้ Prepared Statement เพื่อป้องกัน SQL Injection
-        $stmt = $conn->prepare("DELETE FROM product WHERE id = ?");
-        $stmt->bind_param("i", $id);
-
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true, "message" => "ลบข้อมูลสำเร็จ"]);
-        } else {
-            echo json_encode(["success" => false, "message" => "เกิดข้อผิดพลาด"]);
-        }
-
-        $stmt->close();
-    } else {
-        echo json_encode(["success" => false, "message" => "ID ไม่ถูกต้อง"]);
-    }
-} else {
-    echo json_encode(["success" => false, "message" => "Method ไม่ถูกต้อง"]);
+include 'condb.php';
+$ids=$_GET['id'];
+$sql="DELETE FROM tbl_member WHERE mem_id='$ids' ";
+if(mysqli_query($conn,$sql)){
+    echo "<script>alert('ลบข้อมูลสำเร็จ');</script>";
+    echo "<script>window.location='product_admin.php';</script>";
+}else{
+    echo "Error : " . $sql . "<br>" . mysqli_error($conn);
+    echo "<script>alert('ไม่สามารถลบข้อมูลได้');</script>";
 }
 
-$conn->close();
+mysqli_close($conn);
+
+?>
