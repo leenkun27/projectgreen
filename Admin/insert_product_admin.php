@@ -1,19 +1,53 @@
 <?php
 include '../condb.php';
-$p_name = $_POST['product_name'];
-$t_id = $_POST['type_id'];
-$c_price = $_POST['cost_price'];
-$q = $_POST['quantity'];
-$u = $_POST['unit'];
-$p_img = $_POST['product_img'];
+$productName = $_POST['product_name'];
+$typeID = $_POST['type_id'];
+$cost = $_POST['cost_price'];
+$quant = $_POST['quantity'];
 
-$sql="INSERT INTO product(product_name,type_id,cost_price,quantity,unit,product_img) VALUES('$p_name','$t_id','$c_price','$q','$u','$p_img') ";
-$result=mysqli_query($conn,$sql);
-if($result){
-    echo "<script>alert('บันทึกข้อมูลสำเร็จ');</script>";
-    echo "<script>window.location='product_admin.php';</script>";
-}else{
-    echo "<script>alert('ไม่สามารถบันทึกข้อมูลได้');</script>";
+$unit = $_POST['unit'];
+switch ($unit) {
+    case 1:
+        $unit = "กิโลกรัม";
+        break;
+    case 2:
+        $unit = "ชิ้น";
+        break;
+    case 3:
+        $unit = "ลัง";
+        break;
+    default:
+        $unit = "ไม่ระบุ";
+}
+
+// จัดการอัปโหลดรูปภาพ
+$target_dir = "../uploads/"; // โฟลเดอร์ที่ต้องการเก็บไฟล์รูป
+$target_file = $target_dir . basename($_FILES["product_img"]["name"]); // ที่อยู่ไฟล์
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION)); // นามสกุลไฟล์
+
+// ตรวจสอบว่าเป็นไฟล์รูปภาพ
+$check = getimagesize($_FILES["product_img"]["tmp_name"]);
+if ($check === false) {
+    echo "<script>alert('ไฟล์ที่อัปโหลดไม่ใช่รูปภาพ');</script>";
+    exit;
+}
+
+// ย้ายไฟล์ไปยังโฟลเดอร์เป้าหมาย
+if (move_uploaded_file($_FILES["product_img"]["tmp_name"], $target_file)) {
+    // บันทึกข้อมูลสินค้าในฐานข้อมูล
+    $sql = "INSERT INTO product (product_name, type_id, cost_price, quantity, unit, product_img) 
+            VALUES ('$productName', '$typeID', '$cost', '$quant', '$unit', '$target_file')";
+
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        echo "<script>alert('บันทึกข้อมูลสำเร็จ');</script>";
+        echo "<script>window.location='product_admin.php';</script>";
+    } else {
+        echo "<script>alert('ไม่สามารถบันทึกข้อมูลได้');</script>";
+    }
+} else {
+    echo "<script>alert('ไม่สามารถอัปโหลดรูปภาพได้');</script>";
 }
 mysqli_close($conn);
+
 ?>

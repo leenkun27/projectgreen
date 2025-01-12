@@ -1,11 +1,13 @@
-<?php include '../condb.php'; ?>
+<?php include '../condb.php'; 
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do</title>
+    <title>หน้าข้อมูลของเก่า</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -115,13 +117,13 @@
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<th scope='row'>" . $index++ . "</th>";
-                                                echo "<td><img src='" . $row['product_img'] . "' alt='product' class='img-fluid' width='50'></td>";
+                                                echo "<td><img src='" . $row['product_img'] . "' alt='product' class='img-fluid' width='100'></td>";
                                                 echo "<td>" . $row['product_name'] . "</td>";
                                                 echo "<td>" . $row['type_id'] . "</td>";
                                                 echo "<td>" . $row['cost_price'] . "</td>";
                                                 echo "<td>" . $row['quantity'] . "</td>";
                                                 echo "<td>" . $row['unit'] . "</td>";
-                                                echo "<td><button class='btn btn-danger btn-sm removeRow' data-id='{$row['product_id']}'>ลบ</button></td>";
+                                                echo "<td><a href='delete_product_admin.php?id=" . $row['product_id'] . "' class='btn btn-danger' onclick='Del(this.href);return false;'><i class='bi bi-trash'></i></a> </td>";
                                                 echo "<td><a href='edit_product_admin.php?product_id=" . $row['product_id'] . "' class='btn btn-warning'><i class='bi bi-pencil-square'></i></a></td>";
                                                 echo "</tr>";
                                             }
@@ -257,5 +259,14 @@
 
 
 </body>
-
 </html>
+
+<script language="JavaScript">
+function Del(mypang){
+    var agree=confirm("คุณต้องการลบข้อมูลหรือไม่");
+    if(agree){
+        window.location=mypang;
+    }
+}
+
+</script>

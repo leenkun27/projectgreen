@@ -51,14 +51,19 @@ include '../condb.php';
                     </div>
 
                     <div class="mb-3">
-                        <label for="unit" class="form-label">หน่วย</label>
-                        <input type="text" class="form-control" id="unit" name="unit" required>
+                        <label for="unit">หน่วย:</label>
+                        <select class="form-control" id="unit" name="unit" required>
+                            <option value="">-- เลือกหน่วย --</option>
+                            <option value="1">กิโลกรัม</option>
+                            <option value="2">ชิ้น</option>
+                            <option value="3">ลัง</option>
+                        </select>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="product_img">รูปภาพสินค้า</label>
-                        <input type="file" class="form-control" id="product_img" name="product_img" required>
-                    </div>
+                        <div class="mb-3">
+                            <label for="product_img">รูปภาพสินค้า</label>
+                            <input type="file" class="form-control" id="product_img" name="product_img" required>
+                        </div>
 
                     <button type="submit" class="btn btn-success">บันทึก</button>
                     <a href="product_admin.php" class="btn btn-secondary">ยกเลิก</a>

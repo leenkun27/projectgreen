@@ -7,6 +7,7 @@ if (isset($_GET['product_id'])) {
 
     // Query ข้อมูลสินค้าเดิมจากฐานข้อมูล
     $sql = "SELECT product_name, cost_price, unit FROM product WHERE product_id = ?";
+    $type_result = $conn->query("SELECT type_id, type_name FROM product_type");
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
@@ -18,14 +19,14 @@ if (isset($_GET['product_id'])) {
         $cost_price = $row['cost_price'];
         $unit = $row['unit'];
     } else {
-        echo "<script>alert('ไม่พบข้อมูลสินค้า'); window.location.href='product_list.php';</script>";
+        echo "<script>alert('ไม่พบข้อมูลสินค้า'); window.location.href='product_admin.php';</script>";
         exit();
     }
 
     $stmt->close();
     $conn->close();
 } else {
-    echo "<script>alert('ไม่มีการระบุ ID สินค้า'); window.location.href='product_list.php';</script>";
+    echo "<script>alert('ไม่มีการระบุ ID สินค้า'); window.location.href='product_admin.php';</script>";
     exit();
 }
 ?>
@@ -58,18 +59,41 @@ if (isset($_GET['product_id'])) {
                     </div>
 
                     <div class="mb-3">
+                        <label for="type">ประเภทสินค้า</label>
+                        <select class="form-control" id="type" name="type_id" required>
+                            <option value="">-- เลือกประเภทสินค้า --</option>
+                            <?php
+                            if ($type_result->num_rows > 0) {
+                                while ($row = $type_result->fetch_assoc()) {
+                                    $selected = $row['type_id'] == $type_id ? 'selected' : '';
+                                    echo "<option value='{$row['type_id']}' $selected>{$row['type_name']}</option>";
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="cost_price">ราคาต้นทุน</label>
                         <input type="number" class="form-control" id="cost_price" name="cost_price" value="<?php echo htmlspecialchars($cost_price); ?>" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="unit">หน่วย</label>
-                        <input type="text" class="form-control" id="unit" name="unit" value="<?php echo htmlspecialchars($unit); ?>" required>
+                        <label for="unit">หน่วย:</label>
+                        <select class="form-control" id="unit" name="unit" required>
+                            <option value="1" <?php if ($unit == 1) echo 'selected'; ?>>กิโลกรัม</option>
+                            <option value="2" <?php if ($unit == 2) echo 'selected'; ?>>ชิ้น</option>
+                            <option value="3" <?php if ($unit == 3) echo 'selected'; ?>>ลัง</option>
+                        </select>
                     </div>
 
-                    <!-- ฟิลด์อื่นๆ -->
-                    <button type="submit" class="btn btn-primary">บันทึก</button>
-                    <a href="product_list.php" class="btn btn-secondary">ยกเลิก</a>
+
+                    <div class="mb-3">
+                        <label for="product_img">รูปภาพสินค้า (อัปโหลดใหม่หากต้องการ)</label>
+                        <input type="file" class="form-control" id="product_img" name="product_img">
+                    </div>
+                    <button type="submit" class="btn btn-success">บันทึก</button>
+                    <a href="product_admin.php" class="btn btn-danger">ยกเลิก</a>
                 </form>
             </div>
 </body>

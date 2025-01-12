@@ -1,7 +1,7 @@
 <?php
-include 'condb.php';
+include '../condb.php';
 $ids=$_GET['id'];
-$sql="DELETE FROM tbl_member WHERE mem_id='$ids' ";
+$sql="DELETE FROM product WHERE product_id='$ids' ";
 if(mysqli_query($conn,$sql)){
     echo "<script>alert('ลบข้อมูลสำเร็จ');</script>";
     echo "<script>window.location='product_admin.php';</script>";

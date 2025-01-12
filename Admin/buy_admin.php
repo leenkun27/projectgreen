@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="text-end mt-3">
                         <button type="button" id="saveButton" class="btn btn-primary">บันทึก</button>
-                        <a href="product_list.php" class="btn btn-secondary">ยกเลิก</a>
+                        <a href="product_list.php" class="btn btn-danger">ยกเลิก</a>
                     </div>
                 </div>
             </div>
