@@ -1,4 +1,11 @@
-<?php include '../condb.php'; ?>
+<?php
+session_start();
+if ($_SESSION['role'] != 'admin') {
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +14,7 @@
     <title>Admin Dashboard</title>
 </head>
 <body>
-    <h2>Welcome Admin</h2>
-    <p>This is the admin dashboard.</p>
+    <h1>ยินดีต้อนรับ Admin: <?php echo $_SESSION['username']; ?></h1>
     <a href="logout.php">Logout</a>
 </body>
 </html>

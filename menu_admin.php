@@ -90,7 +90,7 @@
             <li><a href="../Admin/report_admin.php"><i class="bi bi-clipboard-data-fill"></i> รายงาน</a></li>
             <li><a href="../Admin/history_sale_admin.php"><i class="bi bi-file-text-fill"></i> ประวัติขาย</a></li>
             <li><a href="../Admin/staff_admin.php"><i class="bi bi-person-circle"></i> ข้อมูลพนักงาน</a></li>
-            <li><a href="#"><i class="bi bi-door-open-fill"></i> ออกจากระบบ</a></li>
+            <li><a href="../logout.php"><i class="bi bi-door-open-fill"></i> ออกจากระบบ</a></li>
         </ul>
     </div>
     

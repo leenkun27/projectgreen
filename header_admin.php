@@ -1,3 +1,10 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
+?>
 <style>
     /* กำหนดให้ navbar อยู่เหนือสุด */
     .custom-navbar {
@@ -51,12 +58,12 @@
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle"></i> แอดมิน
+                            <i class="bi bi-person-circle"></i> <?php echo $_SESSION['username']; ?>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <li class="dropdown-header">เมนูผู้ใช้งาน</li>
                             <li><a class="dropdown-item" href="../Admin/staff_admin.php"><i class="bi bi-person"></i> ข้อมูลพนักงาน</a></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+                            <li><a class="dropdown-item text-danger" href="../logout.php"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
                     </li>
                 </ul>
             </div>

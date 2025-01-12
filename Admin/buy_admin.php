@@ -1,5 +1,9 @@
 <?php
 session_start();
+if ($_SESSION['role'] != 'admin') {
+    header("Location: login.php");
+    exit();
+}
 include '../condb.php';
 
 // ดึงข้อมูลประเภทสินค้า
@@ -68,102 +72,103 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div>
                         <h2><i class="bi-basket fs-5 me-2"></i> รับซื้อสินค้า</h2>
                     </div>
-                    <div class="row mt-5">
-                        <div class="col-lg-6 col-md-4 col-sm-6">
-                            <label for="p_date">วันที่รับซื้อ</label>
-                            <div class="input-group">
-                                <input type="date" class="form-control" id="p_date" readonly>
+                    <form action="process_buy.php" method="POST">
+                        <div class="row mt-5">
+                            <div class="col-lg-6 col-md-4 col-sm-6">
+                                <label for="p_date">วันที่รับซื้อ</label>
+                                <div class="input-group">
+                                    <input type="date" class="form-control" id="p_date" readonly>
+                                </div>
                             </div>
-                        </div>
 
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function() {
-                                const dateField = document.getElementById("p_date");
-                                const now = new Date();
-                                const formattedDate = now.toISOString().split("T")[0]; // รูปแบบ YYYY-MM-DD
-                                dateField.value = formattedDate;
-                            });
-                        </script>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const dateField = document.getElementById("p_date");
+                                    const now = new Date();
+                                    const formattedDate = now.toISOString().split("T")[0]; // รูปแบบ YYYY-MM-DD
+                                    dateField.value = formattedDate;
+                                });
+                            </script>
 
 
-                        <div class="col-6 ">
-                            ชื่อพนักงานที่รับซื้อ
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="p_name" placeholder="กรอกชื่อพนักงาน">
+                            <div class="col-6">
+                                <label for="name">ชื่อพนักงานที่รับซื้อ:</label>
+                                <input type="text" class="form-control" value="<?php echo isset($_SESSION['name']) ? $_SESSION['name'] : 'ไม่พบชื่อ'; ?>" readonly>
                             </div>
-                        </div>
 
-                        <div class="col-6 mt-2">
-                            <!-- Dropdown ประเภทของเก่า -->
-                            <form action="process.php" method="POST">
-                                <label for="type">เลือกประเภท:</label>
 
-                                <select class="form-control" name="type" id="type" placeholder="">
-                                    <option value="">-- เลือกประเภท --</option>
-                                    <?php
-                                    if ($type_result->num_rows > 0) {
-                                        while ($row = $type_result->fetch_assoc()) {
-                                            echo "<option value='" . $row['type_id'] . "'>" . $row['type_name'] . "</option>";
+                            <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
+                                <!-- Dropdown ประเภทของเก่า -->
+                                <form action="process.php" method="POST">
+                                    <label for="type">เลือกประเภท:</label>
+
+                                    <select class="form-control" name="type" id="type" placeholder="">
+                                        <option value="">-- เลือกประเภท --</option>
+                                        <?php
+                                        if ($type_result->num_rows > 0) {
+                                            while ($row = $type_result->fetch_assoc()) {
+                                                echo "<option value='" . $row['type_id'] . "'>" . $row['type_name'] . "</option>";
+                                            }
                                         }
-                                    }
-                                    ?>
+                                        ?>
+                                    </select>
+
+                            </div>
+
+
+                            <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
+                                <!-- Dropdown ของเก่า -->
+                                <label for="product">เลือกชื่อของเก่า:</label>
+                                <select class="form-control" name="product" id="product" placeholder="">
+                                    <option value="">-- เลือกชื่อของเก่า --</option>
                                 </select>
 
-                        </div>
-
-
-                        <div class="col-6 mt-2">
-                            <!-- Dropdown ของเก่า -->
-                            <label for="product">เลือกชื่อของเก่า:</label>
-                            <select class="form-control" name="product" id="product" placeholder="">
-                                <option value="">-- เลือกชื่อของเก่า --</option>
-                            </select>
-
-                        </div>
-
-
-                        <div class="col-6 mt-2">
-                            <div>ปริมาณการรับซื้อ</div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="quantity" id="quantity" required min="1">
                             </div>
-                        </div>
 
 
-                        <div class="col-6 mt-2">
-                            <div>ราคารับซื้อวันนี้</div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="price" id="price" readonly>
+                            <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
+                                <div>ปริมาณการรับซื้อ</div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="quantity" id="quantity" required min="1">
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="col-12 mt-3 text-end">
-                            <button type="button" id="addButton" class="btn btn-success">เพิ่ม</button>
-                        </div>
 
 
-                        <h2>ตะกร้าสินค้า</h2>
-                        <table border="1">
-                            <thead>
-                                <tr>
-                                    <th>ชื่อสินค้า</th>
-                                    <th>จำนวน</th>
-                                    <th>ราคา</th>
-                                    <th>รวม</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cart"></tbody>
-                        </table>
-                    </div>
+                            <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
+                                <div>ราคารับซื้อวันนี้</div>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="price" id="price" readonly>
+                                </div>
+                            </div>
 
-                    <div class="summary">
-                        <p>ยอดรวมทั้งหมด: <span id="grand-total">0.00</span> บาท</p>
-                    </div>
+                            <div class="col-12 mt-3 text-end">
+                                <button type="button" id="addButton" class="btn btn-success">เพิ่ม</button>
+                            </div>
 
-                    <div class="text-end mt-3">
-                        <button type="button" id="saveButton" class="btn btn-primary">บันทึก</button>
-                        <a href="product_list.php" class="btn btn-danger">ยกเลิก</a>
-                    </div>
+
+                            <h2>ตะกร้าสินค้า</h2>
+                            <div class="table-responsive mt-3">
+                                <table class="table table-striped table-bordered">
+                                    <tr>
+                                        <th>ชื่อสินค้า</th>
+                                        <th>จำนวน</th>
+                                        <th>ราคา</th>
+                                        <th>รวม</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="cart"></tbody>
+                                </table>
+                            </div>
+
+                            <div class="summary">
+                                <p>ยอดรวมทั้งหมด: <span id="grand-total">0.00</span> บาท</p>
+                            </div>
+
+                            <div class="text-end mt-3">
+                                <button type="button" id="saveButton" class="btn btn-primary">บันทึก</button>
+                                <a href="product_list.php" class="btn btn-danger">ยกเลิก</a>
+                            </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -177,37 +182,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
-        $("#addButton").click(function() {
-            let productName = $("#product option:selected").text();
-            let quantity = parseInt($("#quantity").val());
-            let price = parseFloat($("#price").val());
-            let total = price * quantity;
+            $("#addButton").click(function() {
+                let productName = $("#product option:selected").text();
+                let quantity = parseInt($("#quantity").val());
+                let price = parseFloat($("#price").val());
+                let total = price * quantity;
 
-            if (!productName || isNaN(price) || isNaN(quantity)) {
-                alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-                return;
-            }
+                if (!productName || isNaN(price) || isNaN(quantity)) {
+                    alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                    return;
+                }
 
-            let row = `<tr>
+                let row = `<tr>
                 <td>${productName}</td>
                 <td>${quantity}</td>
                 <td>${price.toFixed(2)}</td>
                 <td>${total.toFixed(2)}</td>
             </tr>`;
 
-            $("#cart").append(row);
+                $("#cart").append(row);
 
-            // ล้างค่าหลังจากเพิ่มลงตะกร้า
-            $("#quantity").val('');
-            $("#price").val('');
+                // ล้างค่าหลังจากเพิ่มลงตะกร้า
+                $("#quantity").val('');
+                $("#price").val('');
+            });
+
+            // ตรวจสอบว่า jQuery โหลดสำเร็จหรือไม่
+            if (!window.jQuery) {
+                alert("jQuery ไม่โหลด กรุณาตรวจสอบการเชื่อมต่อ");
+            }
         });
 
-        // ตรวจสอบว่า jQuery โหลดสำเร็จหรือไม่
-        if (!window.jQuery) {
-            alert("jQuery ไม่โหลด กรุณาตรวจสอบการเชื่อมต่อ");
-        }
-    });
-    
         // เมื่อเลือกประเภท
         $("#type").change(function() {
             const typeId = $(this).val();
