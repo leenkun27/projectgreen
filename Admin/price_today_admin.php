@@ -51,7 +51,7 @@ if (!$result) {
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="container mt-5">
-                    <h2 class="mb-4">ราคากลางของเก่าวันนี้</h2>
+                    <h2 class="mb-4">ราคาของเก่าวันนี้</h2>
 
                     <table class="table table-bordered">
                         <thead>
