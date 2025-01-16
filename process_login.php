@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = md5($_POST['password']); 
 
-    // ตรวจสอบผู้ใช้
+    
     $sql = "SELECT * FROM users WHERE username = ? AND password = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $username, $password);
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['name'] = $user['name']; 
 
 
-        // แยก Role
+     
         if ($user['role'] == 'admin') {
             header("Location: Admin/buy_admin.php");
         } else if ($user['role'] == 'user') {

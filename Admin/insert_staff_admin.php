@@ -22,7 +22,8 @@ switch ($unit) {
 
 $target_dir = "../uploads/"; 
 $target_file = $target_dir . basename($_FILES["product_img"]["name"]); 
-$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION)); 
+
 
 $check = getimagesize($_FILES["product_img"]["tmp_name"]);
 if ($check === false) {
@@ -32,7 +33,7 @@ if ($check === false) {
 
 
 if (move_uploaded_file($_FILES["product_img"]["tmp_name"], $target_file)) {
-   
+
     $sql = "INSERT INTO product (product_name, type_id, cost_price, quantity, unit, product_img) 
             VALUES ('$productName', '$typeID', '$cost', '$quant', '$unit', '$target_file')";
 

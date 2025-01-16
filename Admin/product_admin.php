@@ -1,4 +1,4 @@
-<?php include '../condb.php'; 
+<?php include '../condb.php';
 
 ?>
 <!DOCTYPE html>
@@ -24,7 +24,7 @@
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-12">
                     <h2>ข้อมูลสินค้า</h2>
-                    <!-- Search and Table Section -->
+
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <input id="searchInput" type="text" class="form-control w-50" placeholder="ค้นหาชื่อของเก่า">
@@ -35,7 +35,6 @@
                         </div>
                     </div>
 
-                    <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -109,7 +108,9 @@
                                     </thead>
                                     <tbody id="productBody">
                                         <?php
-                                        $sql = "SELECT * FROM product";
+                                        $sql = "SELECT p.*, t.type_name 
+                                                FROM product p 
+                                                LEFT JOIN product_type t ON p.type_id = t.type_id";
                                         $result = $conn->query($sql);
 
                                         if ($result->num_rows > 0) {
@@ -119,7 +120,7 @@
                                                 echo "<th scope='row'>" . $index++ . "</th>";
                                                 echo "<td><img src='" . $row['product_img'] . "' alt='product' class='img-fluid' width='100'></td>";
                                                 echo "<td>" . $row['product_name'] . "</td>";
-                                                echo "<td>" . $row['type_id'] . "</td>";
+                                                echo "<td>" . $row['type_name'] . "</td>";
                                                 echo "<td>" . $row['cost_price'] . "</td>";
                                                 echo "<td>" . $row['quantity'] . "</td>";
                                                 echo "<td>" . $row['unit'] . "</td>";
@@ -146,24 +147,21 @@
                 </div>
 
                 <script>
-                    // รอให้หน้าเว็บโหลดเสร็จ
                     document.addEventListener("DOMContentLoaded", function() {
                         const searchInput = document.getElementById("searchInput");
                         const table = document.getElementById("productBody");
                         const rows = table.getElementsByTagName("tr");
 
-                        // เมื่อมีการพิมพ์ในช่องค้นหา
+
                         searchInput.addEventListener("keyup", function() {
                             const filter = searchInput.value.toLowerCase();
 
-                            // วนลูปข้อมูลในตาราง
                             for (let i = 0; i < rows.length; i++) {
                                 const cells = rows[i].getElementsByTagName("td");
 
-                                if (cells.length > 0) { // ตรวจสอบว่ามีข้อมูลในแถว
-                                    const productName = cells[1].textContent.toLowerCase(); // คอลัมน์ "ชื่อของเก่า" อยู่ที่ index 1
+                                if (cells.length > 0) {
+                                    const productName = cells[1].textContent.toLowerCase();
 
-                                    // แสดงหรือซ่อนแถวตามคำค้นหา
                                     rows[i].style.display = productName.includes(filter) ? "" : "none";
                                 }
                             }
@@ -172,7 +170,7 @@
                 </script>
 
                 <script>
-                    const rowsPerPage = 10; // จำนวนแถวต่อหน้า
+                    const rowsPerPage = 10;
                     let currentPage = 1;
                     const table = document.getElementById("productTable");
                     const tbody = document.getElementById("productBody");
@@ -203,7 +201,7 @@
                         }
                     });
 
-                    displayRows(); // แสดงข้อมูลหน้าแรกเมื่อโหลดหน้า
+                    displayRows();
                 </script>
 
 
@@ -235,8 +233,7 @@
                     });
 
                     function deleteRow(rowId) {
-                        fetch("/delete_product_admin.php", { // ตรวจสอบว่าเส้นทางถูกต้อง
-                                method: "POST",
+                        fetch("/delete_product_admin.php", {
                                 headers: {
                                     "Content-Type": "application/json",
                                 },
@@ -259,14 +256,14 @@
 
 
 </body>
+
 </html>
 
 <script language="JavaScript">
-function Del(mypang){
-    var agree=confirm("คุณต้องการลบข้อมูลหรือไม่");
-    if(agree){
-        window.location=mypang;
+    function Del(mypang) {
+        var agree = confirm("คุณต้องการลบข้อมูลหรือไม่");
+        if (agree) {
+            window.location = mypang;
+        }
     }
-}
-
 </script>

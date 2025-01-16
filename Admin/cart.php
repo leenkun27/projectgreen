@@ -2,7 +2,6 @@
 session_start();
 include '../condb.php';
 
-// Query for joining product and product_type tables
 $query = "
     SELECT 
         product.product_id, 

@@ -13,33 +13,24 @@
 <style>
     .card {
         max-height: 85vh;
-        /* กำหนดความสูงสูงสุด */
         overflow-y: auto;
-        /* เพิ่ม scroll ถ้าข้อมูลยาวเกิน */
         padding: 15px;
-        /* เพิ่ม padding ให้ดูสบายตา */
     }
 
     .table-responsive {
         max-height: 70vh;
-        /* จำกัดความสูงของตารางใน card */
         overflow-y: auto;
-        /* ทำให้เลื่อนข้อมูลในแนวตั้งได้ */
     }
 
     .table {
         table-layout: fixed;
-        /* ตารางมีขนาดคงที่ */
         word-wrap: break-word;
-        /* ตัดคำที่ยาวเกินในช่อง */
     }
 
     th,
     td {
         text-align: center;
-        /* จัดกลางข้อความในเซลล์ */
         vertical-align: middle;
-        /* จัดกึ่งกลางในแนวตั้ง */
     }
 </style>
 
@@ -56,7 +47,6 @@
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-12">
                     <h2 <i class="bi bi-person-gear"></i> ตั้งค่าสมาชิก</h2>
-                    <!-- Search Section -->
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <input id="searchInput" type="text" class="form-control w-50" placeholder="ค้นหาชื่อหรือข้อมูล">
@@ -65,7 +55,7 @@
                         </div>
                     </div>
 
-                    <!-- Modal -->
+                    <form method="POST" action="insert_staff_admin.php" enctype="multipart/form-data">
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -113,7 +103,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">ชื่อ-นามสกุล</label>
+                                        <label for="exampleInputEmail1" class="form-label">ที่อยู่</label>
                                         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                                     </div>
                                     <div class="mb-3">
@@ -129,6 +119,7 @@
                             </div>
                         </div>
                     </div>
+                    </form>
 
                     <div class="row ">
                         <div class="col-12">
@@ -147,12 +138,11 @@
                                     </thead>
                                     <tbody>
                                         <?php
-                                        // ดึงข้อมูลจากฐานข้อมูล
-                                        $sql = "SELECT * FROM tbl_member"; // ระบุชื่อตาราง
+                                        $sql = "SELECT * FROM tbl_member"; 
                                         $result = $conn->query($sql);
 
                                         if ($result->num_rows > 0) {
-                                            $index = 1; // ตัวนับลำดับ
+                                            $index = 1; 
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<th scope='row'>" . $index++ . "</th>";
@@ -167,7 +157,7 @@
                                         } else {
                                             echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
                                         }
-                                        $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+                                        $conn->close(); 
                                         ?>
                                     </tbody>
                                 </table>
@@ -176,29 +166,28 @@
                     </div>
 
                     <script>
-                        // รอให้หน้าเว็บโหลดเสร็จ
+                    
                         document.addEventListener("DOMContentLoaded", function() {
                             const searchInput = document.getElementById("searchInput");
                             const table = document.getElementById("memberTable");
                             const rows = table.getElementsByTagName("tr");
 
-                            // เมื่อมีการพิมพ์ในช่องค้นหา
                             searchInput.addEventListener("keyup", function() {
                                 const filter = searchInput.value.toLowerCase();
 
-                                // วนลูปข้อมูลในตาราง
-                                for (let i = 1; i < rows.length; i++) { // เริ่มที่ 1 เพราะแถวที่ 0 คือหัวตาราง
+                            
+                                for (let i = 1; i < rows.length; i++) { 
                                     const cells = rows[i].getElementsByTagName("td");
                                     let match = false;
 
-                                    // เช็กแต่ละคอลัมน์ในแถว
+                            
                                     for (let j = 0; j < cells.length; j++) {
                                         if (cells[j].textContent.toLowerCase().includes(filter)) {
-                                            match = true; // ถ้าตรงกับคำค้นหา
+                                            match = true; 
                                             break;
                                         }
                                     }
-                                    rows[i].style.display = match ? "" : "none"; // แสดงหรือซ่อนแถว
+                                    rows[i].style.display = match ? "" : "none";
                                 }
                             });
                         });

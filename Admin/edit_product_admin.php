@@ -1,11 +1,10 @@
 <?php
 include '../condb.php';
 
-// รับค่า product_id จาก URL
 if (isset($_GET['product_id'])) {
     $product_id = $_GET['product_id'];
 
-    // Query ข้อมูลสินค้าเดิมจากฐานข้อมูล
+  
     $sql = "SELECT product_name, cost_price, unit FROM product WHERE product_id = ?";
     $type_result = $conn->query("SELECT type_id, type_name FROM product_type");
     $stmt = $conn->prepare($sql);

@@ -5,13 +5,12 @@ if ($_SESSION['role'] != 'admin') {
     exit();
 }
 include '../condb.php';
+include '../menu_admin.php';
 
-// ดึงข้อมูลประเภทสินค้า
+//ดึงประเภทกับของเก่า
 $type_result = $conn->query("SELECT type_id, type_name FROM product_type");
-// ดึงข้อมูลสินค้า
 $product_result = $conn->query("SELECT product_id, product_name FROM product");
 
-// ถ้ามีการกดเพิ่มสินค้า
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_name = $_POST['product_name'];
     $price = $_POST['price'];
@@ -66,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="col-2">
                 <?php include '../menu_admin.php'; ?>
             </div>
-
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-10">
                     <div>
@@ -113,61 +111,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         ?>
                                     </select>
 
+                        </div>
+
+                        <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
+                            <label for="product">เลือกชื่อของเก่า:</label>
+                            <select class="form-control" name="product" id="product" placeholder="">
+                                <option value="">-- เลือกชื่อของเก่า --</option>
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
+                            <div>ปริมาณการรับซื้อ</div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="quantity" id="quantity" required min="1">
                             </div>
+                        </div>
 
 
-                            <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
-                                <!-- Dropdown ของเก่า -->
-                                <label for="product">เลือกชื่อของเก่า:</label>
-                                <select class="form-control" name="product" id="product" placeholder="">
-                                    <option value="">-- เลือกชื่อของเก่า --</option>
-                                </select>
-
+                        <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
+                            <div>ราคารับซื้อวันนี้</div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="price" id="price" readonly>
                             </div>
+                        </div>
+
+                        <div class="col-12 mt-3 text-end">
+                            <button type="button" id="addButton" class="btn btn-success">เพิ่ม</button>
+                        </div>
 
 
-                            <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
-                                <div>ปริมาณการรับซื้อ</div>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="quantity" id="quantity" required min="1">
-                                </div>
-                            </div>
+                        <h2>ตะกร้าสินค้า</h2>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-striped table-bordered">
+                                <tr>
+                                    <th>ชื่อสินค้า</th>
+                                    <th>จำนวน</th>
+                                    <th>ราคา</th>
+                                    <th>รวม</th>
+                                </tr>
+                                </thead>
+                                <tbody id="cart"></tbody>
+                            </table>
+                        </div>
 
+                        <div class="summary">
+                            <p>ยอดรวมทั้งหมด: <span id="grand-total">0.00</span> บาท</p>
+                        </div>
 
-                            <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
-                                <div>ราคารับซื้อวันนี้</div>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="price" id="price" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-12 mt-3 text-end">
-                                <button type="button" id="addButton" class="btn btn-success">เพิ่ม</button>
-                            </div>
-
-
-                            <h2>ตะกร้าสินค้า</h2>
-                            <div class="table-responsive mt-3">
-                                <table class="table table-striped table-bordered">
-                                    <tr>
-                                        <th>ชื่อสินค้า</th>
-                                        <th>จำนวน</th>
-                                        <th>ราคา</th>
-                                        <th>รวม</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="cart"></tbody>
-                                </table>
-                            </div>
-
-                            <div class="summary">
-                                <p>ยอดรวมทั้งหมด: <span id="grand-total">0.00</span> บาท</p>
-                            </div>
-
-                            <div class="text-end mt-3">
-                                <button type="button" id="saveButton" class="btn btn-primary">บันทึก</button>
-                                <a href="product_list.php" class="btn btn-danger">ยกเลิก</a>
-                            </div>
+                        <div class="text-end mt-3">
+                            <button type="button" id="saveButton" class="btn btn-primary">บันทึก</button>
+                            <a href="product_list.php" class="btn btn-danger">ยกเลิก</a>
+                        </div>
                     </form>
                 </div>
             </div>

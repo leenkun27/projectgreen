@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รายงานยอดขาย</title>
-    <!-- Import Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -26,7 +25,7 @@
                     <h2><i class="bi bi-file-text-fill"></i> ประวัติ-ขาย (ใบเสร็จ)</h2>
                 </div>
 
-                <!-- Summary Table -->
+               
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-summary">
                         <thead class="table-light">
@@ -49,7 +48,7 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
+
                 <div class="pagination-container">
                     <button class="btn btn-outline-secondary">ก่อนหน้า</button>
                     <span class="mx-3">1</span>
@@ -57,9 +56,8 @@
                 </div>
             </div>
 
-            <!-- Import Bootstrap JS -->
+           
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-            <!-- Import Bootstrap Icons -->
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

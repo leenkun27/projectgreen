@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <style>
@@ -63,7 +62,6 @@
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="container my-4">
-                    <!-- Statistics Section -->
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card-stat green">
@@ -87,8 +85,7 @@
 
                     <div class="col-12">
                         <h2>ข้อมูลของเก่า</h2>
-                        <div class="row">
-                            <!-- Filter Section -->
+                      <div class="row">
                             <div class="mt-4">
                                 <div class="row">
                                     <div class="col-md-4">
@@ -121,7 +118,6 @@
                                 </div>
                             </div>
 
-                            <!-- DataTable Section -->
                             <div class="table-responsive mt-3">
                                 <table class="table table-bordered table-striped table-summary">
                                     <thead class="table-light">
@@ -140,12 +136,11 @@
 
                                     <tbody>
                                         <?php
-                                        // ดึงข้อมูลจากฐานข้อมูล
-                                        $sql = "SELECT * FROM tbl_product"; // ระบุชื่อตาราง
+                                        $sql = "SELECT * FROM tbl_product";
                                         $result = $conn->query($sql);
 
                                         if ($result->num_rows > 0) {
-                                            $index = 1; // ตัวนับลำดับ
+                                            $index = 1; 
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<th scope='row'>" . $index++ . "</th>";
@@ -163,7 +158,7 @@
                                             echo "<tr><td colspan='7'>ไม่มีข้อมูล</td></tr>";
                                         }
 
-                                        $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล
+                                        $conn->close(); 
                                         ?>
                                     </tbody>
                                 </table>
@@ -174,7 +169,6 @@
 
                     </div>
 
-                    <!-- DataTable JS -->
                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
                     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -188,7 +182,7 @@
                                 }
                             });
 
-                            // ค้นหาตามฟิลด์ที่เลือก
+                   
                             $('#searchButton').click(function() {
                                 var status = $('#statusSelect').val();
                                 var category = $('#categorySelect').val();
@@ -196,9 +190,9 @@
                                 var unit = $('#unitSelect').val();
 
                                 table
-                                    .column(5).search(status) // ค้นหาตามสถานะ
-                                    .column(1).search(category) // ค้นหาตามประเภทสินค้า
-                                    .column(2).search(unit) // ค้นหาตามหน่วย
+                                    .column(5).search(status) 
+                                    .column(1).search(category) 
+                                    .column(2).search(unit) 
                                     .draw();
                             });
                         });
