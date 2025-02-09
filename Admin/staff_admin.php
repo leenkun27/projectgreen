@@ -56,69 +56,69 @@
                     </div>
 
                     <form method="POST" action="insert_staff_admin.php" enctype="multipart/form-data">
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">สร้างพนักงาน</h1>
-                                    <div class="ms-auto">
-                                        <button type="button" class="btn btn-Primary me-2">บันทึก</button>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                </div>
-
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-person-square"></i> เพิ่ม พนักงาน</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">ชื่อ-นามสกุล</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">รหัสผ่าน</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">ยืนยันรหัสผ่าน</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                    <div class="mb-3">
-                                        <div>ประเภทของพนักงาน</div>
-                                        <select class="form-select " aria-label=".form-select-sm example">
-                                            <option selected>ผู้ดูแลระบบ</option>
-                                            <option value="1">แอดมิน</option>
-                                            <option value="2">พนักงาน</option>
-                                        </select>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">สร้างพนักงาน</h1>
+                                        <div class="ms-auto">
+                                            <button type="button" class="btn btn-Primary me-2">บันทึก</button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">ชื่อในใบเสร็จ</label>
-                                        <input type="text" class="form-control">
+                                    <div class="modal-header">
+                                        <h2 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-person-square"></i> เพิ่ม พนักงาน</h2>
                                     </div>
-                                </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">ชื่อ-นามสกุล</label>
+                                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">รหัสผ่าน</label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">ยืนยันรหัสผ่าน</label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                        <div class="mb-3">
+                                            <div>ประเภทของพนักงาน</div>
+                                            <select class="form-select " aria-label=".form-select-sm example">
+                                                <option selected>ตำแหน่ง</option>
+                                                <option value="1">แอดมิน</option>
+                                                <option value="2">พนักงาน</option>
+                                            </select>
+                                        </div>
 
-                                <div class="modal-header">
-                                    <h2 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-person-circle"></i> ข้อมูลส่วนตัว</h2>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">ที่อยู่</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">เบอร์โทรศัพท์</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="">เพิ่มรูปภาพ</label>
-                                        <input type="file" name="h_image" id="" class="form-control mb-3" accept=".png,.jpg,.jpeg">
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">ชื่อในใบเสร็จ</label>
+                                            <input type="text" class="form-control">
+                                        </div>
                                     </div>
 
+                                    <div class="modal-header">
+                                        <h2 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-person-circle"></i> ข้อมูลส่วนตัว</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">ที่อยู่</label>
+                                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">เบอร์โทรศัพท์</label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="">เพิ่มรูปภาพ</label>
+                                            <input type="file" name="h_image" id="" class="form-control mb-3" accept=".png,.jpg,.jpeg">
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </form>
 
                     <div class="row ">
@@ -127,37 +127,33 @@
                                 <table id="memberTable" class="table table-bordered table-striped table-summary">
                                     <thead class="table-light">
                                         <tr>
-                                            <th scope="col">ลำดับ</th>
-                                            <th scope="col">รหัสสมาชิก</th>
-                                            <th scope="col">รูปภาพ</th>
-                                            <th scope="col">ชื่อ</th>
-                                            <th scope="col">ตำแหน่ง</th>
-                                            <th scope="col">ลบ</th>
-                                            <th scope="col">แก้ไข</th>
+                                            <th>ลำดับ</th>
+                                            <th>ชื่อผู้ใช้</th>
+                                            <th>ชื่อ</th>
+                                            <th>ที่อยู่</th>
+                                            <th>เบอร์โทร</th>
+                                            <th>ตำแหน่ง</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $sql = "SELECT * FROM tbl_member"; 
-                                        $result = $conn->query($sql);
-
+                                        $query = "SELECT * FROM users";
+                                        $result = $conn->query($query);
                                         if ($result->num_rows > 0) {
-                                            $index = 1; 
+                                            $index = 1;
                                             while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<th scope='row'>" . $index++ . "</th>";
-                                                echo "<td>" . $row['mem_code'] . "</td>";
-                                                echo "<td><img src='" . $row['mem_img'] . "' alt='product' class='img-fluid' width='50'></td>";
-                                                echo "<td>" . $row['mem_name'] . "</td>";
-                                                echo "<td>" . $row['mem_position'] . "</td>";
-                                                echo "<td><button type='button' class='btn btn-danger'><i class='bi bi-trash3'></i></button></td>";
-                                                echo "<td><button type='button' class='btn btn-warning'><i class='bi bi-pencil-square'></i></button></td>";
-                                                echo "</tr>";
+                                                echo "<tr>
+                                        <td>" . $index++ . "</td>
+                                        <td>" . htmlspecialchars($row['username']) . "</td>
+                                        <td>" . htmlspecialchars($row['name']) . "</td>
+                                        <td>" . htmlspecialchars($row['user_address']) . "</td>
+                                        <td>" . htmlspecialchars($row['user_tell']) . "</td>
+                                        <td>" . htmlspecialchars($row['role']) . "</td>
+                                    </tr>";
                                             }
                                         } else {
-                                            echo "<tr><td colspan='8'>ไม่มีข้อมูล</td></tr>";
+                                            echo "<tr><td colspan='7' class='text-center'>ไม่มีข้อมูล</td></tr>";
                                         }
-                                        $conn->close(); 
                                         ?>
                                     </tbody>
                                 </table>
@@ -166,7 +162,6 @@
                     </div>
 
                     <script>
-                    
                         document.addEventListener("DOMContentLoaded", function() {
                             const searchInput = document.getElementById("searchInput");
                             const table = document.getElementById("memberTable");
@@ -175,15 +170,15 @@
                             searchInput.addEventListener("keyup", function() {
                                 const filter = searchInput.value.toLowerCase();
 
-                            
-                                for (let i = 1; i < rows.length; i++) { 
+
+                                for (let i = 1; i < rows.length; i++) {
                                     const cells = rows[i].getElementsByTagName("td");
                                     let match = false;
 
-                            
+
                                     for (let j = 0; j < cells.length; j++) {
                                         if (cells[j].textContent.toLowerCase().includes(filter)) {
-                                            match = true; 
+                                            match = true;
                                             break;
                                         }
                                     }
@@ -208,5 +203,4 @@
                         });
                     </script>
 </body>
-
 </html>

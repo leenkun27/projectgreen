@@ -5,13 +5,13 @@ if ($_SESSION['role'] != 'admin') {
     exit();
 }
 include '../condb.php';
-include '../menu_admin.php';
+require '../menu_admin.php';
 
 //ดึงประเภทกับของเก่า
 $type_result = $conn->query("SELECT type_id, type_name FROM product_type");
 $product_result = $conn->query("SELECT product_id, product_name FROM product");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
     $product_name = $_POST['product_name'];
     $price = $_POST['price'];
     $quantity = $_POST['quantity'];

@@ -20,7 +20,9 @@ include '../condb.php';
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <h2>เพิ่มข้อมูลสินค้า</h2>
-                <form method="POST" action="insert_product_admin.php" enctype="multipart/form-data">
+                <!-- <form method="POST" action="insert_product_admin.php" enctype="multipart/form-data"> -->
+                <form method="POST" action="add_buyproduct.php" enctype="multipart/form-data">
+
                     <div class="mb-3">
                         <label for="product_name" class="form-label">ชื่อสินค้า</label>
                         <input type="text" class="form-control" id="product_name" name="product_name" required>
