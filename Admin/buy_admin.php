@@ -1,34 +1,63 @@
 <?php
 session_start();
+
 if ($_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
+
 include '../condb.php';
-require '../menu_admin.php';
 
-//ดึงประเภทกับของเก่า
+$current_date = date("d-m-Y");
+
+$type_id = isset($_POST['type']) ? $_POST['type'] : '';
 $type_result = $conn->query("SELECT type_id, type_name FROM product_type");
-$product_result = $conn->query("SELECT product_id, product_name FROM product");
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') { 
-    $product_name = $_POST['product_name'];
-    $price = $_POST['price'];
+
+$product_result = $conn->query("
+    SELECT p.product_id, p.product_name, p.price_today, p.unit, t.type_name 
+    FROM product p 
+    LEFT JOIN product_type t ON p.type_id = t.type_id
+    WHERE p.type_id = '$type_id'
+");
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_POST['quantity'])) {
+    $product_id = $_POST['product'];
     $quantity = $_POST['quantity'];
 
-    $total = $price * $quantity;
+    $product_query = $conn->query("
+        SELECT p.product_name, p.price_today, p.unit, t.type_name 
+        FROM product p 
+        LEFT JOIN product_type t ON p.type_id = t.type_id
+        WHERE p.product_id = '$product_id'
+    ");
 
-    $_SESSION['cart'][] = [
-        'product_name' => $product_name,
-        'price' => $price,
-        'quantity' => $quantity,
-        'total' => $total
-    ];
+    $product_data = $product_query->fetch_assoc();
 
-    echo json_encode(['success' => true]);
-    exit;
+    if ($product_data) {
+        $product_name = $product_data['product_name'];
+        $price = $product_data['price_today'];
+        $unit = $product_data['unit'];
+        $type_name = $product_data['type_name'];
+        $total = $price * $quantity;
+
+        $_SESSION['cart'][] = [
+            'product_id' => $product_id,
+            'product_name' => $product_name,
+            'price_today' => $price,
+            'quantity' => $quantity,
+            'unit' => $unit,
+            'type_name' => $type_name,
+            'total' => $total
+        ];
+
+        header("Location: buy_admin.php");
+        exit();
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,212 +65,142 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
+    <title>รับซื้อสินค้า</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ฟังก์ชัน updatePrice() ใช้สำหรับอัปเดตราคาของสินค้าเมื่อมีการเลือกสินค้า
+        function updatePrice() {
+            var productSelect = document.getElementById("product"); // ดึง element dropdown ของสินค้า
+            var selectedOption = productSelect.options[productSelect.selectedIndex]; // ดึงตัวเลือกที่ถูกเลือก
+            var priceField = document.getElementById("price_today"); // ดึง input field ที่ใช้แสดงราคา
+            priceField.value = selectedOption.getAttribute("data-price"); // อัปเดตราคาตามสินค้าที่เลือก
+        }
+    </script>
 </head>
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-    }
-
-    select {
-        padding: 10px;
-        margin: 10px 0;
-        width: 200px;
-    }
-</style>
-
 <body>
-
     <div class="container">
         <?php include '../header_admin.php'; ?>
         <div class="row">
             <div class="col-2">
                 <?php include '../menu_admin.php'; ?>
             </div>
-            <div class="card mt-3 pb-5 px-2 col-10">
-                <div class="col-10">
-                    <div>
-                        <h2><i class="bi-basket fs-5 me-2"></i> รับซื้อสินค้า</h2>
-                    </div>
-                    <form action="process_buy.php" method="POST">
-                        <div class="row mt-5">
-                            <div class="col-lg-6 col-md-4 col-sm-6">
-                                <label for="p_date">วันที่รับซื้อ</label>
-                                <div class="input-group">
-                                    <input type="date" class="form-control" id="p_date" readonly>
-                                </div>
+
+            <div class="card mt-3 pb-5 px-4 col-10">
+                <h2 class="mt-3">🛒 รับซื้อสินค้า</h2>
+
+                <form method="POST" action="">
+                    <div class="row">
+                        <!-- ซ้าย -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="purchase_date" class="form-label">วันที่รับซื้อ</label>
+                                <input type="date" class="form-control" name="purchase_date" value="<?= date('Y-m-d') ?>" required>
                             </div>
 
-                            <script>
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    const dateField = document.getElementById("p_date");
-                                    const now = new Date();
-                                    const formattedDate = now.toISOString().split("T")[0]; // รูปแบบ YYYY-MM-DD
-                                    dateField.value = formattedDate;
-                                });
-                            </script>
+                            <div class="mb-3">
+                                <label for="type" class="form-label">เลือกประเภท:</label>
+                                <select class="form-control" name="type" id="type" onchange="this.form.submit()">
+                                    <option value="">-- เลือกประเภท --</option>
+                                    <?php while ($row = $type_result->fetch_assoc()) { ?>
+                                        <option value="<?= $row['type_id'] ?>" <?= ($type_id == $row['type_id']) ? 'selected' : '' ?>>
+                                            <?= $row['type_name'] ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
 
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">ปริมาณการรับซื้อ:</label>
+                                <input type="number" class="form-control" name="quantity" required min="1">
+                            </div>
+                        </div>
 
-                            <div class="col-6">
-                                <label for="name">ชื่อพนักงานที่รับซื้อ:</label>
+                        <!-- ขวา -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">ชื่อพนักงานที่รับซื้อ:</label>
                                 <input type="text" class="form-control" value="<?php echo isset($_SESSION['name']) ? $_SESSION['name'] : 'ไม่พบชื่อ'; ?>" readonly>
                             </div>
 
+                            <div class="mb-3">
+                                <label for="product" class="form-label">เลือกชื่อของเก่า:</label>
+                                <select class="form-control" name="product" id="product" onchange="updatePrice()">
+                                    <option value="">-- เลือกชื่อของเก่า --</option>
+                                    <?php while ($row = $product_result->fetch_assoc()) { ?>
+                                        <option value="<?= $row['product_id'] ?>" data-price="<?= $row['price_today'] ?>">
+                                            <?= $row['product_name'] ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
 
-                            <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
-                                <!-- Dropdown ประเภทของเก่า -->
-                                <form action="process.php" method="POST">
-                                    <label for="type">เลือกประเภท:</label>
-
-                                    <select class="form-control" name="type" id="type" placeholder="">
-                                        <option value="">-- เลือกประเภท --</option>
-                                        <?php
-                                        if ($type_result->num_rows > 0) {
-                                            while ($row = $type_result->fetch_assoc()) {
-                                                echo "<option value='" . $row['type_id'] . "'>" . $row['type_name'] . "</option>";
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-
-                        </div>
-
-                        <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
-                            <label for="product">เลือกชื่อของเก่า:</label>
-                            <select class="form-control" name="product" id="product" placeholder="">
-                                <option value="">-- เลือกชื่อของเก่า --</option>
-                            </select>
-
-                        </div>
-
-
-                        <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
-                            <div>ปริมาณการรับซื้อ</div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="quantity" id="quantity" required min="1">
+                            <div class="mb-3">
+                                <label for="price_today" class="form-label">ราคาวันนี้:</label>
+                                <input type="text" class="form-control" id="price_today" name="price_today" readonly value="10.00">
                             </div>
                         </div>
+                    </div>
 
+                    <button type="submit" class="btn btn-success">เพิ่ม</button>
+                </form>
 
-                        <div class="col-lg-6 col-md-4 col-sm-6 mt-2">
-                            <div>ราคารับซื้อวันนี้</div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="price" id="price" readonly>
-                            </div>
-                        </div>
+                <hr>
 
-                        <div class="col-12 mt-3 text-end">
-                            <button type="button" id="addButton" class="btn btn-success">เพิ่ม</button>
-                        </div>
-
-
-                        <h2>ตะกร้าสินค้า</h2>
-                        <div class="table-responsive mt-3">
-                            <table class="table table-striped table-bordered">
+                <h4 class="mt-4">🛍️ ตะกร้าสินค้า</h4>
+                <table class="table table-bordered mt-3">
+                    <thead class="table-light">
+                        <tr>
+                            <th>วันที่รับซื้อ</th>
+                            <th>ชื่อสินค้า</th>
+                            <th>ประเภทของเก่า</th>
+                            <th>จำนวน</th>
+                            <th>หน่วย</th>
+                            <th>ราคา</th>
+                            <th>รวม</th>
+                            <th>ลบ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $grand_total = 0; ?>
+                        <?php if (!empty($_SESSION['cart'])): ?>
+                            <?php foreach ($_SESSION['cart'] as $index => $item): ?>
                                 <tr>
-                                    <th>ชื่อสินค้า</th>
-                                    <th>จำนวน</th>
-                                    <th>ราคา</th>
-                                    <th>รวม</th>
+                                    <td><?= date("d-m-Y") ?></td>
+                                    <td><?= $item['product_name'] ?></td>
+                                    <td><?= $item['type_name'] ?></td>
+                                    <td><?= $item['quantity'] ?></td>
+                                    <td><?= $item['unit'] ?></td>
+                                    <td><?= number_format($item['price_today'], 2) ?></td>
+                                    <td><?= number_format($item['total'], 2) ?></td>
+                                    <td>
+                                        <form method="post" action="remove_item.php">
+                                            <input type="hidden" name="index" value="<?= $index ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm">ลบ</button>
+                                        </form>
+                                    </td>
                                 </tr>
-                                </thead>
-                                <tbody id="cart"></tbody>
-                            </table>
-                        </div>
+                                <?php $grand_total += $item['total']; ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8" class="text-center">ไม่มีสินค้าในตะกร้า</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
 
-                        <div class="summary">
-                            <p>ยอดรวมทั้งหมด: <span id="grand-total">0.00</span> บาท</p>
-                        </div>
-
-                        <div class="text-end mt-3">
-                            <button type="button" id="saveButton" class="btn btn-primary">บันทึก</button>
-                            <a href="product_list.php" class="btn btn-danger">ยกเลิก</a>
-                        </div>
-                    </form>
+                <div class="text-end">
+                    <p>ยอดรวมทั้งหมด: <strong><?= number_format($grand_total, 2) ?></strong> บาท</p>
+                    <a href="clear_cart.php" class="btn btn-danger">ล้างตะกร้า</a>
+                    <a href="save-orderbuy_admin.php" class="btn btn-primary">บันทึก</a>
                 </div>
             </div>
-        </div>
-    </div>
-    </div>
-    </div>
-
-
-    </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#addButton").click(function() {
-                let productName = $("#product option:selected").text();
-                let quantity = parseInt($("#quantity").val());
-                let price = parseFloat($("#price").val());
-                let total = price * quantity;
-
-                if (!productName || isNaN(price) || isNaN(quantity)) {
-                    alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-                    return;
-                }
-
-                let row = `<tr>
-                <td>${productName}</td>
-                <td>${quantity}</td>
-                <td>${price.toFixed(2)}</td>
-                <td>${total.toFixed(2)}</td>
-            </tr>`;
-
-                $("#cart").append(row);
-
-                // ล้างค่าหลังจากเพิ่มลงตะกร้า
-                $("#quantity").val('');
-                $("#price").val('');
-            });
-
-            // ตรวจสอบว่า jQuery โหลดสำเร็จหรือไม่
-            if (!window.jQuery) {
-                alert("jQuery ไม่โหลด กรุณาตรวจสอบการเชื่อมต่อ");
-            }
-        });
-
-        // เมื่อเลือกประเภท
-        $("#type").change(function() {
-            const typeId = $(this).val();
-            if (typeId) {
-                $.post("fetch_products.php", {
-                    type_id: typeId
-                }, function(data) {
-                    $("#product").html(data);
-                });
-            } else {
-                $("#product").html('<option value="">-- เลือกชื่อของเก่า --</option>');
-            }
-        });
-
-        // เมื่อเลือกชื่อของเก่า
-        $("#product").change(function() {
-            const productId = $(this).val();
-            if (productId) {
-                $.post("fetch_price.php", {
-                    product_id: productId
-                }, function(data) {
-                    $("#price").val(data);
-                    $("#unit").val(data);
-                });
-            } else {
-                $("#price").val('');
-            }
-        });
-    </script>
 
 </body>
-
 </html>
+
 <?php
 $conn->close();
 ?>

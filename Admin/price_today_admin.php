@@ -2,6 +2,14 @@
 session_start();
 include '../condb.php';
 
+// กำหนดจำนวนแถวที่จะแสดงต่อหน้า
+$limit = 10;
+
+// ตรวจสอบหน้าปัจจุบัน
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$start = ($page - 1) * $limit; // คำนวณ OFFSET
+
+// ดึงข้อมูลจากฐานข้อมูล
 $query = "
     SELECT 
         product.product_id, 
@@ -16,14 +24,23 @@ $query = "
         product_type 
     ON 
         product.type_id = product_type.type_id
+    LIMIT $limit OFFSET $start
 ";
-
 $result = $conn->query($query);
 
 if (!$result) {
     die("Query failed: " . $conn->error);
 }
+
+// คำนวณจำนวนหน้าทั้งหมด
+$count_query = "SELECT COUNT(*) AS total FROM product";
+$count_result = $conn->query($count_query);
+$row = $count_result->fetch_assoc();
+$total_records = $row['total'];
+$total_pages = ceil($total_records / $limit);
+
 ?>
+
 
 <head>
     <meta charset="UTF-8">
@@ -74,6 +91,25 @@ if (!$result) {
                             <?php } ?>
                         </tbody>
                     </table>
+
+
+                    <!-- การแบ่งหน้า -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <?php echo ($page == 1) ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=<?php echo ($page - 1); ?>">ก่อนหน้า</a>
+                            </li>
+                            <?php for ($i = 1; $i <= $total_pages; $i++) { ?>
+                                <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                </li>
+                            <?php } ?>
+                            <li class="page-item <?php echo ($page == $total_pages) ? 'disabled' : ''; ?>">
+                                <a class="page-link" href="?page=<?php echo ($page + 1); ?>">ถัดไป</a>
+                            </li>
+                        </ul>
+                    </nav>
+
                 </div>
             </div>
         </div>
@@ -95,7 +131,7 @@ if (!$result) {
         </script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  
+
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

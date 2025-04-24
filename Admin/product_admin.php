@@ -21,10 +21,10 @@
             <div class="col-2">
                 <?php include '../menu_admin.php'; ?>
             </div>
+            
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-12">
                     <h2>ข้อมูลสินค้า</h2>
-
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <input id="searchInput" type="text" class="form-control w-50" placeholder="ค้นหาชื่อของเก่า">
@@ -109,32 +109,39 @@
                                     <tbody id="productBody">
                                         <?php
                                         $sql = "SELECT p.*, t.type_name 
-                                                FROM product p 
-                                                LEFT JOIN product_type t ON p.type_id = t.type_id";
+            FROM product p 
+            LEFT JOIN product_type t ON p.type_id = t.type_id";
                                         $result = $conn->query($sql);
 
                                         if ($result->num_rows > 0) {
                                             $index = 1;
                                             while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<th scope='row'>" . $index++ . "</th>";
-                                                echo "<td><img src='" . $row['product_img'] . "' alt='product' class='img-fluid' width='100'></td>";
-                                                echo "<td>" . $row['product_name'] . "</td>";
-                                                echo "<td>" . $row['type_name'] . "</td>";
-                                                echo "<td>" . $row['cost_price'] . "</td>";
-                                                echo "<td>" . $row['quantity'] . "</td>";
-                                                echo "<td>" . $row['unit'] . "</td>";
-                                                echo "<td><a href='delete_product_admin.php?id=" . $row['product_id'] . "' class='btn btn-danger' onclick='Del(this.href);return false;'><i class='bi bi-trash'></i></a> </td>";
-                                                echo "<td><a href='edit_product_admin.php?product_id=" . $row['product_id'] . "' class='btn btn-warning'><i class='bi bi-pencil-square'></i></a></td>";
-                                                echo "</tr>";
+                                        ?>
+                                                <tr>
+                                                    <th scope="row"><?= $index++ ?></th>
+                                                    <td><img src="<?= $row['product_img'] ?>" alt="product" class="img-fluid" width="100"></td>
+                                                    <td><?= $row['product_name'] ?></td>
+                                                    <td><?= $row['type_name'] ?></td>
+                                                    <td><?= $row['cost_price'] ?></td>
+                                                    <td><?= $row['quantity'] ?></td>
+                                                    <td><?= $row['unit'] ?></td>
+                                                    <td><a href="delete_product_admin.php?id=<?= $row['product_id'] ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a></td>
+                                                    <td><a href="edit_product_admin.php?product_id=<?= $row['product_id'] ?>" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a></td>
+                                                </tr>
+                                            <?php
                                             }
                                         } else {
-                                            echo "<tr><td colspan='9'>ไม่มีข้อมูล</td></tr>";
+                                            ?>
+                                            <tr>
+                                                <td colspan="9">ไม่มีข้อมูล</td>
+                                            </tr>
+                                        <?php
                                         }
 
                                         $conn->close();
                                         ?>
                                     </tbody>
+
                                 </table>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <button class="btn btn-outline-primary" id="prevPage">ก่อนหน้า</button>
@@ -205,21 +212,6 @@
                 </script>
 
 
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-                <script>
-                    $(document).ready(function() {
-                        $(".cart").click(function() {
-                            Swal.fire({
-                                title: "สำเร็จ",
-                                text: "You clicked the button!",
-                                icon: "success"
-                            });
-                        });
-                    });
-                </script>
-
                 <script>
                     document.addEventListener("click", function(e) {
                         if (e.target.classList.contains("removeRow")) {
@@ -231,27 +223,6 @@
                             }
                         }
                     });
-
-                    function deleteRow(rowId) {
-                        fetch("/delete_product_admin.php", {
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify({
-                                    id: rowId
-                                }),
-                            })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                if (data.success) {
-                                    alert("ลบข้อมูลสำเร็จ");
-                                    location.reload();
-                                } else {
-                                    alert("ไม่สามารถลบข้อมูลได้: " + data.message);
-                                }
-                            })
-                            .catch((error) => console.error("Error:", error));
-                    }
                 </script>
 
 
