@@ -6,7 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_name = $_POST['product_name'];
     $type_id = $_POST['type_id'];
     $cost_price = $_POST['cost_price'];
+    $minimum_sale = $_POST['minimum_sale'];
     $unit = $_POST['unit'];
+
     switch ($unit) {
         case 1:
             $unit = "กิโลกรัม";
@@ -33,17 +35,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (move_uploaded_file($_FILES['product_img']['tmp_name'], $target_file)) {
-            $sql = "UPDATE product SET product_name=?, type_id=?, cost_price=?, unit=?, product_img=? WHERE product_id=?";
+            $sql = "UPDATE product SET product_name=?, type_id=?, cost_price=?, unit=?, minimum_sale=?, product_img=? WHERE product_id=?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("siissi", $product_name, $type_id, $cost_price, $unit, $target_file, $product_id);
+            $stmt->bind_param("siisssi", $product_name, $type_id, $cost_price, $unit, $minimum_sale, $target_file, $product_id);
         } else {
             echo "<script>alert('ไม่สามารถอัปโหลดรูปภาพได้'); window.history.back();</script>";
             exit;
         }
     } else {
-        $sql = "UPDATE product SET product_name=?, type_id=?, cost_price=?, unit=? WHERE product_id=?";
+        $sql = "UPDATE product SET product_name=?, type_id=?, cost_price=?, unit=?, minimum_sale=? WHERE product_id=?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("siisi", $product_name, $type_id, $cost_price, $unit, $product_id);
+        $stmt->bind_param("siissi", $product_name, $type_id, $cost_price, $unit, $minimum_sale, $product_id);
     }
 
     if ($stmt->execute()) {

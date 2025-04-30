@@ -95,7 +95,9 @@
                                             p.quantity, 
                                             t.type_name, 
                                             p.product_img, 
-                                            p.unit
+                                            p.unit,
+                                            
+                                            
                                         FROM product p 
                                         LEFT JOIN product_type t ON p.type_id = t.type_id";
                                 $result = $conn->query($sql);

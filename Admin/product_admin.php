@@ -100,6 +100,7 @@
                                             <th scope="col">ประเภทของเก่า</th>
                                             <th scope="col">ราคาต้นทุน</th>
                                             <th scope="col">จำนวนคงเหลือ</th>
+                                            <th scope="col">จำนวนขายขั้นต่ำ</th>
                                             <th scope="col">หน่วย</th>
                                             <th scope="col">ลบ</th>
                                             <th scope="col">แก้ไข</th>
@@ -124,6 +125,7 @@
                                                     <td><?= $row['type_name'] ?></td>
                                                     <td><?= $row['cost_price'] ?></td>
                                                     <td><?= $row['quantity'] ?></td>
+                                                    <td><?= $row['minimum_sale'] ?></td>
                                                     <td><?= $row['unit'] ?></td>
                                                     <td><a href="delete_product_admin.php?id=<?= $row['product_id'] ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a></td>
                                                     <td><a href="edit_product_admin.php?product_id=<?= $row['product_id'] ?>" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a></td>

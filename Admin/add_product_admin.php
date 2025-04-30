@@ -53,6 +53,11 @@ include '../condb.php';
                     </div>
 
                     <div class="mb-3">
+                        <label for="minimum_sale" class="form-label">จำนวนขายขั้นต่ำ</label>
+                        <input type="number" class="form-control" id="minimum_sale" name="minimum_sale" required>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="unit">หน่วย:</label>
                         <select class="form-control" id="unit" name="unit" required>
                             <option value="">-- เลือกหน่วย --</option>

@@ -3,6 +3,7 @@ include '../condb.php';
 $productName = $_POST['product_name'];
 $typeID = $_POST['type_id'];
 $cost = $_POST['cost_price'];
+$minimum_sale = $_POST['minimum_sale'];
 $quant = $_POST['quantity'];
 
 $unit = $_POST['unit'];
@@ -33,8 +34,8 @@ if ($check === false) {
 
 if (move_uploaded_file($_FILES["product_img"]["tmp_name"], $target_file)) {
    
-    $sql = "INSERT INTO product (product_name, type_id, cost_price, quantity, unit, product_img) 
-            VALUES ('$productName', '$typeID', '$cost', '$quant', '$unit', '$target_file')";
+    $sql = "INSERT INTO product (product_name, type_id, cost_price, quantity, minimum_sale, unit, product_img) 
+            VALUES ('$productName', '$typeID', '$cost', '$quant','$minimum_sale', '$unit', '$target_file')";
 
     $result = mysqli_query($conn, $sql);
     if ($result) {

@@ -78,6 +78,11 @@ if (isset($_GET['product_id'])) {
                     </div>
 
                     <div class="mb-3">
+                        <label for="minimum_sale">จำนวนขายขั้นต่ำ</label>
+                        <input type="number" class="form-control" id="minimum_sale" name="minimum_sale" value="<?php echo htmlspecialchars($minimum_sale); ?>" required>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="unit">หน่วย:</label>
                         <select class="form-control" id="unit" name="unit" required>
                             <option value="1" <?php if ($unit == 1) echo 'selected'; ?>>กิโลกรัม</option>
