@@ -128,11 +128,6 @@
                         </table>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <button class="btn btn-outline-primary" id="prevPage">ก่อนหน้า</button>
-                        <span id="pageInfo"></span>
-                        <button class="btn btn-outline-primary" id="nextPage">ถัดไป</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -148,6 +143,20 @@
                 "searching": true,
                 "ordering": true,
                 "info": true,
+                "language": {
+                    "lengthMenu": "แสดง MENU รายการต่อหน้า",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "info": "แสดง START ถึง END จาก TOTAL รายการ",
+                    "infoEmpty": "ไม่มีข้อมูลที่จะแสดง",
+                    "infoFiltered": "(กรองจากทั้งหมด MAX รายการ)",
+                    "search": "ค้นหา:",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+                }
             });
         });
     </script>
