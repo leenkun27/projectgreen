@@ -80,7 +80,6 @@
                             </thead>
                             <tbody>
                                 <?php
-                                // ใช้ LPAD() เพื่อเติมศูนย์หน้าให้กับ product_id
                                 $sql = "SELECT 
                                             p.product_id,
                                             p.product_name, 
