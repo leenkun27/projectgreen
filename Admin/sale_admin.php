@@ -148,7 +148,6 @@
                 "language": {
                     "lengthMenu": "แสดง MENU รายการต่อหน้า",
                     "zeroRecords": "ไม่พบข้อมูล",
-                    "info": "แสดง START ถึง END จาก TOTAL รายการ",
                     "infoEmpty": "ไม่มีข้อมูลที่จะแสดง",
                     "infoFiltered": "(กรองจากทั้งหมด MAX รายการ)",
                     "search": "ค้นหา:",
