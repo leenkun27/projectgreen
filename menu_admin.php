@@ -93,7 +93,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         .menu li.active {
             background:rgb(117, 36, 36);
-            /* เปลี่ยนสีพื้นหลังของเมนูที่ Active */
             color: white;
         }
 

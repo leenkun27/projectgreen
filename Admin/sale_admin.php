@@ -69,11 +69,12 @@
                             <thead class="table-light">
                                 <tr>
                                     <th scope="col">ลำดับ</th>
-                                    <th scope="col">รหัสสินค้า</th>
                                     <th scope="col">รูปภาพ</th>
                                     <th scope="col">ชื่อของเก่า</th>
                                     <th scope="col">ประเภทของเก่า</th>
+                                    <th scope="col">ราคา/หน่วย</th>
                                     <th scope="col">จำนวนคงเหลือ</th>
+                                    <th scope="col">ราคาส่งขาย</th>
                                     <th scope="col">จำนวนที่ต้องการขาย</th>
                                     <th scope="col">ส่งขาย</th>
                                 </tr>
@@ -81,7 +82,6 @@
                             <tbody>
                                 <?php
                                 $sql = "SELECT 
-                                            p.product_id,
                                             p.product_name, 
                                             p.price_today, 
                                             p.cost_price, 
@@ -102,13 +102,16 @@
                                         <tr>
                                             <th scope="row"><?= $index++ ?></th>
                                             <form method="post" action="save-ordersale_admin.php">
-                                                <td><?= $row['product_id'] ?></td>
                                                 <td><img src="<?= $row['product_img'] ?>" alt="product" class="img-fluid" width="100"></td>
                                                 <td><?= $row['product_name'] ?></td>
                                                 <td><?= $row['type_name'] ?></td>
+                                                <td><?= $row['price_today'] ?></td>
                                                 <td><?= $row['quantity'] ?></td>
                                                 <td>
-                                                    <input type="number" name="sell_qty" min="0" value="0" required>
+                                                    <input type="number" name="sell_price"  required style="width: 60px;">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="sell_qty"  required style="width: 60px;">
                                                 </td>
                                                 <td>
                                                     <button type="submit" class="btn btn-success">ขาย</button>
