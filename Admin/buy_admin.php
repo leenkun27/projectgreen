@@ -24,7 +24,7 @@ $product_result = $conn->query("
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_POST['quantity']) && isset($_POST['price_today'])) {
     $product_id = intval($_POST['product']);
-    $quantity = intval($_POST['quantity']);
+    $quantity = ($_POST['quantity']);
     $price = floatval($_POST['price_today']);
 
    
