@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <?php include '../condb.php'; ?>
 
 <!DOCTYPE html>
@@ -10,18 +11,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <style>
         .status-icon {
             font-size: 1.2em;
         }
-
         .status-icon i {
             margin-right: 5px;
         }
-
         .card-stat {
             display: flex;
             justify-content: space-between;
@@ -30,22 +28,18 @@
             margin-bottom: 20px;
             border-radius: 8px;
         }
-
         .card-stat.green {
             background-color: #e0f7ea;
             color: #2e7d32;
         }
-
         .card-stat.purple {
             background-color: #ede7f6;
             color: #6a1b9a;
         }
-
         .card-stat.orange {
             background-color: #fff3e0;
             color: #e65100;
         }
-
         .card-stat.red {
             background-color: #ffebee;
             color: #b71c1c;
@@ -54,7 +48,6 @@
 </head>
 
 <body>
-
     <div class="container">
         <?php include '../header_admin.php'; ?>
         <div class="row">
@@ -74,15 +67,13 @@
                                     <th scope="col">ประเภทของเก่า</th>
                                     <th scope="col">ราคา/หน่วย</th>
                                     <th scope="col">จำนวนคงเหลือ</th>
-                                    <th scope="col">ราคาส่งขาย</th>
-                                    <th scope="col">จำนวนที่ต้องการขาย</th>
                                     <th scope="col">ส่งขาย</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                // ใช้ LPAD() เพื่อเติมศูนย์หน้าให้กับ product_id
                                 $sql = "SELECT 
+                                            p.product_id,
                                             p.product_name, 
                                             p.price_today, 
                                             p.cost_price, 
@@ -93,44 +84,38 @@
                                         FROM product p 
                                         LEFT JOIN product_type t ON p.type_id = t.type_id
                                         ORDER BY p.quantity DESC";
-                                $result = $conn->query(query: $sql);
+                                $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     $index = 1;
                                     while ($row = $result->fetch_assoc()) {
-
                                 ?>
-
                                         <tr>
-                                            <th scope="row"><?= $index++ ?></th>
-                                            <form method="post" action="save-ordersale_admin.php">
-                                                <td><img src="<?= $row['product_img'] ?>" alt="product" class="img-fluid" width="100"></td>
-                                                <td><?= $row['product_name'] ?></td>
-                                                <td><?= $row['type_name'] ?></td>
-                                                <td><?= $row['price_today'] ?></td>
-                                                <td><?= $row['quantity'] ?></td>
-                                                <td>
-                                                    <input type="number" name="sell_price"  required style="width: 60px;">
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="sell_qty"  required style="width: 60px;">
-                                                </td>
-                                                <td>
-                                                    <button type="submit" class="btn btn-success">ขาย</button>
-                                                </td>
-                                            </form>
+                                            <td><?= $index++ ?></td>
+                                            <td><img src="<?= $row['product_img'] ?>" alt="product" class="img-fluid" width="100"></td>
+                                            <td><?= $row['product_name'] ?></td>
+                                            <td><?= $row['type_name'] ?></td>
+                                            <td><?= $row['price_today'] ?></td>
+                                            <td><?= $row['quantity'] ?></td>
+                                            <td>
+                                                <form method="post" action="add_to_cart.php" style="margin:0;">
+                                                    <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
+                                                    <input type="hidden" name="name" value="<?= $row['product_name'] ?>">
+                                                    <input type="hidden" name="price" value="<?= $row['price_today'] ?>">
+                                                    <input type="submit" value="เพิ่มลงตะกร้า" class="btn btn-success">
+                                                </form>
+                                            </td>
                                         </tr>
-                                    <?php
+                                <?php
                                     }
                                 } else {
-                                    ?>
+                                ?>
                                     <tr>
-                                        <td colspan="6">ไม่มีข้อมูล</td>
+                                        <td colspan="7">ไม่มีข้อมูล</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
                     </div>
-
                     <div class="d-flex justify-content-between align-items-center">
                         <button class="btn btn-outline-primary" id="prevPage">ก่อนหน้า</button>
                         <span id="pageInfo"></span>
@@ -154,20 +139,7 @@
             });
         });
     </script>
-
-    <script>
-        function confirmSend() {
-            if (confirm("คุณต้องการจะส่งขายสินค้าทั้งหมดใช่หรือไม่?")) {
-                window.location.href = "save-ordersale_admin.php";
-                return true;
-            } else {
-                return false;
-            }
-        }
-    </script>
 </body>
-
-
 </html>
 
 <?php

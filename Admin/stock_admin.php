@@ -1,4 +1,7 @@
-<?php include '../condb.php'; ?>
+<?php
+include '../condb.php';
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -64,13 +67,6 @@
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="container my-4">
                     <h2>ข้อมูลสินค้าในคลัง</h2>
-                    <div class="mt-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <a href="add_product_admin.php" class="btn btn-success"><i class="bi bi-plus"></i> เพิ่มข้อมูล</a>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="table-responsive mt-3">
                         <table id="productTable" class="table table-bordered table-striped">
@@ -82,30 +78,32 @@
                                     <th scope="col">ชื่อของเก่า</th>
                                     <th scope="col">ประเภทของเก่า</th>
                                     <th scope="col">จำนวนคงเหลือ</th>
+                                    <th scope="col">ราคาเฉลี่ย/หน่วย</th>
+                                    <th scope="col">หน่วย</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                // ใช้ LPAD() เพื่อเติมศูนย์หน้าให้กับ product_id
                                 $sql = "SELECT 
-                                            LPAD(p.product_id, 6, '0') AS product_id, 
-                                            p.product_name, 
-                                            p.price_today, 
-                                            p.cost_price, 
-                                            p.quantity, 
-                                            t.type_name, 
-                                            p.product_img, 
-                                            p.unit,
-                                            
-                                            
-                                        FROM product p 
-                                        LEFT JOIN product_type t ON p.type_id = t.type_id";
+                                LPAD(p.product_id, 6, '0') AS product_id, 
+                                p.product_name, 
+                                p.price_today, 
+                                p.cost_price, 
+                                p.quantity, 
+                                t.type_name, 
+                                p.product_img, 
+                                p.unit,
+                                ROUND(SUM(od.total_price) / SUM(od.quantity), 2) AS price_per_unit
+                            FROM product p
+                            LEFT JOIN product_type t ON p.type_id = t.type_id
+                            LEFT JOIN orderbuy_detail od ON p.product_name = od.product_name
+                            GROUP BY p.product_id";
                                 $result = $conn->query($sql);
 
                                 if ($result->num_rows > 0) {
                                     $index = 1;
                                     while ($row = $result->fetch_assoc()) {
-                                        ?>
+                                ?>
                                         <tr>
                                             <th scope="row"><?= $index++ ?></th>
                                             <td><?= $row['product_id'] ?></td>
@@ -113,8 +111,10 @@
                                             <td><?= $row['product_name'] ?></td>
                                             <td><?= $row['type_name'] ?></td>
                                             <td><?= $row['quantity'] ?></td>
+                                            <td><?= $row['price_per_unit'] ?></td>
+                                            <td><?= $row['unit'] ?></td>
                                         </tr>
-                                        <?php
+                                    <?php
                                     }
                                 } else {
                                     ?>
@@ -126,11 +126,6 @@
                         </table>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <button class="btn btn-outline-primary" id="prevPage">ก่อนหน้า</button>
-                        <span id="pageInfo"></span>
-                        <button class="btn btn-outline-primary" id="nextPage">ถัดไป</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -146,6 +141,20 @@
                 "searching": true,
                 "ordering": true,
                 "info": true,
+                "language": {
+                    "lengthMenu": "แสดง MENU รายการต่อหน้า",
+                    "zeroRecords": "ไม่พบข้อมูล",
+                    "info": "แสดง START ถึง END จาก TOTAL รายการ",
+                    "infoEmpty": "ไม่มีข้อมูลที่จะแสดง",
+                    "infoFiltered": "(กรองจากทั้งหมด MAX รายการ)",
+                    "search": "ค้นหา:",
+                    "paginate": {
+                        "first": "หน้าแรก",
+                        "last": "หน้าสุดท้าย",
+                        "next": "ถัดไป",
+                        "previous": "ก่อนหน้า"
+                    }
+                }
             });
         });
     </script>
