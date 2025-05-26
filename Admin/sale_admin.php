@@ -17,9 +17,11 @@
         .status-icon {
             font-size: 1.2em;
         }
+
         .status-icon i {
             margin-right: 5px;
         }
+
         .card-stat {
             display: flex;
             justify-content: space-between;
@@ -28,18 +30,22 @@
             margin-bottom: 20px;
             border-radius: 8px;
         }
+
         .card-stat.green {
             background-color: #e0f7ea;
             color: #2e7d32;
         }
+
         .card-stat.purple {
             background-color: #ede7f6;
             color: #6a1b9a;
         }
+
         .card-stat.orange {
             background-color: #fff3e0;
             color: #e65100;
         }
+
         .card-stat.red {
             background-color: #ffebee;
             color: #b71c1c;
@@ -67,6 +73,7 @@
                                     <th scope="col">ประเภทของเก่า</th>
                                     <th scope="col">ราคา/หน่วย</th>
                                     <th scope="col">จำนวนคงเหลือ</th>
+                                    <th scope="col">จำนวนขายขั้นต่ำ</th>
                                     <th scope="col">ส่งขาย</th>
                                 </tr>
                             </thead>
@@ -77,12 +84,14 @@
                                             p.product_name, 
                                             p.price_today, 
                                             p.cost_price, 
-                                            p.quantity, 
+                                            p.quantity,
+                                            p.minimum_sale, 
                                             t.type_name, 
                                             p.product_img, 
                                             p.unit
                                         FROM product p 
                                         LEFT JOIN product_type t ON p.type_id = t.type_id
+                                        WHERE p.quantity >= p.minimum_sale
                                         ORDER BY p.quantity DESC";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
@@ -94,21 +103,25 @@
                                             <td><img src="<?= $row['product_img'] ?>" alt="product" class="img-fluid" width="100"></td>
                                             <td><?= $row['product_name'] ?></td>
                                             <td><?= $row['type_name'] ?></td>
-                                            <td><?= $row['price_today'] ?></td>
+                                            <td><?= $row['price_today'] ?> ฿</td>
                                             <td><?= $row['quantity'] ?></td>
+                                            <td><?= $row['minimum_sale'] ?></td>
                                             <td>
-                                                <form method="post" action="add_to_cart.php" style="margin:0;">
-                                                    <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
-                                                    <input type="hidden" name="name" value="<?= $row['product_name'] ?>">
-                                                    <input type="hidden" name="price" value="<?= $row['price_today'] ?>">
-                                                    <input type="submit" value="เพิ่มลงตะกร้า" class="btn btn-success">
+
+                                                <form method="get" action="cart_sale_admin.php">
+                                                    <input type="hidden" name="product_name" value="<?= $row['product_name'] ?>">
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="bi bi-cart3"></i>
+                                                    </button>
                                                 </form>
+
                                             </td>
+
                                         </tr>
-                                <?php
+                                    <?php
                                     }
                                 } else {
-                                ?>
+                                    ?>
                                     <tr>
                                         <td colspan="7">ไม่มีข้อมูล</td>
                                     </tr>
@@ -140,6 +153,7 @@
         });
     </script>
 </body>
+
 </html>
 
 <?php
