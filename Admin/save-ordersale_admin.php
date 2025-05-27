@@ -1,48 +1,74 @@
 <?php
-include '../condb.php';
+// เชื่อมต่อฐานข้อมูล
+$conn = new mysqli("localhost", "root", "", "wichian_db");
 
-$product_id = ltrim($_POST['product_id'], '0'); // เอาศูนย์นำหน้าออกให้หมด
-$sell_qty = $_POST['sell_qty'];
-
-$sql_product = "SELECT * FROM product WHERE product_id = '$product_id'";
-$result_product = mysqli_query($conn, $sql_product);
-$product = mysqli_fetch_assoc($result_product);
-
-
-if ($product && $sell_qty > 0 && $sell_qty <= $product['quantity']) {
-    $product_name = $product['product_name'];
-    $unit = $product['unit'];
-    $type_name = $product['type_name'];
-    $price_per_unit = $product['price_today'];
-    $total_price = $price_per_unit * $sell_qty;
-    $sale_date = date('Y-m-d');
-    $employee_name = 'admin'; 
-
-  
-    $sql_sale = "INSERT INTO ordersale (ordersale_date, name, total_price)
-                 VALUES ('$sale_date', '$employee_name', '$total_price')";
-    mysqli_query($conn, $sql_sale);
-
- 
-    $ordersale_id = mysqli_insert_id($conn);
-
-    $sql_detail = "INSERT INTO ordersale_detail (ordersale_id, product_name, quantity, unit, total_price, type_name)
-                   VALUES ('$ordersale_id', '$product_name', '$sell_qty', '$unit', '$total_price', '$type_name')";
-    mysqli_query($conn, $sql_detail);
-
-   
-    $sql_update_stock = "UPDATE product SET quantity = quantity - $sell_qty WHERE product_id = '$product_id'";
-    mysqli_query($conn, $sql_update_stock);
-
-    echo "<script>
-        alert('ขายสินค้าสำเร็จแล้ว');
-        window.location.href = 'sale_admin.php';
-    </script>";
-    exit();
-} else {
-    echo "<script>
-        alert('ขายไม่ได้: จำนวนไม่ถูกต้อง หรือสินค้าไม่พอขาย');
-        history.back();
-    </script>";
+if ($conn->connect_error) {
+    die("เชื่อมต่อฐานข้อมูลไม่สำเร็จ: " . $conn->connect_error);
 }
-?>
+
+// รับค่าจากฟอร์ม
+$date = $_POST['ordersale_date'];
+$name = $_POST['name'];
+$sale_price = $_POST['sale_price'];
+$products = $_POST['products'];
+
+$total_price = 0;
+$total_cost = 0;
+
+// คำนวณยอดขายรวมและต้นทุนรวม
+foreach ($products as $p) {
+    if (isset($p['checked'])) {
+        $qty = $p['qty'];
+        $cost = $p['price_per_unit'];
+
+        $total_price += $qty * $sale_price;
+        $total_cost += $qty * $cost;
+    }
+}
+
+$profit = $total_price - $total_cost;
+
+// เพิ่มข้อมูลเข้า order_sale
+$sql = "INSERT INTO order_sale (ordersale_date, name, total_price, profit)
+        VALUES ('$date', '$name', '$total_price', '$profit')";
+$conn->query($sql);
+
+$ordersale_id = $conn->insert_id; // ดึงไอดีคำสั่งขายล่าสุด
+
+// เพิ่มข้อมูลแต่ละสินค้า
+foreach ($products as $p) {
+    if (isset($p['checked'])) {
+        $product_name = $p['product_name'];
+        $type_name = $p['type_name'];
+        $unit = $p['unit'];
+        $qty = $p['qty'];
+        $cost = $p['price_per_unit'];
+
+        $total = $qty * $sale_price;
+        $profit_item = ($sale_price - $cost) * $qty;
+
+        // บันทึกเข้า ordersale_detail
+        $sql_detail = "INSERT INTO ordersale_detail (
+            ordersale_id, product_name, quantity, unit, total_price, type_name,
+            price_per_unit, cost_avg, profit
+        ) VALUES (
+            '$ordersale_id', '$product_name', '$qty', '$unit', '$total', '$type_name',
+            '$sale_price', '$cost', '$profit_item'
+        )";
+        $conn->query($sql_detail);
+
+        $orderbuy_detail_id = $p['orderbuy_detail_id'];
+        $sql_mark_sold = "UPDATE orderbuy_detail SET is_sold = 1 WHERE orderbuy_detail_id = '$orderbuy_detail_id'";
+        $conn->query($sql_mark_sold);
+
+        // ตัดสต็อกจาก product
+        $sql_stock = "UPDATE product SET quantity = quantity - $qty WHERE product_name = '$product_name'";
+        $conn->query($sql_stock);
+    }
+}
+
+// แสดงผลลัพธ์
+echo "<h3 style='color:green;'>✅ บันทึกข้อมูลการขายและตัดสต็อกเรียบร้อยแล้ว</h3>";
+echo "<a href='sale_admin.php'>⬅️ กลับหน้าหลัก</a>";
+
+$conn->close();

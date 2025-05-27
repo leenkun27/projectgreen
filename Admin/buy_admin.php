@@ -1,3 +1,5 @@
+
+Papitchaya Khampikha
 <?php
 session_start();
 
@@ -22,22 +24,26 @@ $product_result = $conn->query("
 ");
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_POST['quantity'])) {
-    $product_id = $_POST['product'];
-    $quantity = $_POST['quantity'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_POST['quantity']) && isset($_POST['price_today'])) {
+    $product_id = intval($_POST['product']);
+    $quantity = intval($_POST['quantity']);
+    $price = floatval($_POST['price_today']);
 
+   
+    $conn->query("UPDATE product SET price_today = $price WHERE product_id = $product_id");
+
+   
     $product_query = $conn->query("
-        SELECT p.product_name, p.price_today, p.unit, t.type_name 
+        SELECT p.product_name, p.unit, t.type_name 
         FROM product p 
         LEFT JOIN product_type t ON p.type_id = t.type_id
-        WHERE p.product_id = '$product_id'
+        WHERE p.product_id = $product_id
     ");
 
     $product_data = $product_query->fetch_assoc();
 
     if ($product_data) {
         $product_name = $product_data['product_name'];
-        $price = $product_data['price_today'];
         $unit = $product_data['unit'];
         $type_name = $product_data['type_name'];
         $total = $price * $quantity;
@@ -56,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
         exit();
     }
 }
+
 ?>
 
 
@@ -69,12 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // ฟังก์ชัน updatePrice() ใช้สำหรับอัปเดตราคาของสินค้าเมื่อมีการเลือกสินค้า
         function updatePrice() {
-            var productSelect = document.getElementById("product"); // ดึง element dropdown ของสินค้า
-            var selectedOption = productSelect.options[productSelect.selectedIndex]; // ดึงตัวเลือกที่ถูกเลือก
-            var priceField = document.getElementById("price_today"); // ดึง input field ที่ใช้แสดงราคา
-            priceField.value = selectedOption.getAttribute("data-price"); // อัปเดตราคาตามสินค้าที่เลือก
+            var productSelect = document.getElementById("product"); 
+            var selectedOption = productSelect.options[productSelect.selectedIndex]; 
+            var priceField = document.getElementById("price_today"); 
+            priceField.value = selectedOption.getAttribute("data-price"); 
         }
     </script>
 </head>
@@ -92,7 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
 
                 <form method="POST" action="">
                     <div class="row">
-                        <!-- ซ้าย -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="purchase_date" class="form-label">วันที่รับซื้อ</label>
@@ -117,7 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
                             </div>
                         </div>
 
-                        <!-- ขวา -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">ชื่อพนักงานที่รับซื้อ:</label>
@@ -138,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
 
                             <div class="mb-3">
                                 <label for="price_today" class="form-label">ราคาวันนี้:</label>
-                                <input type="text" class="form-control" id="price_today" name="price_today" readonly value="10.00">
+                                <input type="text" class="form-control" id="price_today" name="price_today" >
                             </div>
                         </div>
                     </div>

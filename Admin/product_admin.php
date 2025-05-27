@@ -123,7 +123,7 @@
                                                     <td><img src="<?= $row['product_img'] ?>" alt="product" class="img-fluid" width="100"></td>
                                                     <td><?= $row['product_name'] ?></td>
                                                     <td><?= $row['type_name'] ?></td>
-                                                    <td><?= $row['cost_price'] ?></td>
+                                                    <td><?= $row['cost_price'] ?> ฿</td>
                                                     <td><?= $row['quantity'] ?></td>
                                                     <td><?= $row['minimum_sale'] ?></td>
                                                     <td><?= $row['unit'] ?></td>

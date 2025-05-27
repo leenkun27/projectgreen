@@ -161,7 +161,3 @@ include '../condb.php';
 </body>
 
 </html>
-
-<?php
-$conn->close();
-?>
