@@ -18,8 +18,7 @@ include '../condb.php';
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <style>
         .status-icon {
-            font-size: 1.2em;
-        }
+         }
 
         .status-icon i {
             margin-right: 5px;

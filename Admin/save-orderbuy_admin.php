@@ -44,35 +44,42 @@ if (!empty($_SESSION['cart'])) {
         unset($_SESSION['cart']);
 
         // ✅ แสดง SweetAlert2 หลังจากบันทึกเสร็จ
-        ?>
+?>
         <!DOCTYPE html>
         <html lang="en">
+
         <head>
             <meta charset="UTF-8">
             <title>บันทึกสำเร็จ</title>
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         </head>
+
         <body>
             <script>
                 Swal.fire({
                     icon: 'success',
                     title: 'บันทึกข้อมูลสำเร็จ',
                     text: 'อัปเดตสต็อกสินค้าเรียบร้อยแล้ว',
-                    confirmButtonText: 'พิมพ์ใบเสร็จ'
+                    confirmButtonText: 'พิมพ์ใบเสร็จ',
+                    showCancelButton: true,
+                    cancelButtonText: 'กลับหน้าหลัก'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = 'print_receipt.php';
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        window.location.href = 'buy_admin.php';
                     }
                 });
             </script>
-        </body>
-        </html>
-        <?php
-        exit();
 
+        </body>
+
+        </html>
+    <?php
+        exit();
     } else {
         // บันทึก order_buy ไม่สำเร็จ
-        ?>
+    ?>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             Swal.fire({
@@ -83,7 +90,7 @@ if (!empty($_SESSION['cart'])) {
                 window.location.href = 'buy_admin.php';
             });
         </script>
-        <?php
+    <?php
         exit();
     }
 } else {
@@ -99,7 +106,7 @@ if (!empty($_SESSION['cart'])) {
             window.location.href = 'buy_admin.php';
         });
     </script>
-    <?php
+<?php
     exit();
 }
 ?>
