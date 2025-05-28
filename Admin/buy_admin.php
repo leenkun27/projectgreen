@@ -63,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 
