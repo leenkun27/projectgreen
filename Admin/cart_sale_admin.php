@@ -8,18 +8,22 @@ if (!$product_name) {
     exit();
 }
 
+$sql_min = "SELECT minimum_sale FROM product WHERE product_name = '$product_name'";
+$res_min = $conn->query($sql_min);
+$min_row = $res_min->fetch_assoc();
+$min_sale_qty = $min_row['minimum_sale'] ?? 0;
+
 $sql = "SELECT ob.orderbuy_date, od.orderbuy_detail_id, od.quantity, od.total_price, od.price_per_unit, od.type_name, p.unit
         FROM orderbuy_detail od
         JOIN order_buy ob ON od.orderbuy_id = ob.orderbuy_id
         JOIN product p ON od.product_name = p.product_name
-        WHERE od.product_name = '$product_name'
-        AND od.is_sold = 0
+        WHERE od.product_name = '$product_name' AND od.is_sold = 0
         ORDER BY ob.orderbuy_date DESC";
 $result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="th">
 
 <head>
     <meta charset="UTF-8">
@@ -28,13 +32,11 @@ $result = $conn->query($sql);
 </head>
 
 <body>
-    <div class="container">
+    <div class="container mt-4">
         <?php include '../header_admin.php'; ?>
         <div class="row">
-            <div class="col-2">
-                <?php include '../menu_admin.php'; ?>
-            </div>
-            <div class="card mt-3 pb-5 px-2 col-10">
+            <div class="col-2"><?php include '../menu_admin.php'; ?></div>
+            <div class="card col-10 pt-3 px-3 pb-5">
                 <h3>ส่งขาย: <?= htmlspecialchars($product_name) ?></h3>
 
                 <form method="post" action="save-ordersale_admin.php">
@@ -42,8 +44,8 @@ $result = $conn->query($sql);
                     <input type="hidden" name="ordersale_date" value="<?= date('Y-m-d') ?>">
                     <input type="hidden" name="name" value="ปพิชญา คำปิคา">
 
-                    <table class="table table-bordered">
-                        <thead>
+                    <table class="table table-bordered mt-3">
+                        <thead class="table-light">
                             <tr>
                                 <th>เลือก</th>
                                 <th>วันที่รับซื้อ</th>
@@ -57,25 +59,22 @@ $result = $conn->query($sql);
                             $i = 0;
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    $price_per_kg = ($row['price_per_unit'] > 0)
-                                        ? $row['price_per_unit']
-                                        : (($row['quantity'] > 0) ? $row['total_price'] / $row['quantity'] : 0);
+                                    $ppu = $row['price_per_unit'] > 0 ? $row['price_per_unit'] : ($row['quantity'] > 0 ? $row['total_price'] / $row['quantity'] : 0);
 
                                     echo "<tr>";
-                                    echo "<td>
-                                        <input type='checkbox' name='products[$i][checked]' value='1'>
-                                        <input type='hidden' name='products[$i][product_name]' value='" . htmlspecialchars($product_name) . "'>
-                                        <input type='hidden' name='products[$i][orderbuy_detail_id]' value='{$row['orderbuy_detail_id']}'>
-                                        <input type='hidden' name='products[$i][qty]' value='{$row['quantity']}'>
-                                        <input type='hidden' name='products[$i][total_price]' value='{$row['total_price']}'>
-                                        <input type='hidden' name='products[$i][price_per_unit]' value='$price_per_kg'>
-                                        <input type='hidden' name='products[$i][type_name]' value='{$row['type_name']}'>
-                                        <input type='hidden' name='products[$i][unit]' value='{$row['unit']}'>
-                                    </td>";
+                                    echo "<td><input type='checkbox' name='products[$i][checked]' value='1'></td>";
                                     echo "<td>{$row['orderbuy_date']}</td>";
                                     echo "<td>{$row['quantity']}</td>";
                                     echo "<td>" . number_format($row['total_price'], 2) . "</td>";
-                                    echo "<td>" . number_format($price_per_kg, 2) . "</td>";
+                                    echo "<td>" . number_format($ppu, 2) . "</td>";
+
+                                    echo "<input type='hidden' name='products[$i][product_name]' value='" . htmlspecialchars($product_name) . "'>";
+                                    echo "<input type='hidden' name='products[$i][orderbuy_detail_id]' value='{$row['orderbuy_detail_id']}'>";
+                                    echo "<input type='hidden' name='products[$i][qty]' value='{$row['quantity']}'>";
+                                    echo "<input type='hidden' name='products[$i][total_price]' value='{$row['total_price']}'>";
+                                    echo "<input type='hidden' name='products[$i][price_per_unit]' value='$ppu'>";
+                                    echo "<input type='hidden' name='products[$i][type_name]' value='{$row['type_name']}'>";
+                                    echo "<input type='hidden' name='products[$i][unit]' value='{$row['unit']}'>";
                                     echo "</tr>";
                                     $i++;
                                 }
@@ -101,20 +100,26 @@ $result = $conn->query($sql);
     </div>
 
     <script>
-        const salePriceInput = document.getElementById('sale_price');
         const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="products"]');
+        const salePriceInput = document.getElementById('sale_price');
+        const submitBtn = document.querySelector("button[type='submit']");
+
+        const warningMsg = document.createElement('div');
+        warningMsg.id = 'warning-msg';
+        warningMsg.className = "text-danger small mt-2";
+        warningMsg.style.display = "none";
+        submitBtn.parentElement.appendChild(warningMsg);
 
         function updateSummary() {
             let totalWeight = 0;
             let totalCost = 0;
 
-            checkboxes.forEach((cb) => {
+            checkboxes.forEach((cb, i) => {
                 if (cb.checked) {
-                    const parent = cb.parentElement;
-                    const qty = parseFloat(parent.querySelector('input[name$="[qty]"]').value);
-                    const total_price = parseFloat(parent.querySelector('input[name$="[total_price]"]').value);
+                    const qty = parseFloat(document.querySelector(`input[name="products[${i}][qty]"]`).value);
+                    const cost = parseFloat(document.querySelector(`input[name="products[${i}][total_price]"]`).value);
                     totalWeight += qty;
-                    totalCost += total_price;
+                    totalCost += cost;
                 }
             });
 
@@ -124,16 +129,30 @@ $result = $conn->query($sql);
             const profit = totalSale - totalCost;
 
             document.getElementById('summary').innerHTML = `
-            <p><strong>ต้นทุนเฉลี่ยต่อกิโลกรัม:</strong> ${avgCost.toFixed(2)} บาท</p>
-            <p><strong>ราคารวมที่ขายได้:</strong> ${totalSale.toFixed(2)} บาท</p>
-            <p><strong style="color:green;">กำไร:</strong> ${profit.toFixed(2)} บาท</p>
-        `;
+                <p><strong>จำนวน:</strong> ${totalWeight.toFixed(2)} กิโลกรัม</p>
+                <p><strong>ต้นทุนเฉลี่ยต่อกิโลกรัม:</strong> ${avgCost.toFixed(2)} บาท</p>
+                <p><strong>ราคารวมที่ขายได้:</strong> ${totalSale.toFixed(2)} บาท</p>
+                <p><strong style="color:green;">กำไร:</strong> ${profit.toFixed(2)} บาท</p>
+            `;
+            validateMinimum(totalWeight);
+        }
+
+        function validateMinimum(totalQty) {
+            const minQty = <?= (int)$min_sale_qty ?>;
+            if (totalQty < minQty) {
+                warningMsg.textContent = `❌ ยังไม่สามารถส่งขายได้ เนื่องจากไม่ถึงจำนวนขายขั้นต่ำ (${minQty} กก.)`;
+                warningMsg.style.display = "block";
+                submitBtn.disabled = true;
+            } else {
+                warningMsg.style.display = "none";
+                submitBtn.disabled = false;
+            }
         }
 
         checkboxes.forEach(cb => cb.addEventListener('change', updateSummary));
         salePriceInput.addEventListener('input', updateSummary);
+        updateSummary();
     </script>
-    
 </body>
 
 </html>

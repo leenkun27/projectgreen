@@ -80,7 +80,6 @@ $where_clause = count($where) > 0 ? "WHERE " . implode(" AND ", $where) : "";
                             <th>หน่วย</th>
                             <th>จำนวนคงเหลือ</th>
                             <th>ราคาเฉลี่ย/หน่วย</th>
-                            <th>วันที่รับเข้าล่าสุด</th>
                             <!-- <th>สถานะ</th> -->
                             <th>จัดการ</th>
                         </tr>
@@ -123,9 +122,6 @@ $where_clause = count($where) > 0 ? "WHERE " . implode(" AND ", $where) : "";
                                 echo "<td>{$row['unit']}</td>";
                                 echo "<td>{$row['quantity']}</td>";
                                 echo "<td>" . number_format($row['price_per_unit'], 2) . "</td>";
-                                $raw = $row['latest_date'];
-                                $show = $raw ? date('d/m/Y', strtotime($raw)) : '-';
-                                echo "<td data-order='$raw'>$show</td>";
                                 // echo "<td>$status</td>";
                                 echo "<td>
                                     <a href='product-buy_history.php?product_id={$row['product_id']}' class='btn btn-sm btn-info'>
