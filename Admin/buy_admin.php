@@ -1,5 +1,3 @@
-
-Papitchaya Khampikha
 <?php
 session_start();
 
@@ -23,10 +21,10 @@ $product_result = $conn->query("
     WHERE p.type_id = '$type_id'
 ");
 
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_POST['quantity']) && isset($_POST['price_today'])) {
     $product_id = intval($_POST['product']);
-    $quantity = intval($_POST['quantity']);
+
+    $quantity = ($_POST['quantity']);    
     $price = floatval($_POST['price_today']);
 
    

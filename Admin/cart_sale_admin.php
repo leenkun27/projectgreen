@@ -133,7 +133,7 @@ $result = $conn->query($sql);
         checkboxes.forEach(cb => cb.addEventListener('change', updateSummary));
         salePriceInput.addEventListener('input', updateSummary);
     </script>
-
+    
 </body>
 
 </html>

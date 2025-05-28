@@ -1,5 +1,5 @@
 <?php
-// รับข้อมูลจาก AJAX
+
 $p_name = $_POST['product_name'];
 // $p_type = $_POST['p_type'];
 // $p_qty = $_POST['p_qty'];

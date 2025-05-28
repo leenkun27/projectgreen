@@ -1,6 +1,6 @@
 <?php
-// เชื่อมต่อฐานข้อมูล
-$conn = new mysqli("localhost", "root", "", "wichian_db");
+session_start();
+include '../condb.php';
 
 if ($conn->connect_error) {
     die("เชื่อมต่อฐานข้อมูลไม่สำเร็จ: " . $conn->connect_error);
@@ -67,8 +67,29 @@ foreach ($products as $p) {
     }
 }
 
-// แสดงผลลัพธ์
-echo "<h3 style='color:green;'>✅ บันทึกข้อมูลการขายและตัดสต็อกเรียบร้อยแล้ว</h3>";
-echo "<a href='sale_admin.php'>⬅️ กลับหน้าหลัก</a>";
-
 $conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ส่งขายเรียบร้อยแล้ว</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'ส่งขายเรียบร้อยแล้ว',
+            text: 'ข้อมูลถูกบันทึกเรียบร้อย',
+            confirmButtonText: 'กลับหน้าหลัก'
+        }).then(() => {
+            window.location.href = 'sale_admin.php';
+        });
+    </script>
+</body>
+
+</html>

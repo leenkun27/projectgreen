@@ -93,7 +93,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
         .menu li.active {
             background:rgb(117, 36, 36);
-            /* เปลี่ยนสีพื้นหลังของเมนูที่ Active */
             color: white;
         }
 
@@ -132,10 +131,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             <li class="<?= ($current_page == '../Admin/stock_admin.php') ? 'active' : '' ?>">
                 <a href="../Admin/stock_admin.php"><i class="bi bi-box-fill"></i> สต๊อก</a>
-            </li>
-
-            <li class="<?= ($current_page == '../Admin/dashboard_sale_admin.php') ? 'active' : '' ?>">
-                <a href="../Admin/dashboard_sale_admin.php"><i class="bi bi-speedometer"></i> แดชบอร์ด</a>
             </li>
 
             <li class="<?= ($current_page == '../Admin/report_admin.php') ? 'active' : '' ?>">
