@@ -137,8 +137,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <a href="../Admin/report_admin.php"><i class="bi bi-clipboard-data-fill"></i> รายงาน</a>
             </li>
 
-            <li class="<?= ($current_page == '../Admin/history_sale_admin.php') ? 'active' : '' ?>">
-                <a href="../Admin/history_sale_admin.php"><i class="bi bi-file-text-fill"></i> ประวัติขาย</a>
+            <li class="<?= ($current_page == '../Admin/history_sale-buy_admin.php') ? 'active' : '' ?>">
+                <a href="../Admin/history_sale-buy_admin.php"><i class="bi bi-file-text-fill"></i> ประวัติรับซื้อ-ขาย</a>
             </li>
 
             <li class="<?= ($current_page == '../Admin/staff_admin.php') ? 'active' : '' ?>">
