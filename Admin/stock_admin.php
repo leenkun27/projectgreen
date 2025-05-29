@@ -103,16 +103,6 @@ $where_clause = count($where) > 0 ? "WHERE " . implode(" AND ", $where) : "";
 
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
-                                // $status = '';
-                                // $qty = $row['quantity'];
-                                // if ($qty <= 0) {
-                                //     $status = "<span class='badge bg-danger'>หมด</span>";
-                                // } elseif ($qty < 10) {
-                                //     $status = "<span class='badge bg-warning text-dark'>คงเหลือต่ำ</span>";
-                                // } else {
-                                //     $status = "<span class='badge bg-success'>พร้อมขาย</span>";
-                                // }
-
                                 echo "<tr>";
                                 echo "<td>" . $i++ . "</td>";
                                 echo "<td>" . str_pad($row['product_id'], 6, "0", STR_PAD_LEFT) . "</td>";
@@ -122,7 +112,6 @@ $where_clause = count($where) > 0 ? "WHERE " . implode(" AND ", $where) : "";
                                 echo "<td>{$row['unit']}</td>";
                                 echo "<td>{$row['quantity']}</td>";
                                 echo "<td>" . number_format($row['price_per_unit'], 2) . "</td>";
-                                // echo "<td>$status</td>";
                                 echo "<td>
                                     <a href='product-buy_history.php?product_id={$row['product_id']}' class='btn btn-sm btn-info'>
                                         <i class='bi bi-clock-history'></i> ประวัติ
