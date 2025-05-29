@@ -1,219 +1,217 @@
 <?php
-$servername = "localhost"; 
-$username = "root";        
-$password = "";            
-$dbname = "wichian_db";   
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "wichian_db";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-// ดึง orderbuy_id ล่าสุด
-$sql_id = "SELECT orderbuy_id FROM order_buy ORDER BY orderbuy_id DESC LIMIT 1";
-$res_id = $conn->query($sql_id);
-$row_id = $res_id->fetch_assoc();
-$orderbuy_id = $row_id['orderbuy_id'];
+$orderbuy_id = $_GET['orderbuy_id'] ?? 0;
 
-// ดึงข้อมูลผู้รับซื้อและวันที่
+// ข้อมูลหัวรายการ
 $sql_order = "SELECT name, orderbuy_date FROM order_buy WHERE orderbuy_id = $orderbuy_id";
 $res_order = $conn->query($sql_order);
 $order = $res_order->fetch_assoc();
 $employeeName = $order['name'];
-$orderDate = date('d-m-Y', strtotime($order['orderbuy_date']));
+$orderDate = date('d/m/Y', strtotime($order['orderbuy_date']));
 
-// ดึงรายการสินค้าและรายละเอียด
-$sql_detail = "SELECT product_name, quantity, unit, total_price, (total_price / quantity) AS unit_price 
+// รายการสินค้า
+$sql_detail = "SELECT product_name, type_name, quantity, unit, total_price, (total_price / quantity) AS unit_price 
                FROM orderbuy_detail WHERE orderbuy_id = $orderbuy_id";
 $result = $conn->query($sql_detail);
 
-if ($result->num_rows > 0) {
-
+// เริ่ม HTML
 echo "<!DOCTYPE html>
 <html lang='th'>
 <head>
-<meta charset='UTF-8'>
-<title>ใบเสร็จรับเงิน</title>
-<style>
-    body {
-        font-family: 'TH Sarabun New', Arial, sans-serif;
-        background: #eee;
-        padding: 20px 0;
-    }
-    .receipt {
-        max-width: 600px;
-        margin: auto;
-        background: white;
-        padding: 25px 30px;
-        border: 1px solid #ccc;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    .header {
-        display: flex;
-        align-items: center;
-        border-bottom: 2px solid #333;
-        padding-bottom: 15px;
-        margin-bottom: 15px;
-    }
-    .header img {
-        max-width: 120px;
-        margin-right: 15px;
-    }
-    .store-info {
-        flex: 1;
-        font-size: 16px;
-    }
-    .store-info p {
-        margin: 2px 0;
-    }
-    h2 {
-        text-align: center;
-        margin: 15px 0 20px;
-        font-weight: bold;
-        font-size: 22px;
-        letter-spacing: 1px;
-    }
-    .details {
-        margin-bottom: 20px;
-        font-size: 16px;
-    }
-    .details b {
-        display: inline-block;
-        width: 120px;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 16px;
-        margin-bottom: 20px;
-    }
-    th, td {
-        border: 1px solid #444;
-        padding: 8px 10px;
-        text-align: center;
-    }
-    th {
-        background: #f0f0f0;
-        font-weight: bold;
-    }
-    td.right {
-        text-align: right;
-        padding-right: 12px;
-    }
-    .totals td {
-        border: none;
-        padding: 6px 10px;
-    }
-    .totals tr td:first-child {
-        text-align: right;
-        font-weight: bold;
-        padding-right: 12px;
-    }
-    .footer {
-        text-align: center;
-        font-size: 14px;
-        color: #666;
-        margin-top: 30px;
-        letter-spacing: 1px;
-    }
-    @media print {
+    <meta charset='UTF-8'>
+    <title>ใบเสร็จรับซื้อ</title>
+    <style>
         body {
-            background: none;
-            padding: 0;
+            font-family: 'TH Sarabun New', sans-serif;
+            font-size: 20px;
+            background: #e6f0fa;
+            padding: 30px;
+            color: #002b5c;
         }
         .receipt {
-            box-shadow: none;
-            border: none;
-            margin: 0;
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border: 2px solid #4a90e2;
+        }
+        .header {
+            display: flex;
+            border-bottom: 2px solid #002b5c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+        .header img {
+            width: 80px;
+            height: auto;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+
+        .store-info {
+            flex: 1;
+        }
+
+        .store-info p {
+            margin: 2px 0; /* ลดระยะห่างแนวตั้ง */
+            line-height: 1.3; /* เพิ่มความหนาแน่นแต่ไม่เบียดเกินไป */
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 24px;
+            color: #004a99;
+        }
+        .details {
+            margin-bottom: 15px;
+        }
+        .details p {
+            margin: 4px 0;
+        }
+        table {
             width: 100%;
-            max-width: none;
-            padding: 0;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
-        button {
-            display: none;
+        th, td {
+            border: 1px solid #004a99;
+            padding: 8px;
+            text-align: center;
         }
-    }
-    button.print-btn {
-        display: block;
-        margin: 0 auto 30px;
-        background-color: #333;
-        color: #fff;
-        border: none;
-        padding: 10px 25px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    button.print-btn:hover {
-        background-color: #555;
-    }
-</style>
+        th {
+            background-color: #d8e8ff;
+        }
+        td.right {
+            text-align: right;
+            padding-right: 12px;
+        }
+        .summary {
+            margin-bottom: 30px;
+        }
+        .summary td {
+            padding: 6px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 18px;
+            color: #555;
+        }
+        .signatures {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .sign {
+            width: 45%;
+            text-align: center;
+        }
+        .sign-line {
+            border-top: 1px solid #333;
+            margin-top: 60px;
+            padding-top: 5px;
+        }
+        button.print-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #004a99;
+            color: #fff;
+            padding: 10px 30px;
+            border: none;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        @media print {
+            button.print-btn {
+                display: none;
+            }
+        }
+
+        .main-title {
+    text-align: center;
+    font-size: 32px;
+    color: #003f88;
+    font-weight: bold;
+    margin: 10px 0 20px;
+    text-decoration: underline;
+}
+
+    </style>
 </head>
 <body>
 <div class='receipt'>
     <div class='header'>
         <img src='../img/logo2.jpg' alt='โลโก้ร้าน'>
         <div class='store-info'>
-            <p><strong>ร้านรับซื้อของเก่า วิเชียรรุ่งเรือง</strong></p>
-            <p>อำเภอแก่งกระจาน จังหวัดเพชรบุรี</p>
+            <h3>ร้านรับซื้อของเก่า วิเชียรรุ่งเรือง</h3>
+            <p>883/160 บ้านโนนม่วง ตำบลแก่งกระจาน</p>
+            <p>อำเภอแก่งกระจาน จังหวัดเพชรบุรี 76170</p>
             <p>โทร: 089-225-6557</p>
         </div>
     </div>
-    <h2>ใบกำกับภาษี/ใบเสร็จรับเงิน</h2>
+    <h1 class='main-title'>ใบรับซื้อสินค้า</h1>
+    <h2>ใบกำกับภาษี / ใบเสร็จรับเงิน</h2>
     <div class='details'>
-        <p><b>ผู้รับซื้อ:</b> $employeeName</p>
-        <p><b>วันที่รับซื้อ:</b> $orderDate</p>
+        <p><strong>เลขที่ใบเสร็จ:</strong> ORB-{$orderbuy_id}</p>
+        <p><strong>วันที่:</strong> {$orderDate}</p>
+        <p><strong>ผู้รับซื้อ:</strong> {$employeeName}</p>
     </div>
+
+
     <table>
         <thead>
             <tr>
                 <th>ลำดับ</th>
-                <th>ชื่อสินค้า</th>
+                <th>รายการ</th>
+                <th>ประเภท</th>
                 <th>จำนวน</th>
                 <th>หน่วย</th>
-                <th>ราคา/หน่วย (บาท)</th>
-                <th>จำนวนเงิน (บาท)</th>
+                <th>ราคาต่อหน่วย</th>
+                <th>ราคารวม</th>
             </tr>
         </thead>
         <tbody>";
 
-        $counter = 1;
-        $totalAmount = 0;
+$counter = 1;
+$total = 0;
+while ($row = $result->fetch_assoc()) {
+    $total += $row['total_price'];
+    echo "<tr>
+            <td>{$counter}</td>
+            <td>{$row['product_name']}</td>
+            <td>{$row['type_name']}</td>
+            <td>{$row['quantity']}</td>
+            <td>{$row['unit']}</td>
+            <td class='right'>" . number_format($row['unit_price'], 2) . "</td>
+            <td class='right'>" . number_format($row['total_price'], 2) . "</td>
+          </tr>";
+    $counter++;
+}
 
-        while ($row = $result->fetch_assoc()) {
-            $totalAmount += $row['total_price'];
-            $unitPrice = number_format($row['unit_price'], 2);
-            $totalPrice = number_format($row['total_price'], 2);
+$tax = $total * 0.07;
+$grandTotal = $total + $tax;
 
-            echo "<tr>
-                    <td>" . $counter++ . "</td>
-                    <td>" . $row['product_name'] . "</td>
-                    <td>" . $row['quantity'] . "</td>
-                    <td>" . $row['unit'] . "</td>
-                    <td class='right'>$unitPrice</td>
-                    <td class='right'>$totalPrice</td>
-                </tr>";
-        }
-
-        $taxAmount = $totalAmount * 0.07;
-        $grandTotal = $totalAmount + $taxAmount;
-
-echo "</tbody>
+echo "   </tbody>
     </table>
-    <table class='totals' style='width:100%;'>
-        <tr>
-            <td>ยอดรวม</td>
-            <td class='right'>" . number_format($totalAmount, 2) . " บาท</td>
-        </tr>
-        <tr>
-            <td>ภาษีมูลค่าเพิ่ม 7%</td>
-            <td class='right'>" . number_format($taxAmount, 2) . " บาท</td>
-        </tr>
-        <tr>
-            <td><strong>จำนวนเงินทั้งหมด</strong></td>
-            <td class='right'><strong>" . number_format($grandTotal, 2) . " บาท</strong></td>
-        </tr>
+    <table class='summary'>
+        <tr><td align='right'><strong>ยอดรวม:</strong></td><td class='right'>" . number_format($total, 2) . " บาท</td></tr>
+        <tr><td align='right'><strong>ภาษีมูลค่าเพิ่ม (7%):</strong></td><td class='right'>" . number_format($tax, 2) . " บาท</td></tr>
+        <tr><td align='right'><strong>ยอดสุทธิ:</strong></td><td class='right'><strong>" . number_format($grandTotal, 2) . " บาท</strong></td></tr>
     </table>
-    <button class='print-btn' onclick='window.print();'>พิมพ์ใบเสร็จ</button>
+
+
+    <button class='print-btn' onclick='window.print()'>พิมพ์ใบเสร็จ</button>
+
     <div class='footer'>
         ขอบคุณที่ใช้บริการ
     </div>
@@ -221,9 +219,4 @@ echo "</tbody>
 </body>
 </html>";
 
-} else {
-    echo "ไม่พบข้อมูลการสั่งซื้อ";
-}
-
 $conn->close();
-?>

@@ -50,21 +50,31 @@ unset($_SESSION['cart']);
 
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <title>บันทึกรับซื้อสำเร็จ</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'บันทึกเรียบร้อยแล้ว',
-        text: 'ข้อมูลการรับซื้อถูกบันทึกแล้ว',
-        confirmButtonText: 'กลับหน้ารับซื้อ'
-    }).then(() => {
-        window.location.href = 'buy_admin.php';
-    });
-</script>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'บันทึกเรียบร้อยแล้ว',
+            text: 'ข้อมูลการรับซื้อถูกบันทึกแล้ว',
+            showCancelButton: true,
+            confirmButtonText: 'พิมพ์ใบเสร็จ',
+            cancelButtonText: 'กลับหน้ารับซื้อ'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'print_receipt.php?orderbuy_id=<?= $orderbuy_id ?>';
+            } else {
+                window.location.href = 'buy_admin.php';
+            }
+        });
+    </script>
+
 </body>
+
 </html>
