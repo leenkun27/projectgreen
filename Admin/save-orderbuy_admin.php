@@ -2,111 +2,69 @@
 session_start();
 include '../condb.php';
 
-if (!empty($_SESSION['cart'])) {
-    $order_date = date("Y-m-d");
-    $username = $_SESSION['username'];
-
-    $query = "SELECT name FROM users WHERE username = '$username'";
-    $result = $conn->query($query);
-    $row = $result->fetch_assoc();
-    $employee_name = $row['name'];
-
-    $total_price = 0;
-    foreach ($_SESSION['cart'] as $item) {
-        $total_price += ($item['price_today'] * $item['quantity']);
-    }
-
-    $sql_order = "INSERT INTO order_buy (name, orderbuy_date, total_price) 
-                  VALUES ('$employee_name', '$order_date', '$total_price')";
-
-    if ($conn->query($sql_order)) {
-        $orderbuy_id = $conn->insert_id;
-
-        foreach ($_SESSION['cart'] as $item) {
-            $product_id = $item['product_id'];
-            $product_name = $item['product_name'];
-            $quantity = $item['quantity'];
-            $unit = $item['unit'];
-            $price_today = $item['price_today'];
-            $total_item_price = $price_today * $quantity;
-            $type_name = isset($item['type_name']) ? $item['type_name'] : 'ไม่ระบุ';
-
-            $sql_detail = "INSERT INTO orderbuy_detail (orderbuy_id, product_name, quantity, unit, total_price, type_name) 
-                           VALUES ('$orderbuy_id', '$product_name', '$quantity', '$unit', '$total_item_price', '$type_name')";
-            $conn->query($sql_detail);
-
-            $sql_update_product = "UPDATE product SET quantity = quantity + $quantity WHERE product_id = '$product_id'";
-            if (!$conn->query($sql_update_product)) {
-                die("เกิดข้อผิดพลาดในการอัปเดตสต็อกสินค้า: " . $conn->error);
-            }
-        }
-
-        unset($_SESSION['cart']);
-
-        // ✅ แสดง SweetAlert2 หลังจากบันทึกเสร็จ
-?>
-        <!DOCTYPE html>
-        <html lang="en">
-
-        <head>
-            <meta charset="UTF-8">
-            <title>บันทึกสำเร็จ</title>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        </head>
-
-        <body>
-            <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'บันทึกข้อมูลสำเร็จ',
-                    text: 'อัปเดตสต็อกสินค้าเรียบร้อยแล้ว',
-                    confirmButtonText: 'พิมพ์ใบเสร็จ',
-                    showCancelButton: true,
-                    cancelButtonText: 'กลับหน้าหลัก'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = 'print_receipt.php';
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        window.location.href = 'buy_admin.php';
-                    }
-                });
-            </script>
-
-        </body>
-
-        </html>
-    <?php
-        exit();
-    } else {
-        // บันทึก order_buy ไม่สำเร็จ
-    ?>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'เกิดข้อผิดพลาด',
-                text: 'ไม่สามารถบันทึกคำสั่งซื้อได้',
-            }).then(() => {
-                window.location.href = 'buy_admin.php';
-            });
-        </script>
-    <?php
-        exit();
-    }
-} else {
-    // ตะกร้าว่าง
-    ?>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        Swal.fire({
-            icon: 'warning',
-            title: 'ไม่มีสินค้าในตะกร้า',
-            text: 'กรุณาเพิ่มสินค้าเข้าตะกร้าก่อน',
-        }).then(() => {
-            window.location.href = 'buy_admin.php';
-        });
-    </script>
-<?php
-    exit();
+if (!isset($_SESSION['cart']) || count($_SESSION['cart']) == 0) {
+    echo "<script>alert('ไม่มีรายการสินค้าในตะกร้า'); window.location.href='buy_admin.php';</script>";
+    exit;
 }
+
+$orderbuy_date = date("Y-m-d");
+$name = isset($_SESSION['name']) ? $_SESSION['name'] : 'ไม่ทราบชื่อ';
+
+$total = 0;
+
+$sql = "INSERT INTO order_buy (orderbuy_date, name) VALUES ('$orderbuy_date', '$name')";
+$conn->query($sql);
+$orderbuy_id = $conn->insert_id;
+
+foreach ($_SESSION['cart'] as $item) {
+    $product_id = $item['product_id'];
+    $product_name = $item['product_name'];
+    $type_name = $item['type_name'];
+    $qty = $item['quantity'];
+    $unit = $item['unit'];
+    $price = floatval($item['price_today']);
+    $sum = $price * $qty;
+
+    $total += $sum;
+
+    $sql_detail = "INSERT INTO orderbuy_detail (
+        orderbuy_id, product_name, quantity, unit, total_price, type_name, price_per_unit, is_sold
+    ) VALUES (
+        '$orderbuy_id', '$product_name', '$qty', '$unit', '$sum', '$type_name', '$price', 0
+    )";
+    $conn->query($sql_detail);
+
+    // อัปเดตราคา
+    $sql_price = "UPDATE product SET price_today = '$price' WHERE product_id = '$product_id'";
+    $conn->query($sql_price);
+
+    //เพิ่มจำนวนเข้า stock
+    if ($qty > 0) {
+        $sql_update_stock = "UPDATE product SET quantity = quantity + $qty WHERE product_id = '$product_id'";
+        $conn->query($sql_update_stock);
+    }
+}
+
+unset($_SESSION['cart']);
 ?>
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>บันทึกรับซื้อสำเร็จ</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'บันทึกเรียบร้อยแล้ว',
+        text: 'ข้อมูลการรับซื้อถูกบันทึกแล้ว',
+        confirmButtonText: 'กลับหน้ารับซื้อ'
+    }).then(() => {
+        window.location.href = 'buy_admin.php';
+    });
+</script>
+</body>
+</html>

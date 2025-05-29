@@ -21,43 +21,40 @@ $product_result = $conn->query("
     WHERE p.type_id = '$type_id'
 ");
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_POST['quantity']) && isset($_POST['price_today'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product'], $_POST['quantity'], $_POST['price_today'])) {
     $product_id = intval($_POST['product']);
-
-    $quantity = ($_POST['quantity']);    
+    $quantity = floatval($_POST['quantity']);
     $price = floatval($_POST['price_today']);
 
-   
-    $conn->query("UPDATE product SET price_today = $price WHERE product_id = $product_id");
+    if ($product_id > 0 && $quantity > 0 && $price >= 0) {
+        $product_query = $conn->query("
+            SELECT p.product_name, p.unit, t.type_name 
+            FROM product p 
+            LEFT JOIN product_type t ON p.type_id = t.type_id
+            WHERE p.product_id = $product_id
+        ");
 
-   
-    $product_query = $conn->query("
-        SELECT p.product_name, p.unit, t.type_name 
-        FROM product p 
-        LEFT JOIN product_type t ON p.type_id = t.type_id
-        WHERE p.product_id = $product_id
-    ");
+        $product_data = $product_query->fetch_assoc();
 
-    $product_data = $product_query->fetch_assoc();
+        if ($product_data) {
+            $product_name = $product_data['product_name'];
+            $unit = $product_data['unit'];
+            $type_name = $product_data['type_name'];
+            $total = $price * $quantity;
 
-    if ($product_data) {
-        $product_name = $product_data['product_name'];
-        $unit = $product_data['unit'];
-        $type_name = $product_data['type_name'];
-        $total = $price * $quantity;
+            $_SESSION['cart'][] = [
+                'product_id' => $product_id,
+                'product_name' => $product_name,
+                'price_today' => $price,
+                'quantity' => $quantity,
+                'unit' => $unit,
+                'type_name' => $type_name,
+                'total' => $total
+            ];
 
-        $_SESSION['cart'][] = [
-            'product_id' => $product_id,
-            'product_name' => $product_name,
-            'price_today' => $price,
-            'quantity' => $quantity,
-            'unit' => $unit,
-            'type_name' => $type_name,
-            'total' => $total
-        ];
-
-        header("Location: buy_admin.php");
-        exit();
+            header("Location: buy_admin.php");
+            exit();
+        }
     }
 }
 
@@ -74,11 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function updatePrice() {
-            var productSelect = document.getElementById("product"); 
-            var selectedOption = productSelect.options[productSelect.selectedIndex]; 
-            var priceField = document.getElementById("price_today"); 
-            priceField.value = selectedOption.getAttribute("data-price"); 
-        }
+    var productSelect = document.getElementById("product");
+    var selectedOption = productSelect.options[productSelect.selectedIndex];
+    var priceField = document.getElementById("price_today");
+    var price = selectedOption.getAttribute("data-price");
+    priceField.value = price !== null ? price : '';
+}
     </script>
 </head>
 
@@ -139,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
 
                             <div class="mb-3">
                                 <label for="price_today" class="form-label">ราคาวันนี้:</label>
-                                <input type="text" class="form-control" id="price_today" name="price_today" >
+                                <input type="number" step="0.01" min="0" class="form-control" id="price_today" name="price_today" required>
                             </div>
                         </div>
                     </div>
@@ -200,6 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product']) && isset($_
             </div>
 
 </body>
+
 </html>
 
 <?php
