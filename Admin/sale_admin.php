@@ -63,7 +63,7 @@
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="container my-4">
-                    <h2>ส่งขายสินค้า</h2>
+                    <h2 class="mt-3">🚚 ส่งขายสินค้า</h2>
                     <div class="table-responsive mt-3">
                         <table id="productTable" class="table table-bordered table-striped">
                             <thead class="table-light">

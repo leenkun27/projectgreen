@@ -21,10 +21,10 @@
             <div class="col-2">
                 <?php include '../menu_admin.php'; ?>
             </div>
-            
+
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="col-12">
-                    <h2>ข้อมูลสินค้า</h2>
+                    <h2 class="mt-3">📦ข้อมูลสินค้า</h2>
                     <div class="mt-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <input id="searchInput" type="text" class="form-control w-50" placeholder="ค้นหาชื่อของเก่า">

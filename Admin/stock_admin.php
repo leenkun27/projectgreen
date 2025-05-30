@@ -33,9 +33,9 @@ $where_clause = count($where) > 0 ? "WHERE " . implode(" AND ", $where) : "";
             <div class="col-2">
                 <?php include '../menu_admin.php'; ?>
             </div>
-            <div class="card col-10 px-3 pt-3 pb-5">
-                <h2>ข้อมูลสินค้าในคลัง</h2>
 
+            <div class="card mt-3 pb-5 px-4 col-10">
+                <h2 class="mt-3">🗃️ ข้อมูลสินค้าในคลัง</h2>
                 <form method="get" class="row g-3 mt-2 mb-4">
                     <div class="col-md-4">
                         <label>ประเภทของเก่า:</label>

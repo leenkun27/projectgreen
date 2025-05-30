@@ -65,8 +65,8 @@ $total_pages = ceil($total_records / $limit);
                 <?php include '../menu_admin.php'; ?>
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
-                <div class="container mt-5">
-                    <h2 class="mb-4">ราคาของเก่าวันนี้</h2>
+                <div class="container mt-4">
+                    <h2 class="mb-4">📈 ราคาของเก่าวันนี้</h2>
 
                     <table class="table table-bordered">
                         <thead>

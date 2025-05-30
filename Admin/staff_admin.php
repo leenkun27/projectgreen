@@ -124,7 +124,10 @@
                                             <th>ชื่อ</th>
                                             <th>ที่อยู่</th>
                                             <th>เบอร์โทร</th>
-                                            <th>ตำแหน่ง</th>                                        </tr>
+                                            <th>ตำแหน่ง</th>
+                                            <th scope="col">ลบ</th>
+                                            <th scope="col">แก้ไข</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <?php
@@ -134,18 +137,29 @@
                                             $index = 1;
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>
-                                                    <td>" . $index++ . "</td>
-                                                    <td>" . htmlspecialchars($row['username']) . "</td>
-                                                    <td>" . htmlspecialchars($row['name']) . "</td>
-                                                    <td>" . htmlspecialchars($row['user_address']) . "</td>
-                                                    <td>" . htmlspecialchars($row['user_tell']) . "</td>
-                                                    <td>" . htmlspecialchars($row['role']) . "</td>
-                                                </tr>";
+            <td>" . $index++ . "</td>
+            <td>" . htmlspecialchars($row['username']) . "</td>
+            <td>" . htmlspecialchars($row['name']) . "</td>
+            <td>" . htmlspecialchars($row['user_address']) . "</td>
+            <td>" . htmlspecialchars($row['user_tell']) . "</td>
+            <td>" . htmlspecialchars($row['role']) . "</td>
+            <td>
+                <a href='delete_staff_admin.php?id=" . $row['id'] . "' class='btn btn-danger' onclick='return confirm(\"ยืนยันการลบ?\")'>
+                    <i class='bi bi-trash'></i>
+                </a>
+            </td>
+            <td>
+                <a href='edit_staff_admin.php?id=" . $row['id'] . "' class='btn btn-warning'>
+                    <i class='bi bi-pencil-square'></i>
+                </a>
+            </td>
+        </tr>";
                                             }
                                         } else {
-                                            echo "<tr><td colspan='7' class='text-center'>ไม่มีข้อมูล</td></tr>";
+                                            echo "<tr><td colspan='8' class='text-center'>ไม่มีข้อมูล</td></tr>";
                                         }
                                         ?>
+
                                     </tbody>
                                 </table>
                             </div>
