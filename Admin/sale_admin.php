@@ -51,6 +51,26 @@
             background-color: #ffebee;
             color: #b71c1c;
         }
+
+        .dataTables_length {
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-size: 16px;
+        }
+
+        .dataTables_length label {
+            margin: 0;
+        }
+
+        .dataTables_length select {
+            min-width: 60px;
+            padding: 4px 6px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
     </style>
 </head>
 
@@ -63,7 +83,7 @@
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="container my-4">
-                    <h2 class="mt-3">🚚 ส่งขายสินค้า</h2>
+                    <h2 class="mt-3">🚚ส่งขายสินค้า</h2>
                     <div class="table-responsive mt-3">
                         <table id="productTable" class="table table-bordered table-striped">
                             <thead class="table-light">
@@ -146,10 +166,24 @@
     <script>
         $(document).ready(function() {
             $('#productTable').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                language: {
+                    lengthMenu: "แสดง _MENU_ รายการต่อหน้า",
+                    zeroRecords: "ไม่พบข้อมูล",
+                    info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                    infoEmpty: "ไม่มีข้อมูล",
+                    infoFiltered: "(ค้นหาจากทั้งหมด _MAX_ รายการ)",
+                    search: "ค้นหา:",
+                    paginate: {
+                        first: "หน้าแรก",
+                        last: "หน้าสุดท้าย",
+                        next: "ถัดไป",
+                        previous: "ก่อนหน้า"
+                    }
+                }
             });
         });
     </script>
