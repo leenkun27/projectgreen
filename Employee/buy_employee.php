@@ -1,128 +1,214 @@
+<?php
+session_start();
+
+if ($_SESSION['role'] != 'user') {
+    header("Location: ../login.php");
+    exit();
+}
+
+include '../condb.php';
+
+$current_date = date("d-m-Y");
+
+$type_id = isset($_POST['type']) ? $_POST['type'] : '';
+$type_result = $conn->query("SELECT type_id, type_name FROM product_type");
+
+
+$product_result = $conn->query("
+    SELECT p.product_id, p.product_name, p.price_today, p.unit, t.type_name 
+    FROM product p 
+    LEFT JOIN product_type t ON p.type_id = t.type_id
+    WHERE p.type_id = '$type_id'
+");
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product'], $_POST['quantity'], $_POST['price_today'])) {
+    $product_id = intval($_POST['product']);
+    $quantity = floatval($_POST['quantity']);
+    $price = floatval($_POST['price_today']);
+
+    if ($product_id > 0 && $quantity > 0 && $price >= 0) {
+        $product_query = $conn->query("
+            SELECT p.product_name, p.unit, t.type_name 
+            FROM product p 
+            LEFT JOIN product_type t ON p.type_id = t.type_id
+            WHERE p.product_id = $product_id
+        ");
+
+        $product_data = $product_query->fetch_assoc();
+
+        if ($product_data) {
+            $product_name = $product_data['product_name'];
+            $unit = $product_data['unit'];
+            $type_name = $product_data['type_name'];
+            $total = $price * $quantity;
+
+            $_SESSION['cart'][] = [
+                'product_id' => $product_id,
+                'product_name' => $product_name,
+                'price_today' => $price,
+                'quantity' => $quantity,
+                'unit' => $unit,
+                'type_name' => $type_name,
+                'total' => $total
+            ];
+
+            header("Location: buy_employee.php");
+            exit();
+        }
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>รับซื้อสินค้า</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function updatePrice() {
+            var productSelect = document.getElementById("product");
+            var selectedOption = productSelect.options[productSelect.selectedIndex];
+            var priceField = document.getElementById("price_today");
+            var unitField = document.getElementById("unit");
+
+            var price = selectedOption.getAttribute("data-price");
+            var unit = selectedOption.getAttribute("data-unit");
+
+            priceField.value = price !== null ? price : '';
+            unitField.value = unit !== null ? unit : '';
+        }
+    </script>
 </head>
 
 <body>
-
     <div class="container">
-        <?php include './header.php'; ?>
+        <?php include '../header_emp.php'; ?>
         <div class="row">
             <div class="col-2">
-                <?php include './menu.php'; ?>
+                <?php include '../menu_emp.php'; ?>
             </div>
-            <div class="col-10">
-                <h1>รับซื้อของเก่า</h1>
-                <div class="row mt-5">
-                    <div class="col-lg-6 col-md-4 col-sm-6">
-                        ชื่อของเก่า
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="ชื่อของเก่า" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">ค้นหา</button>
+
+            <div class="card mt-3 pb-5 px-4 col-10">
+                <h2 class="mt-3">🛒 รับซื้อสินค้า</h2>
+
+                <form method="POST" action="">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="purchase_date" class="form-label">วันที่รับซื้อ</label>
+                                <input type="date" class="form-control" name="purchase_date" value="<?= date('Y-m-d') ?>" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="type" class="form-label">เลือกประเภท:</label>
+                                <select class="form-control" name="type" id="type" onchange="this.form.submit()">
+                                    <option value="">-- เลือกประเภท --</option>
+                                    <?php while ($row = $type_result->fetch_assoc()) { ?>
+                                        <option value="<?= $row['type_id'] ?>" <?= ($type_id == $row['type_id']) ? 'selected' : '' ?>>
+                                            <?= $row['type_name'] ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">ปริมาณการรับซื้อ:</label>
+                                <div class="d-flex">
+                                    <input type="number" class="form-control me-2" name="quantity" required min="1" style="max-width: 400px;" placeholder="จำนวน">
+                                    <input type="text" class="form-control" id="unit" name="unit" readonly style="max-width: 100px;" placeholder="หน่วย">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">ชื่อพนักงานที่รับซื้อ:</label>
+                                <input type="text" class="form-control" value="<?php echo isset($_SESSION['name']) ? $_SESSION['name'] : 'ไม่พบชื่อ'; ?>" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="product" class="form-label">เลือกชื่อของเก่า:</label>
+                                <select class="form-control" name="product" id="product" onchange="updatePrice()">
+                                    <option value="">-- เลือกชื่อของเก่า --</option>
+                                    <?php while ($row = $product_result->fetch_assoc()) { ?>
+                                        <option
+                                            value="<?= $row['product_id'] ?>"
+                                            data-price="<?= $row['price_today'] ?>"
+                                            data-unit="<?= $row['unit'] ?>">
+                                            <?= $row['product_name'] ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="price_today" class="form-label">ราคาวันนี้:</label>
+                                <input type="number" step="0.01" min="0" class="form-control" id="price_today" name="price_today" required placeholder="ราคา">
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div>ประเภทของเก่า</div>
-                        <div class="input-group">
-                            <select class="form-control" id="" placeholder="">
-                                <option>เศษเหล็ก</option>
-                                <option>กระดาษ</option>
-                                <option>ขวดแก้ว</option>
-                                <option>พลาสติก</option>
-                                <option>โลหะที่มีค่าสูง</option>
-                                <option>เครี่องใช้ไฟฟ้า</option>
-                                <option>อื่นๆ</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-6 mt-2">
-                        <div>ปริมาณการรับซื้อ</div>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
-                        </div>
-                    </div>
 
+                    <button type="submit" class="btn btn-success">เพิ่ม</button>
+                </form>
 
-                    <div class="col-6 mt-2">
-                        <div>ปริมาณคงเหลือ</div>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
-                        </div>
-                    </div>
-                    <div class="col-6 mt-2">
-                        <div>ราคาวันนี้</div>
-                        <div class="input-group">
-                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                            <div class="input-group-append">
-                                <span class="input-group-text">฿</span>
-                            </div>
-                        </div>
-                    </div>
+                <hr>
 
+                <h4 class="mt-4">🛍️ ตะกร้าสินค้า</h4>
+                <table class="table table-bordered mt-3">
+                    <thead class="table-light">
+                        <tr>
+                            <th>วันที่รับซื้อ</th>
+                            <th>ชื่อสินค้า</th>
+                            <th>ประเภทของเก่า</th>
+                            <th>จำนวน</th>
+                            <th>หน่วย</th>
+                            <th>ราคา</th>
+                            <th>รวม</th>
+                            <th>ลบ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $grand_total = 0; ?>
+                        <?php if (!empty($_SESSION['cart'])): ?>
+                            <?php foreach ($_SESSION['cart'] as $index => $item): ?>
+                                <tr>
+                                    <td><?= date("d-m-Y") ?></td>
+                                    <td><?= $item['product_name'] ?></td>
+                                    <td><?= $item['type_name'] ?></td>
+                                    <td><?= $item['quantity'] ?></td>
+                                    <td><?= $item['unit'] ?></td>
+                                    <td><?= number_format($item['price_today'], 2) ?></td>
+                                    <td><?= number_format($item['total'], 2) ?></td>
+                                    <td>
+                                        <form method="post" action="remove_item.php">
+                                            <input type="hidden" name="index" value="<?= $index ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm">ลบ</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php $grand_total += $item['total']; ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8" class="text-center">ไม่มีสินค้าในตะกร้า</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+
+                <div class="text-end">
+                    <p>ยอดรวมทั้งหมด: <strong><?= number_format($grand_total, 2) ?></strong> บาท</p>
+                    <a href="clear_cart.php" class="btn btn-danger">ล้างตะกร้า</a>
+                    <a href="save-orderbuy_emp.php" class="btn btn-primary">บันทึก</a>
                 </div>
             </div>
 
-
-        </div>
-    </div>
-
-
-
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">กระดาษ</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex justify-content-center">
-                        <img
-                            class="w-50"
-                            src="https://th.bing.com/th/id/OIP.iZ6lxNXuEqjJd8FcnrFIygHaHa?w=1000&h=1000&rs=1&pid=ImgDetMain"
-                            alt="">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">จำนวน</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-                    <button type="button" class="btn btn-success">บันทึก</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function() {
-            $(".cart").click(function() {
-                Swal.fire({
-                    title: "สำเร็จ",
-                    text: "You clicked the button!",
-                    icon: "success"
-                });
-            });
-        });
-    </script>
 </body>
-
 </html>
+<?php
+$conn->close();
+?>
