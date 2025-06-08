@@ -11,19 +11,19 @@ if ($conn->connect_error) {
 
 $orderbuy_id = $_GET['orderbuy_id'] ?? 0;
 
-// ข้อมูลหัวรายการ
+
 $sql_order = "SELECT name, orderbuy_date FROM order_buy WHERE orderbuy_id = $orderbuy_id";
 $res_order = $conn->query($sql_order);
 $order = $res_order->fetch_assoc();
 $employeeName = $order['name'];
 $orderDate = date('d/m/Y', strtotime($order['orderbuy_date']));
 
-// รายการสินค้า
+
 $sql_detail = "SELECT product_name, type_name, quantity, unit, total_price, (total_price / quantity) AS unit_price 
                FROM orderbuy_detail WHERE orderbuy_id = $orderbuy_id";
 $result = $conn->query($sql_detail);
 
-// เริ่ม HTML
+
 echo "<!DOCTYPE html>
 <html lang='th'>
 <head>
@@ -154,13 +154,14 @@ echo "<!DOCTYPE html>
         <img src='../img/logo2.jpg' alt='โลโก้ร้าน'>
         <div class='store-info'>
             <h3>ร้านรับซื้อของเก่า วิเชียรรุ่งเรือง</h3>
-            <p>883/160 บ้านโนนม่วง ตำบลแก่งกระจาน</p>
+            <p>141/8 บ้านวังจันทร์ ตำบลแก่งกระจาน</p>
             <p>อำเภอแก่งกระจาน จังหวัดเพชรบุรี 76170</p>
+            <p>เลขประจำตัวผู้เสียภาษี: 0105556012345</p>
             <p>โทร: 089-225-6557</p>
         </div>
     </div>
     <h1 class='main-title'>ใบรับซื้อสินค้า</h1>
-    <h2>ใบกำกับภาษี / ใบเสร็จรับเงิน</h2>
+    <h2>ใบเสร็จรับเงิน</h2>
     <div class='details'>
         <p><strong>เลขที่ใบเสร็จ:</strong> ORB-{$orderbuy_id}</p>
         <p><strong>วันที่:</strong> {$orderDate}</p>
@@ -205,8 +206,6 @@ echo "   </tbody>
     </table>
     <table class='summary'>
         <tr><td align='right'><strong>ยอดรวม:</strong></td><td class='right'>" . number_format($total, 2) . " บาท</td></tr>
-        <tr><td align='right'><strong>ภาษีมูลค่าเพิ่ม (7%):</strong></td><td class='right'>" . number_format($tax, 2) . " บาท</td></tr>
-        <tr><td align='right'><strong>ยอดสุทธิ:</strong></td><td class='right'><strong>" . number_format($grandTotal, 2) . " บาท</strong></td></tr>
     </table>
 
 

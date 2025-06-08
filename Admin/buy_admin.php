@@ -71,12 +71,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product'], $_POST['qua
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function updatePrice() {
-    var productSelect = document.getElementById("product");
-    var selectedOption = productSelect.options[productSelect.selectedIndex];
-    var priceField = document.getElementById("price_today");
-    var price = selectedOption.getAttribute("data-price");
-    priceField.value = price !== null ? price : '';
-}
+            var productSelect = document.getElementById("product");
+            var selectedOption = productSelect.options[productSelect.selectedIndex];
+            var priceField = document.getElementById("price_today");
+            var unitField = document.getElementById("unit");
+
+            var price = selectedOption.getAttribute("data-price");
+            var unit = selectedOption.getAttribute("data-unit");
+
+            priceField.value = price !== null ? price : '';
+            unitField.value = unit !== null ? unit : '';
+        }
     </script>
 </head>
 
@@ -113,7 +118,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product'], $_POST['qua
 
                             <div class="mb-3">
                                 <label for="quantity" class="form-label">ปริมาณการรับซื้อ:</label>
-                                <input type="number" class="form-control" name="quantity" required min="1">
+                                <div class="d-flex">
+                                    <input type="number" class="form-control me-2" name="quantity" required min="1" style="max-width: 400px;" placeholder="จำนวน">
+                                    <input type="text" class="form-control" id="unit" name="unit" readonly style="max-width: 100px;" placeholder="หน่วย">
+                                </div>
                             </div>
                         </div>
 
@@ -128,16 +136,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product'], $_POST['qua
                                 <select class="form-control" name="product" id="product" onchange="updatePrice()">
                                     <option value="">-- เลือกชื่อของเก่า --</option>
                                     <?php while ($row = $product_result->fetch_assoc()) { ?>
-                                        <option value="<?= $row['product_id'] ?>" data-price="<?= $row['price_today'] ?>">
+                                        <option
+                                            value="<?= $row['product_id'] ?>"
+                                            data-price="<?= $row['price_today'] ?>"
+                                            data-unit="<?= $row['unit'] ?>">
                                             <?= $row['product_name'] ?>
                                         </option>
                                     <?php } ?>
                                 </select>
                             </div>
-
                             <div class="mb-3">
                                 <label for="price_today" class="form-label">ราคาวันนี้:</label>
-                                <input type="number" step="0.01" min="0" class="form-control" id="price_today" name="price_today" required>
+                                <input type="number" step="0.01" min="0" class="form-control" id="price_today" name="price_today" required placeholder="ราคา">
                             </div>
                         </div>
                     </div>
@@ -198,9 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product'], $_POST['qua
             </div>
 
 </body>
-
 </html>
-
 <?php
 $conn->close();
 ?>

@@ -1,12 +1,13 @@
 <?php
-// เชื่อมต่อฐานข้อมูล
 $conn = new mysqli("localhost", "root", "", "wichian_db");
 $conn->set_charset("utf8");
 
-// รับค่าจากฟอร์ม เลือกช่วงเวลา
-$range = $_GET['range'] ?? 'month';
+if (isset($_GET['range'])) {
+    $range = $_GET['range'];
+} else {
+    $range = 'month';
+}
 
-// ตั้งเงื่อนไขช่วงเวลา
 if ($range == 'today') {
     $condition = "DATE(ordersale_date) = CURDATE()";
 } elseif ($range == 'week') {
@@ -19,7 +20,7 @@ if ($range == 'today') {
     $condition = "1";
 }
 
-// ดึงข้อมูลยอดขายรายวัน (ไว้ทำกราฟ)
+
 $salesQuery = "SELECT DATE_FORMAT(ordersale_date, '%d-%m-%Y') AS day, SUM(total_price) AS total 
                FROM order_sale 
                WHERE $condition 
@@ -27,39 +28,60 @@ $salesQuery = "SELECT DATE_FORMAT(ordersale_date, '%d-%m-%Y') AS day, SUM(total_
                ORDER BY ordersale_date";
 
 $salesResult = $conn->query($salesQuery);
-$labels = [];
-$data = [];
-while ($row = $salesResult->fetch_assoc()) {
-    $labels[] = $row['day'];
-    $data[] = $row['total'];
+$labels = array();
+$data = array();
+
+while ($row = $salesResult->fetch_row()) {
+    $labels[] = $row[0]; 
+    $data[] = $row[1];  
 }
 
-// ดึงยอดซื้อ (จาก order_buy)
-$buyQuery = "SELECT SUM(d.total_price) AS total_buy 
+$buyQuery = "SELECT SUM(d.total_price) 
              FROM orderbuy_detail d 
              JOIN order_buy o ON d.orderbuy_id = o.orderbuy_id 
              WHERE " . str_replace("ordersale_date", "o.orderbuy_date", $condition);
-$totalBuy = $conn->query($buyQuery)->fetch_assoc()['total_buy'] ?? 0;
+$buyResult = $conn->query($buyQuery);
+$buyRow = $buyResult->fetch_row();
+$totalBuy = $buyRow[0];
 
-// ดึงยอดขายรวม และกำไรสุทธิ
-$totalSale = $conn->query("SELECT SUM(total_price) AS total_sale FROM order_sale WHERE $condition")->fetch_assoc()['total_sale'] ?? 0;
-$totalProfit = $conn->query("SELECT SUM(profit) AS net_profit FROM order_sale WHERE $condition")->fetch_assoc()['net_profit'] ?? 0;
+if ($totalBuy == null) {
+    $totalBuy = 0;
+}
 
-// ดึง Top 5 ประเภทสินค้าที่ขายได้มากที่สุด
-$topQuery = "SELECT d.type_name, SUM(d.quantity) AS total_qty 
+$saleResult = $conn->query("SELECT SUM(total_price) FROM order_sale WHERE $condition");
+$saleRow = $saleResult->fetch_row();
+$totalSale = $saleRow[0];
+
+if ($totalSale == null) {
+    $totalSale = 0;
+}
+
+$profitResult = $conn->query("SELECT SUM(profit) FROM order_sale WHERE $condition");
+$profitRow = $profitResult->fetch_row();
+$totalProfit = $profitRow[0];
+
+if ($totalProfit == null) {
+    $totalProfit = 0;
+}
+
+$topQuery = "SELECT d.type_name, SUM(d.quantity) 
              FROM ordersale_detail d 
              JOIN order_sale o ON d.ordersale_id = o.ordersale_id 
              WHERE $condition 
              GROUP BY d.type_name 
-             ORDER BY total_qty DESC 
+             ORDER BY SUM(d.quantity) DESC 
              LIMIT 5";
+
 $topResult = $conn->query($topQuery);
-$topItems = [];
-while ($row = $topResult->fetch_assoc()) {
-    $topItems[] = $row;
+$topItems = array();
+
+while ($row = $topResult->fetch_row()) {
+    $item = array();
+    $item['type_name'] = $row[0];
+    $item['total_qty'] = $row[1];
+    $topItems[] = $item;
 }
 
-// ชื่อหัวข้อช่วงเวลา
 $titles = [
     'today' => 'ยอดขายวันนี้',
     'week' => 'ยอดขายสัปดาห์นี้',
@@ -90,7 +112,7 @@ $titles = [
             <div class="card mt-3 pb-5 px-4 col-10">
                 <h2 class="text-center mb-4">แดชบอร์ดยอดขายของเก่า</h2>
 
-                <!-- ฟอร์มเลือกช่วงเวลา -->
+
                 <form method="GET" class="mb-4 text-center">
                     <label class="fw-bold">เลือกช่วงเวลา: </label>
                     <select name="range" onchange="this.form.submit()" class="form-select d-inline w-auto ms-2">
@@ -102,7 +124,6 @@ $titles = [
                     </select>
                 </form>
 
-                <!-- แสดงยอดรวม -->
                 <div class="row text-center mb-4">
                     <div class="col-md-4">
                         <h5>ยอดซื้อ</h5>
@@ -118,11 +139,11 @@ $titles = [
                     </div>
                 </div>
 
-                <!-- กราฟยอดขายรายวัน -->
+
                 <h4 class="text-center mt-4"><?= $titles[$range] ?></h4>
                 <canvas id="barChart" class="mb-5"></canvas>
 
-                <!-- ตาราง Top 5 -->
+
                 <h4 class="text-center mt-5">Top 5 ประเภทสินค้าที่ขายได้มากที่สุด</h4>
                 <table class="table table-bordered table-striped text-center">
                     <thead class="table-dark">
@@ -142,7 +163,7 @@ $titles = [
                 </table>
             </div>
 
-            <!-- สคริปต์กราฟ -->
+
             <script>
                 new Chart(document.getElementById('barChart'), {
                     type: 'bar',

@@ -92,7 +92,7 @@ $product_result = $conn->query("SELECT DISTINCT product_name FROM product");
                     </div>
                 </form>
 
-                <!-- Tabs -->
+                
                 <ul class="nav nav-tabs mt-2" id="tabMenu" role="tablist">
                     <li class="nav-item">
                         <button class="nav-link active" id="buy-tab" data-bs-toggle="tab" data-bs-target="#buy" type="button" role="tab">รับซื้อ</button>
@@ -104,7 +104,6 @@ $product_result = $conn->query("SELECT DISTINCT product_name FROM product");
                 <br>
 
                 <div class="tab-content" id="tabContent">
-                    <!-- Buy Table -->
                     <div class="tab-pane fade show active" id="buy" role="tabpanel">
                         <table class="table table-bordered table-striped mt-3" id="buyTable">
                             <thead class="table-light">
@@ -152,7 +151,7 @@ $product_result = $conn->query("SELECT DISTINCT product_name FROM product");
                         </table>
                     </div>
 
-                    <!-- Sale Table -->
+                    
                     <div class="tab-pane fade" id="sale" role="tabpanel">
                         <table class="table table-bordered table-striped mt-3" id="saleTable">
                             <thead class="table-light">
