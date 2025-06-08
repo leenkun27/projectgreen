@@ -5,9 +5,8 @@ include '../condb.php';
 $limit = 10;
 
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
-$start = ($page - 1) * $limit; // คำนวณ OFFSET
+$start = ($page - 1) * $limit; 
 
-// ดึงข้อมูลจากฐานข้อมูล
 $query = "
     SELECT 
         product.product_id, 
@@ -30,7 +29,6 @@ if (!$result) {
     die("Query failed: " . $conn->error);
 }
 
-// คำนวณจำนวนหน้าทั้งหมด
 $count_query = "SELECT COUNT(*) AS total FROM product";
 $count_result = $conn->query($count_query);
 $row = $count_result->fetch_assoc();
@@ -57,10 +55,10 @@ $total_pages = ceil($total_records / $limit);
 
 <body onload="updateTime()">
     <div class="container">
-        <?php include '../header_admin.php'; ?>
+        <?php include '../header_emp.php'; ?>
         <div class="row">
             <div class="col-2">
-                <?php include '../menu_admin.php'; ?>
+                <?php include '../menu_emp.php'; ?>
             </div>
             <div class="card mt-3 pb-5 px-2 col-10">
                 <div class="container mt-4">
