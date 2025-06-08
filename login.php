@@ -2,8 +2,6 @@
 session_start();
 include 'condb.php';
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,35 +10,29 @@ include 'condb.php';
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
-        /* พื้นหลังของหน้า */
         body {
             background-image: url('https://fixthephoto.com/images/content/sky-backgrounds-for-photoshop-61612275657.jpg'); /* ใส่ลิงก์ของภาพพื้นหลัง */
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* ให้พื้นหลังคงที่ขณะเลื่อนหน้า */
-            height: 100vh; /* ความสูงของหน้าจอ */
+            background-attachment: fixed; 
+            height: 100vh; 
         }
-
-        /* โลโก้ในส่วนของการ Login */
         .logo {
             display: block;
             margin: 0 auto 20px;
-            width: 100px; /* ขนาดโลโก้ */
+            width: 100px; 
             height: auto;
         }
-
-        /* การจัดตำแหน่งของ card */
         .card {
-            opacity: 0.9; /* ทำให้พื้นหลัง card โปร่งแสง */
-            background-color: rgba(255, 255, 255, 0.8); /* ใช้พื้นหลังขาวแบบโปร่งแสง */
+            opacity: 0.9; 
+            background-color: rgba(255, 255, 255, 0.8); 
         }
     </style>
 </head>
 <body>
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="card p-4 shadow-lg" style="width: 400px;">
-            <!-- โลโก้ -->
-            <img src="./img/Logo.jpg" alt="Logo" class="logo"> <!-- ใส่ลิงก์โลโก้ -->
+            <img src="./img/Logo.jpg" alt="Logo" class="logo">
             <h3 class="text-center mb-4">เข้าสู่ระบบ</h3>
             <form action="process_login.php" method="POST">
                 <div class="mb-3">

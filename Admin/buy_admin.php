@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product'], $_POST['qua
                             </div>
                             <div class="mb-3">
                                 <label for="price_today" class="form-label">ราคาวันนี้:</label>
-                                <input type="number" step="0.01" min="0" class="form-control" id="price_today" name="price_today" required>
+                                <input type="number" step="0.01" min="0" class="form-control" id="price_today" name="price_today" required placeholder="ราคา">
                             </div>
                         </div>
                     </div>

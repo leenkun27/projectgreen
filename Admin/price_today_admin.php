@@ -2,10 +2,8 @@
 session_start();
 include '../condb.php';
 
-// กำหนดจำนวนแถวที่จะแสดงต่อหน้า
 $limit = 10;
 
-// ตรวจสอบหน้าปัจจุบัน
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $start = ($page - 1) * $limit; // คำนวณ OFFSET
 

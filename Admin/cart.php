@@ -1,7 +1,6 @@
 <?php
 session_start();
 include '../condb.php';
-
 $query = "
     SELECT 
         product.product_id, 
