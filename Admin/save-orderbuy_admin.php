@@ -34,11 +34,11 @@ foreach ($_SESSION['cart'] as $item) {
     )";
     $conn->query($sql_detail);
 
-    // อัปเดตราคา
+    
     $sql_price = "UPDATE product SET price_today = '$price' WHERE product_id = '$product_id'";
     $conn->query($sql_price);
 
-    //เพิ่มจำนวนเข้า stock
+
     if ($qty > 0) {
         $sql_update_stock = "UPDATE product SET quantity = quantity + $qty WHERE product_id = '$product_id'";
         $conn->query($sql_update_stock);

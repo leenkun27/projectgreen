@@ -30,7 +30,6 @@ foreach ($products as $p) {
     }
 }
 
-// ตรวจสอบขั้นต่ำการขาย
 $sql_min = "SELECT minimum_sale FROM product WHERE product_name = '$first_product_name'";
 $res_min = $conn->query($sql_min);
 $min_row = $res_min->fetch_assoc();
@@ -47,13 +46,11 @@ if ($total_qty < $min_sale_qty) {
 
 $profit = $total_price - $total_cost;
 
-// บันทึกใบขาย
 $sql = "INSERT INTO order_sale (ordersale_date, name, total_price, profit)
         VALUES ('$date', '$name', '$total_price', '$profit')";
 $conn->query($sql);
 $ordersale_id = $conn->insert_id;
 
-// บันทึกรายละเอียด และตัด stock
 foreach ($products as $p) {
     if (isset($p['checked'])) {
         $product_name = $p['product_name'];
@@ -65,7 +62,7 @@ foreach ($products as $p) {
         $profit_item = ($sale_price - $cost) * $qty;
         $orderbuy_detail_id = $p['orderbuy_detail_id'];
 
-        // ตรวจสอบ stock คงเหลือก่อนตัด
+    
         $check_stock = $conn->query("SELECT quantity FROM product WHERE product_name = '$product_name'");
         $stock = $check_stock->fetch_assoc();
         $current_stock = $stock['quantity'] ?? 0;
@@ -88,11 +85,9 @@ foreach ($products as $p) {
         )";
         $conn->query($sql_detail);
 
-        // ตั้งค่าว่าออเดอร์นี้ขายแล้ว
         $sql_mark_sold = "UPDATE orderbuy_detail SET is_sold = 1 WHERE orderbuy_detail_id = '$orderbuy_detail_id'";
         $conn->query($sql_mark_sold);
 
-        // ตัด stock
         $sql_stock = "UPDATE product SET quantity = quantity - $qty WHERE product_name = '$product_name'";
         $conn->query($sql_stock);
     }

@@ -150,11 +150,6 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <button class="btn btn-outline-primary" id="prevPage">ก่อนหน้า</button>
-                        <span id="pageInfo"></span>
-                        <button class="btn btn-outline-primary" id="nextPage">ถัดไป</button>
-                    </div>
                 </div>
             </div>
         </div>
